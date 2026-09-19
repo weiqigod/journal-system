@@ -74,6 +74,8 @@ Configuration capable of materially changing clinical behavior shall be included
 
 ## Testing and verification
 
+The [verification references](verification-references.md) connect selected external contracts to the foundational prototype cases and record which supporting test material still needs selection.
+
 ### TST-001 — Requirements traceability
 **Status:** Proposed  
 Each production requirement shall be traceable to implementation evidence and verification appropriate to its risk and nature.

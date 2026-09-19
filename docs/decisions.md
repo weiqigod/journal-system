@@ -4,6 +4,8 @@
 
 Cross-domain decisions are listed below. References point to the domain question that owns the wording and resolution; existing IDs are retained for traceability. Product breadth is adopted in the [master](../SPECIFICATION.md#product-direction); remaining scope questions concern detail, implementation order, or module and integration boundaries.
 
+The [foundational design exploration](foundational-design.md) proposes answers for shared ownership, record history, workflow coordination, and configuration. The [record model comparison](record-model-comparison.md) recommends an openEHR-based prototype compared with FHIR-native content. This is a specification-based assessment; architecture and question resolutions remain provisional pending implementation evidence.
+
 ## Product and care settings
 
 - **Q-PROD-001:** Which care settings and roles can the first dogfooding participants exercise, and which need additional reviewers?
