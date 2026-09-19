@@ -28,10 +28,10 @@ The [cases](record-model-comparison.md) own expected outcomes. When making them 
 
 ## Material to select with the prototype
 
-These are discovery links, not downloaded or executable test dependencies yet:
+The [initial repository probe](../prototypes/record-model/README.md) now pins EHRbase 2.36.0, its deployment inputs, and an Initial laboratory test template. Its [findings](prototype-findings.md) limit what those inputs establish. The remaining clinical-model, mapping, and comparison dependencies below still need selection:
 
 - **Clinical models:** select [CKM](https://ckm.openehr.org/ckm/) archetypes for the cases; retain exact revisions, publication status, licenses, dependencies, template source, and compiled OPT. Add synthetic valid, invalid, corrected, and historical instances with expected outcomes.
-- **Implementation evidence:** pin the chosen server release, supported specification versions, configuration, and deployment/recovery documentation. [EHRbase](https://github.com/ehrbase/ehrbase) and its [SDK](https://github.com/ehrbase/openEHR_SDK) are candidates; their examples and tests describe implementation behavior, not the standard's authority.
+- **Implementation evidence:** extend the initial EHRbase probe to the selected API contract and recovery boundaries; pin a comparison server separately. [EHRbase](https://github.com/ehrbase/ehrbase) and its [SDK](https://github.com/ehrbase/openEHR_SDK) examples and tests describe implementation behavior, not the standard's authority.
 - **Machine-readable contracts:** freeze a compatible commit of the [openEHR OpenAPI sources](https://github.com/openEHR/specifications-ITS-REST/tree/master/computable/OAS), resolving referenced files. The published specification links to a moving branch, so that link is insufficient as a test pin. For the R5 comparison, use `hl7.fhir.r5.core#5.0.0` from [HL7's downloads](https://hl7.org/fhir/R5/downloads.html), plus exact validator, profile, and terminology versions. Select relevant [FHIR test cases](https://github.com/FHIR/fhir-test-cases) at a fixed revision.
 - **Conformance guidance:** use the [openEHR conformance materials](https://developer.openehr.org/conformance/) as a coverage checklist. They remain in development; passing a selected suite does not establish official certification or full clinical correctness.
 

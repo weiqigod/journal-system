@@ -1,0 +1,810 @@
+{
+  "started_at": "2026-09-19T13:24:00.745686+00:00",
+  "scope": "Repository mechanics only; no clinical signing, reassessment, or handover implementation",
+  "status": "passed",
+  "if_match_mode": "bare-diagnostic",
+  "qualification": "bare-diagnostic explicitly removes ETag quotes to investigate other behavior; it cannot establish REST conformance",
+  "inputs": {
+    "upstream_lock_sha256": "79075858ff1782bb9a2ee1307e28d5760095eebcffff56450566b49c764f46fe",
+    "compose_sha256": "b547f234e66454a0a402521f7929602bb6bf42fa8b76ae0a81cc0ccbe1000665",
+    "probe_sha256": "937444da2821d5d72fbbad164aae5661acd1ac421f7f4db085f251652b090001",
+    "reference_manifest_sha256": "03c4c2c0ebf2052bd994687a113e2d1901179438c89f6dc325b6630058f39ba8",
+    "python": "3.13.7",
+    "host_architecture": "arm64",
+    "containers": {
+      "db": {
+        "image_reference": "postgres:16@sha256:a3b7f434b2dc57ce85a67e171163eb8ab1a1ebcb39d27484661f26b1dfbe30d6",
+        "image_id": "sha256:a3b7f434b2dc57ce85a67e171163eb8ab1a1ebcb39d27484661f26b1dfbe30d6",
+        "started_at": "2026-09-19T13:23:31.490979248Z"
+      },
+      "ehrbase": {
+        "image_reference": "ehrbase/ehrbase:2.36.0@sha256:c8e642264b73637e0576ec01b5c73f5dc9be6f34eb3644f0ced890c5f916640a",
+        "image_id": "sha256:c8e642264b73637e0576ec01b5c73f5dc9be6f34eb3644f0ced890c5f916640a",
+        "started_at": "2026-09-19T13:23:34.082837856Z"
+      }
+    }
+  },
+  "checks": [
+    {
+      "id": "restart_persistence",
+      "expected": "Both committed revisions and current query survive restart",
+      "requirements": [
+        "TST-007",
+        "DOC-008"
+      ],
+      "reference": "Prototype persistence check; not backup/restore or interrupted-write recovery",
+      "status": "passed",
+      "observed": {
+        "version_hashes_match": [
+          true,
+          true
+        ],
+        "current_rows": [
+          [
+            "5ca9e1c7-1230-40e0-b746-a48247ba1a8b::journal-prototype.local::2"
+          ]
+        ]
+      }
+    }
+  ],
+  "exchanges": [
+    {
+      "method": "GET",
+      "path": "/definition/template/adl1.4",
+      "request_headers": {
+        "Accept": "application/json"
+      },
+      "request_body": null,
+      "status": 200,
+      "response_headers": {
+        "Vary": "Origin",
+        "Location": "http://127.0.0.1:18080/ehrbase/rest/openehr/v1/definition/template/adl1.4",
+        "X-Content-Type-Options": "nosniff",
+        "X-XSS-Protection": "0",
+        "Cache-Control": "no-cache, no-store, max-age=0, must-revalidate",
+        "Pragma": "no-cache",
+        "Expires": "0",
+        "X-Frame-Options": "DENY",
+        "Content-Type": "application/json",
+        "Transfer-Encoding": "chunked",
+        "Date": "Sat, 19 Sep 2026 13:24:01 GMT",
+        "Connection": "close"
+      },
+      "response_body": [
+        {
+          "concept": "Generic Laboratory Test Report.v0",
+          "template_id": "65d9e89a-81d8-4344-afbe-88508d42dcfc",
+          "archetype_id": "openEHR-EHR-COMPOSITION.report-result.v1",
+          "created_timestamp": "2026-09-19T13:13:05.769Z"
+        }
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/ehr/69f9a989-9655-411b-9212-2f88607750e7/composition/5ca9e1c7-1230-40e0-b746-a48247ba1a8b::journal-prototype.local::1",
+      "request_headers": {
+        "Accept": "application/json"
+      },
+      "request_body": null,
+      "status": 200,
+      "response_headers": {
+        "Vary": "Origin",
+        "Location": "http://127.0.0.1:18080/ehrbase/rest/openehr/v1/ehr/69f9a989-9655-411b-9212-2f88607750e7/composition/5ca9e1c7-1230-40e0-b746-a48247ba1a8b::journal-prototype.local::1",
+        "Last-Modified": "Fri, 02 Jan 1970 10:12:04 GMT",
+        "ETag": "\"5ca9e1c7-1230-40e0-b746-a48247ba1a8b::journal-prototype.local::1\"",
+        "Content-Disposition": "inline;filename=f.txt",
+        "X-Content-Type-Options": "nosniff",
+        "X-XSS-Protection": "0",
+        "Cache-Control": "no-cache, no-store, max-age=0, must-revalidate",
+        "Pragma": "no-cache",
+        "Expires": "0",
+        "X-Frame-Options": "DENY",
+        "Content-Type": "application/json",
+        "Content-Length": "7591",
+        "Date": "Sat, 19 Sep 2026 13:24:01 GMT",
+        "Connection": "close"
+      },
+      "response_body": {
+        "_type": "COMPOSITION",
+        "name": {
+          "_type": "DV_TEXT",
+          "value": "Laboratory test report"
+        },
+        "archetype_details": {
+          "archetype_id": {
+            "value": "openEHR-EHR-COMPOSITION.report-result.v1"
+          },
+          "template_id": {
+            "value": "65d9e89a-81d8-4344-afbe-88508d42dcfc"
+          },
+          "rm_version": "1.0.4"
+        },
+        "language": {
+          "_type": "CODE_PHRASE",
+          "terminology_id": {
+            "_type": "TERMINOLOGY_ID",
+            "value": "ISO_639-1"
+          },
+          "code_string": "en"
+        },
+        "territory": {
+          "_type": "CODE_PHRASE",
+          "terminology_id": {
+            "_type": "TERMINOLOGY_ID",
+            "value": "ISO_3166-1"
+          },
+          "code_string": "SE"
+        },
+        "category": {
+          "_type": "DV_CODED_TEXT",
+          "value": "event",
+          "defining_code": {
+            "_type": "CODE_PHRASE",
+            "terminology_id": {
+              "_type": "TERMINOLOGY_ID",
+              "value": "openehr"
+            },
+            "code_string": "433"
+          }
+        },
+        "composer": {
+          "_type": "PARTY_IDENTIFIED",
+          "name": "Synthetic clinician"
+        },
+        "context": {
+          "_type": "EVENT_CONTEXT",
+          "start_time": {
+            "_type": "DV_DATE_TIME",
+            "value": "2026-01-01T10:00:00Z"
+          },
+          "setting": {
+            "_type": "DV_CODED_TEXT",
+            "value": "home",
+            "defining_code": {
+              "_type": "CODE_PHRASE",
+              "terminology_id": {
+                "_type": "TERMINOLOGY_ID",
+                "value": "openehr"
+              },
+              "code_string": "225"
+            }
+          }
+        },
+        "content": [
+          {
+            "_type": "OBSERVATION",
+            "name": {
+              "_type": "DV_TEXT",
+              "value": "Laboratory test"
+            },
+            "archetype_details": {
+              "archetype_id": {
+                "value": "openEHR-EHR-OBSERVATION.laboratory_test.v0"
+              },
+              "rm_version": "1.0.4"
+            },
+            "language": {
+              "_type": "CODE_PHRASE",
+              "terminology_id": {
+                "_type": "TERMINOLOGY_ID",
+                "value": "ISO_639-1"
+              },
+              "code_string": "en"
+            },
+            "encoding": {
+              "_type": "CODE_PHRASE",
+              "terminology_id": {
+                "_type": "TERMINOLOGY_ID",
+                "value": "IANA_character-sets"
+              },
+              "code_string": "ISO-10646-UTF-1"
+            },
+            "subject": {
+              "_type": "PARTY_SELF"
+            },
+            "protocol": {
+              "_type": "ITEM_TREE",
+              "name": {
+                "_type": "DV_TEXT",
+                "value": "Tree"
+              },
+              "items": [
+                {
+                  "_type": "ELEMENT",
+                  "name": {
+                    "_type": "DV_TEXT",
+                    "value": "Laboratory test identifier"
+                  },
+                  "value": {
+                    "_type": "DV_IDENTIFIER",
+                    "id": "dev/null"
+                  },
+                  "archetype_node_id": "at0068"
+                },
+                {
+                  "_type": "CLUSTER",
+                  "name": {
+                    "_type": "DV_TEXT",
+                    "value": "Test request details"
+                  },
+                  "items": [
+                    {
+                      "_type": "ELEMENT",
+                      "name": {
+                        "_type": "DV_TEXT",
+                        "value": "Original test requested Name"
+                      },
+                      "value": {
+                        "_type": "DV_TEXT",
+                        "value": "Lorem ipsum"
+                      },
+                      "archetype_node_id": "at0106"
+                    },
+                    {
+                      "_type": "ELEMENT",
+                      "name": {
+                        "_type": "DV_TEXT",
+                        "value": "Requester order identifier"
+                      },
+                      "value": {
+                        "_type": "DV_IDENTIFIER",
+                        "id": "dev/null"
+                      },
+                      "archetype_node_id": "at0062"
+                    },
+                    {
+                      "_type": "ELEMENT",
+                      "name": {
+                        "_type": "DV_TEXT",
+                        "value": "Receiver order identifier"
+                      },
+                      "value": {
+                        "_type": "DV_IDENTIFIER",
+                        "id": "dev/null"
+                      },
+                      "archetype_node_id": "at0063"
+                    }
+                  ],
+                  "archetype_node_id": "at0094"
+                },
+                {
+                  "_type": "ELEMENT",
+                  "name": {
+                    "_type": "DV_TEXT",
+                    "value": "Point of care device"
+                  },
+                  "value": {
+                    "_type": "DV_BOOLEAN",
+                    "value": true
+                  },
+                  "archetype_node_id": "at0111"
+                }
+              ],
+              "archetype_node_id": "at0004"
+            },
+            "guideline_id": {
+              "_type": "OBJECT_REF",
+              "namespace": "unknown",
+              "type": "ANY",
+              "id": {
+                "_type": "GENERIC_ID",
+                "value": "9e18d67f-ddb9-347c-be9e-433e34deaf60",
+                "scheme": "scheme"
+              }
+            },
+            "data": {
+              "name": {
+                "_type": "DV_TEXT",
+                "value": "Event Series"
+              },
+              "origin": {
+                "_type": "DV_DATE_TIME",
+                "value": "2026-01-01T10:00:00Z"
+              },
+              "period": {
+                "_type": "DV_DURATION",
+                "value": "PT0S"
+              },
+              "duration": {
+                "_type": "DV_DURATION",
+                "value": "PT0S"
+              },
+              "events": [
+                {
+                  "_type": "POINT_EVENT",
+                  "name": {
+                    "_type": "DV_TEXT",
+                    "value": "Any event"
+                  },
+                  "time": {
+                    "_type": "DV_DATE_TIME",
+                    "value": "2026-01-01T10:00:00Z"
+                  },
+                  "state": {
+                    "_type": "ITEM_TREE",
+                    "name": {
+                      "_type": "DV_TEXT",
+                      "value": "Tree"
+                    },
+                    "items": [
+                      {
+                        "_type": "ELEMENT",
+                        "name": {
+                          "_type": "DV_TEXT",
+                          "value": "Confounding factors"
+                        },
+                        "value": {
+                          "_type": "DV_TEXT",
+                          "value": "Lorem ipsum"
+                        },
+                        "archetype_node_id": "at0113"
+                      }
+                    ],
+                    "archetype_node_id": "at0112"
+                  },
+                  "data": {
+                    "_type": "ITEM_TREE",
+                    "name": {
+                      "_type": "DV_TEXT",
+                      "value": "Tree"
+                    },
+                    "items": [
+                      {
+                        "_type": "ELEMENT",
+                        "name": {
+                          "_type": "DV_TEXT",
+                          "value": "Test name"
+                        },
+                        "value": {
+                          "_type": "DV_TEXT",
+                          "value": "Synthetic dimensional measurement"
+                        },
+                        "archetype_node_id": "at0005"
+                      },
+                      {
+                        "_type": "CLUSTER",
+                        "name": {
+                          "_type": "DV_TEXT",
+                          "value": "Laboratory test panel"
+                        },
+                        "archetype_details": {
+                          "archetype_id": {
+                            "value": "openEHR-EHR-CLUSTER.laboratory_test_panel.v0"
+                          },
+                          "rm_version": "1.0.4"
+                        },
+                        "items": [
+                          {
+                            "_type": "CLUSTER",
+                            "name": {
+                              "_type": "DV_TEXT",
+                              "value": "Laboratory result"
+                            },
+                            "items": [
+                              {
+                                "_type": "ELEMENT",
+                                "name": {
+                                  "_type": "DV_TEXT",
+                                  "value": "Result value"
+                                },
+                                "value": {
+                                  "_type": "DV_QUANTITY",
+                                  "units": "mm",
+                                  "magnitude": 22.0
+                                },
+                                "archetype_node_id": "at0001"
+                              }
+                            ],
+                            "archetype_node_id": "at0002"
+                          }
+                        ],
+                        "archetype_node_id": "openEHR-EHR-CLUSTER.laboratory_test_panel.v0"
+                      }
+                    ],
+                    "archetype_node_id": "at0003"
+                  },
+                  "archetype_node_id": "at0002"
+                }
+              ],
+              "archetype_node_id": "at0001"
+            },
+            "archetype_node_id": "openEHR-EHR-OBSERVATION.laboratory_test.v0"
+          }
+        ],
+        "archetype_node_id": "openEHR-EHR-COMPOSITION.report-result.v1",
+        "uid": {
+          "_type": "OBJECT_VERSION_ID",
+          "value": "5ca9e1c7-1230-40e0-b746-a48247ba1a8b::journal-prototype.local::1"
+        }
+      }
+    },
+    {
+      "method": "GET",
+      "path": "/ehr/69f9a989-9655-411b-9212-2f88607750e7/composition/5ca9e1c7-1230-40e0-b746-a48247ba1a8b::journal-prototype.local::2",
+      "request_headers": {
+        "Accept": "application/json"
+      },
+      "request_body": null,
+      "status": 200,
+      "response_headers": {
+        "Vary": "Origin",
+        "Location": "http://127.0.0.1:18080/ehrbase/rest/openehr/v1/ehr/69f9a989-9655-411b-9212-2f88607750e7/composition/5ca9e1c7-1230-40e0-b746-a48247ba1a8b::journal-prototype.local::2",
+        "Last-Modified": "Fri, 02 Jan 1970 10:12:04 GMT",
+        "ETag": "\"5ca9e1c7-1230-40e0-b746-a48247ba1a8b::journal-prototype.local::2\"",
+        "Content-Disposition": "inline;filename=f.txt",
+        "X-Content-Type-Options": "nosniff",
+        "X-XSS-Protection": "0",
+        "Cache-Control": "no-cache, no-store, max-age=0, must-revalidate",
+        "Pragma": "no-cache",
+        "Expires": "0",
+        "X-Frame-Options": "DENY",
+        "Content-Type": "application/json",
+        "Content-Length": "7591",
+        "Date": "Sat, 19 Sep 2026 13:24:01 GMT",
+        "Connection": "close"
+      },
+      "response_body": {
+        "_type": "COMPOSITION",
+        "name": {
+          "_type": "DV_TEXT",
+          "value": "Laboratory test report"
+        },
+        "archetype_details": {
+          "archetype_id": {
+            "value": "openEHR-EHR-COMPOSITION.report-result.v1"
+          },
+          "template_id": {
+            "value": "65d9e89a-81d8-4344-afbe-88508d42dcfc"
+          },
+          "rm_version": "1.0.4"
+        },
+        "language": {
+          "_type": "CODE_PHRASE",
+          "terminology_id": {
+            "_type": "TERMINOLOGY_ID",
+            "value": "ISO_639-1"
+          },
+          "code_string": "en"
+        },
+        "territory": {
+          "_type": "CODE_PHRASE",
+          "terminology_id": {
+            "_type": "TERMINOLOGY_ID",
+            "value": "ISO_3166-1"
+          },
+          "code_string": "SE"
+        },
+        "category": {
+          "_type": "DV_CODED_TEXT",
+          "value": "event",
+          "defining_code": {
+            "_type": "CODE_PHRASE",
+            "terminology_id": {
+              "_type": "TERMINOLOGY_ID",
+              "value": "openehr"
+            },
+            "code_string": "433"
+          }
+        },
+        "composer": {
+          "_type": "PARTY_IDENTIFIED",
+          "name": "Synthetic clinician"
+        },
+        "context": {
+          "_type": "EVENT_CONTEXT",
+          "start_time": {
+            "_type": "DV_DATE_TIME",
+            "value": "2026-01-01T10:00:00Z"
+          },
+          "setting": {
+            "_type": "DV_CODED_TEXT",
+            "value": "home",
+            "defining_code": {
+              "_type": "CODE_PHRASE",
+              "terminology_id": {
+                "_type": "TERMINOLOGY_ID",
+                "value": "openehr"
+              },
+              "code_string": "225"
+            }
+          }
+        },
+        "content": [
+          {
+            "_type": "OBSERVATION",
+            "name": {
+              "_type": "DV_TEXT",
+              "value": "Laboratory test"
+            },
+            "archetype_details": {
+              "archetype_id": {
+                "value": "openEHR-EHR-OBSERVATION.laboratory_test.v0"
+              },
+              "rm_version": "1.0.4"
+            },
+            "language": {
+              "_type": "CODE_PHRASE",
+              "terminology_id": {
+                "_type": "TERMINOLOGY_ID",
+                "value": "ISO_639-1"
+              },
+              "code_string": "en"
+            },
+            "encoding": {
+              "_type": "CODE_PHRASE",
+              "terminology_id": {
+                "_type": "TERMINOLOGY_ID",
+                "value": "IANA_character-sets"
+              },
+              "code_string": "ISO-10646-UTF-1"
+            },
+            "subject": {
+              "_type": "PARTY_SELF"
+            },
+            "protocol": {
+              "_type": "ITEM_TREE",
+              "name": {
+                "_type": "DV_TEXT",
+                "value": "Tree"
+              },
+              "items": [
+                {
+                  "_type": "ELEMENT",
+                  "name": {
+                    "_type": "DV_TEXT",
+                    "value": "Laboratory test identifier"
+                  },
+                  "value": {
+                    "_type": "DV_IDENTIFIER",
+                    "id": "dev/null"
+                  },
+                  "archetype_node_id": "at0068"
+                },
+                {
+                  "_type": "CLUSTER",
+                  "name": {
+                    "_type": "DV_TEXT",
+                    "value": "Test request details"
+                  },
+                  "items": [
+                    {
+                      "_type": "ELEMENT",
+                      "name": {
+                        "_type": "DV_TEXT",
+                        "value": "Original test requested Name"
+                      },
+                      "value": {
+                        "_type": "DV_TEXT",
+                        "value": "Lorem ipsum"
+                      },
+                      "archetype_node_id": "at0106"
+                    },
+                    {
+                      "_type": "ELEMENT",
+                      "name": {
+                        "_type": "DV_TEXT",
+                        "value": "Requester order identifier"
+                      },
+                      "value": {
+                        "_type": "DV_IDENTIFIER",
+                        "id": "dev/null"
+                      },
+                      "archetype_node_id": "at0062"
+                    },
+                    {
+                      "_type": "ELEMENT",
+                      "name": {
+                        "_type": "DV_TEXT",
+                        "value": "Receiver order identifier"
+                      },
+                      "value": {
+                        "_type": "DV_IDENTIFIER",
+                        "id": "dev/null"
+                      },
+                      "archetype_node_id": "at0063"
+                    }
+                  ],
+                  "archetype_node_id": "at0094"
+                },
+                {
+                  "_type": "ELEMENT",
+                  "name": {
+                    "_type": "DV_TEXT",
+                    "value": "Point of care device"
+                  },
+                  "value": {
+                    "_type": "DV_BOOLEAN",
+                    "value": true
+                  },
+                  "archetype_node_id": "at0111"
+                }
+              ],
+              "archetype_node_id": "at0004"
+            },
+            "guideline_id": {
+              "_type": "OBJECT_REF",
+              "namespace": "unknown",
+              "type": "ANY",
+              "id": {
+                "_type": "GENERIC_ID",
+                "value": "9e18d67f-ddb9-347c-be9e-433e34deaf60",
+                "scheme": "scheme"
+              }
+            },
+            "data": {
+              "name": {
+                "_type": "DV_TEXT",
+                "value": "Event Series"
+              },
+              "origin": {
+                "_type": "DV_DATE_TIME",
+                "value": "2026-01-01T10:00:00Z"
+              },
+              "period": {
+                "_type": "DV_DURATION",
+                "value": "PT0S"
+              },
+              "duration": {
+                "_type": "DV_DURATION",
+                "value": "PT0S"
+              },
+              "events": [
+                {
+                  "_type": "POINT_EVENT",
+                  "name": {
+                    "_type": "DV_TEXT",
+                    "value": "Any event"
+                  },
+                  "time": {
+                    "_type": "DV_DATE_TIME",
+                    "value": "2026-01-01T10:00:00Z"
+                  },
+                  "state": {
+                    "_type": "ITEM_TREE",
+                    "name": {
+                      "_type": "DV_TEXT",
+                      "value": "Tree"
+                    },
+                    "items": [
+                      {
+                        "_type": "ELEMENT",
+                        "name": {
+                          "_type": "DV_TEXT",
+                          "value": "Confounding factors"
+                        },
+                        "value": {
+                          "_type": "DV_TEXT",
+                          "value": "Lorem ipsum"
+                        },
+                        "archetype_node_id": "at0113"
+                      }
+                    ],
+                    "archetype_node_id": "at0112"
+                  },
+                  "data": {
+                    "_type": "ITEM_TREE",
+                    "name": {
+                      "_type": "DV_TEXT",
+                      "value": "Tree"
+                    },
+                    "items": [
+                      {
+                        "_type": "ELEMENT",
+                        "name": {
+                          "_type": "DV_TEXT",
+                          "value": "Test name"
+                        },
+                        "value": {
+                          "_type": "DV_TEXT",
+                          "value": "Synthetic dimensional measurement"
+                        },
+                        "archetype_node_id": "at0005"
+                      },
+                      {
+                        "_type": "CLUSTER",
+                        "name": {
+                          "_type": "DV_TEXT",
+                          "value": "Laboratory test panel"
+                        },
+                        "archetype_details": {
+                          "archetype_id": {
+                            "value": "openEHR-EHR-CLUSTER.laboratory_test_panel.v0"
+                          },
+                          "rm_version": "1.0.4"
+                        },
+                        "items": [
+                          {
+                            "_type": "CLUSTER",
+                            "name": {
+                              "_type": "DV_TEXT",
+                              "value": "Laboratory result"
+                            },
+                            "items": [
+                              {
+                                "_type": "ELEMENT",
+                                "name": {
+                                  "_type": "DV_TEXT",
+                                  "value": "Result value"
+                                },
+                                "value": {
+                                  "_type": "DV_QUANTITY",
+                                  "units": "mm",
+                                  "magnitude": 24.0
+                                },
+                                "archetype_node_id": "at0001"
+                              }
+                            ],
+                            "archetype_node_id": "at0002"
+                          }
+                        ],
+                        "archetype_node_id": "openEHR-EHR-CLUSTER.laboratory_test_panel.v0"
+                      }
+                    ],
+                    "archetype_node_id": "at0003"
+                  },
+                  "archetype_node_id": "at0002"
+                }
+              ],
+              "archetype_node_id": "at0001"
+            },
+            "archetype_node_id": "openEHR-EHR-OBSERVATION.laboratory_test.v0"
+          }
+        ],
+        "archetype_node_id": "openEHR-EHR-COMPOSITION.report-result.v1",
+        "uid": {
+          "_type": "OBJECT_VERSION_ID",
+          "value": "5ca9e1c7-1230-40e0-b746-a48247ba1a8b::journal-prototype.local::2"
+        }
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/query/aql",
+      "request_headers": {
+        "Accept": "application/json",
+        "Content-Type": "application/json"
+      },
+      "request_body": "{\"q\":\"SELECT c/uid/value FROM EHR e CONTAINS COMPOSITION c WHERE e/ehr_id/value = $ehr_id\",\"query_parameters\":{\"ehr_id\":\"69f9a989-9655-411b-9212-2f88607750e7\"}}",
+      "status": 200,
+      "response_headers": {
+        "Vary": "Origin",
+        "X-Content-Type-Options": "nosniff",
+        "X-XSS-Protection": "0",
+        "Cache-Control": "no-cache, no-store, max-age=0, must-revalidate",
+        "Pragma": "no-cache",
+        "Expires": "0",
+        "X-Frame-Options": "DENY",
+        "Content-Type": "application/json",
+        "Transfer-Encoding": "chunked",
+        "Date": "Sat, 19 Sep 2026 13:24:02 GMT",
+        "Connection": "close"
+      },
+      "response_body": {
+        "meta": {
+          "_type": "RESULTSET",
+          "_schema_version": "1.0.3",
+          "_created": "2026-09-19T13:24:02.261819498Z",
+          "_executed_aql": "SELECT c/uid/value FROM EHR e[ehr_id/value='69f9a989-9655-411b-9212-2f88607750e7'] CONTAINS COMPOSITION c",
+          "resultsize": 1
+        },
+        "q": "SELECT c/uid/value FROM EHR e CONTAINS COMPOSITION c WHERE e/ehr_id/value = $ehr_id",
+        "columns": [
+          {
+            "path": "c/uid/value",
+            "name": "#0"
+          }
+        ],
+        "rows": [
+          [
+            "5ca9e1c7-1230-40e0-b746-a48247ba1a8b::journal-prototype.local::2"
+          ]
+        ]
+      }
+    }
+  ],
+  "previous_report_sha256": "144d88d1f28b9153238f3a1154daf71c16aebbf6b719dfc0696f4062826f2484",
+  "previous_failed_checks": [
+    "concurrent_update"
+  ],
+  "finished_at": "2026-09-19T13:24:02.220397+00:00"
+}

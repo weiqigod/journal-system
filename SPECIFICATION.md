@@ -56,6 +56,7 @@ The master owns product direction, scope, and specification rules. The documents
 | [Platform requirements](docs/platform-requirements.md) | Integration, access, audit, configuration, modules, quality requirements, and jurisdiction-profile mechanisms. |
 | [Assurance](docs/assurance.md) | Regulation, clinical safety, verification, and migration requirements. |
 | [Verification references](docs/verification-references.md) | Pinned external contracts and their use in prototype cases; informative, not adopted implementation choices. |
+| [Prototype findings](docs/prototype-findings.md) | Observed repository checks, failures, and evidence limits; not completed clinical workflow verification. |
 | [Sweden profile](docs/sweden.md) | Swedish applicability questions, infrastructure, and reference sources. |
 | [Terminology and actors](docs/terminology.md) | Shared definitions and candidate users. |
 | [Decision index](docs/decisions.md) | Cross-domain choices and links to domain questions. |

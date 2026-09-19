@@ -1,0 +1,79 @@
+{
+  "purpose": "Disposable repository experiment; not a production platform or clinical-model selection",
+  "retrieved_on": "2026-09-19",
+  "ehrbase": {
+    "version": "2.36.0",
+    "source_commit": "f48fc903db5e146d60054e20102a8be7a0f61865",
+    "image": "ehrbase/ehrbase:2.36.0@sha256:c8e642264b73637e0576ec01b5c73f5dc9be6f34eb3644f0ced890c5f916640a",
+    "license": "Apache-2.0; retained NOTICE and embedded fixture metadata"
+  },
+  "postgres": {
+    "version": "16.15",
+    "image": "postgres:16@sha256:a3b7f434b2dc57ce85a67e171163eb8ab1a1ebcb39d27484661f26b1dfbe30d6"
+  },
+  "clinical_fixture": {
+    "template_id": "65d9e89a-81d8-4344-afbe-88508d42dcfc",
+    "concept": "Generic Laboratory Test Report.v0",
+    "upstream_lifecycle": "Initial",
+    "use": "Upstream test fixture for repository mechanics only; clinical suitability and authoring round-trip unverified",
+    "archetype_ids": [
+      "openEHR-EHR-COMPOSITION.report-result.v1",
+      "openEHR-EHR-OBSERVATION.laboratory_test.v0",
+      "openEHR-EHR-CLUSTER.laboratory_test_panel.v0",
+      "openEHR-EHR-CLUSTER.specimen.v0",
+      "openEHR-EHR-CLUSTER.specimen_container.v0"
+    ]
+  },
+  "artifacts": [
+    {
+      "path": "upstream/ehrbase/README.md",
+      "source_path": "README.md",
+      "url": "https://raw.githubusercontent.com/ehrbase/ehrbase/f48fc903db5e146d60054e20102a8be7a0f61865/README.md",
+      "sha256": "1d6a956767b73b71e6857168d7a0069a72c09e37a2e8cb440c1dcb042440e13d",
+      "bytes": 8587
+    },
+    {
+      "path": "upstream/ehrbase/UPDATING.md",
+      "source_path": "UPDATING.md",
+      "url": "https://raw.githubusercontent.com/ehrbase/ehrbase/f48fc903db5e146d60054e20102a8be7a0f61865/UPDATING.md",
+      "sha256": "ec46f62da141f5234864cdc60d21c1d7bce9a72c0b7984f13086433efd46cff3",
+      "bytes": 5470
+    },
+    {
+      "path": "upstream/ehrbase/LICENSE",
+      "source_path": "LICENSE",
+      "url": "https://raw.githubusercontent.com/ehrbase/ehrbase/f48fc903db5e146d60054e20102a8be7a0f61865/LICENSE",
+      "sha256": "58d1e17ffe5109a7ae296caafcadfdbe6a7d176f0bc4ab01e12a689b0499d8bd",
+      "bytes": 11357
+    },
+    {
+      "path": "upstream/ehrbase/NOTICE",
+      "source_path": "NOTICE",
+      "url": "https://raw.githubusercontent.com/ehrbase/ehrbase/f48fc903db5e146d60054e20102a8be7a0f61865/NOTICE",
+      "sha256": "36879169c713e1b6caf9c5c114ec656ea5e154bab3ab6affbf18d72f87b92daf",
+      "bytes": 35705
+    },
+    {
+      "path": "upstream/ehrbase/createdb-docker.sql",
+      "source_path": "createdb-docker.sql",
+      "url": "https://raw.githubusercontent.com/ehrbase/ehrbase/f48fc903db5e146d60054e20102a8be7a0f61865/createdb-docker.sql",
+      "sha256": "8e19ef73bbb0a69fb7edb2aeefc1effd5cac932824087f14018ccf6883e01c35",
+      "bytes": 1292
+    },
+    {
+      "path": "upstream/ehrbase/laboratory.opt",
+      "source_path": "service/src/test/resources/knowledge/operational_templates/Generic Laboratory Test Report.v0.opt",
+      "url": "https://raw.githubusercontent.com/ehrbase/ehrbase/f48fc903db5e146d60054e20102a8be7a0f61865/service/src/test/resources/knowledge/operational_templates/Generic%20Laboratory%20Test%20Report.v0.opt",
+      "sha256": "f9d4f43e7398017248eac683ddf27546ee8caed3642a24cd15182337c09ae507",
+      "bytes": 199600
+    }
+  ],
+  "fixtures": [
+    {
+      "path": "fixtures/laboratory-v1.json",
+      "sha256": "e8ca744f5ba5fd4feda0fc3cb08680d2e922b3513ff8d2b11620bc4af0828f73",
+      "bytes": 8499,
+      "origin": "EHRbase 2.36.0 example generator, reduced to a synthetic dimensional measurement; project-edited author and times. Not a clinical validation fixture."
+    }
+  ]
+}

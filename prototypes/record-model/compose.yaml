@@ -1,0 +1,46 @@
+name: journal-record-prototype
+
+services:
+  db:
+    image: postgres:16@sha256:a3b7f434b2dc57ce85a67e171163eb8ab1a1ebcb39d27484661f26b1dfbe30d6
+    environment:
+      POSTGRES_PASSWORD: prototype-only
+      EHRBASE_USER_ADMIN: ehrbase
+      EHRBASE_PASSWORD_ADMIN: prototype-admin-only
+      EHRBASE_USER: ehrbase_restricted
+      EHRBASE_PASSWORD: prototype-db-only
+    volumes:
+      - database:/var/lib/postgresql/data
+      - ./upstream/ehrbase/createdb-docker.sql:/docker-entrypoint-initdb.d/01-ehrbase.sql:ro
+    healthcheck:
+      test: [CMD-SHELL, pg_isready -U postgres]
+      interval: 2s
+      timeout: 3s
+      retries: 30
+
+  ehrbase:
+    image: ehrbase/ehrbase:2.36.0@sha256:c8e642264b73637e0576ec01b5c73f5dc9be6f34eb3644f0ced890c5f916640a
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      - "127.0.0.1:18080:8080"
+    environment:
+      DB_URL: jdbc:postgresql://db:5432/ehrbase
+      DB_USER_ADMIN: ehrbase
+      DB_PASS_ADMIN: prototype-admin-only
+      DB_USER: ehrbase_restricted
+      DB_PASS: prototype-db-only
+      SERVER_NODENAME: journal-prototype.local
+      SECURITY_AUTHTYPE: BASIC
+      SECURITY_AUTHUSER: prototype
+      SECURITY_AUTHPASSWORD: prototype-only
+      SECURITY_AUTHADMINUSER: prototype-admin
+      SECURITY_AUTHADMINPASSWORD: prototype-admin-only
+      EHRBASE_VALIDATION_CHECKFOREXTRANODES: "true"
+      EHRBASE_VALIDATION_VALIDATERMCONSTRAINTS: "true"
+      MANAGEMENT_ENDPOINTS_WEB_EXPOSURE_INCLUDE: health,info
+      JAVA_TOOL_OPTIONS: -Xms128m -Xmx768m
+
+volumes:
+  database:

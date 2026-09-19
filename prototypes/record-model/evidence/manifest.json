@@ -1,0 +1,67 @@
+{
+  "recorded_on": "2026-09-19",
+  "scope": "Selected synthetic repository probes; failures are retained. Not product or complete standards conformance.",
+  "restart_method": "SIGKILL both project containers after acknowledged writes, then docker compose up -d; no volume reset.",
+  "artifacts": [
+    {
+      "path": "2026-09-19-bare-1.json",
+      "sha256": "a0d1a11ecd4a46b4ed897247e84dd933d780072174ace2be5574a2fbf2ffc788",
+      "bytes": 352593,
+      "status": "failed",
+      "checks": {
+        "passed": 11,
+        "failed": 1,
+        "not_run": 0
+      }
+    },
+    {
+      "path": "2026-09-19-bare-2.json",
+      "sha256": "c34fc842a52aa29ee601524dbed2d0043487d4275925e8f9a3e64028ae4c2d13",
+      "bytes": 352593,
+      "status": "failed",
+      "checks": {
+        "passed": 11,
+        "failed": 1,
+        "not_run": 0
+      }
+    },
+    {
+      "path": "2026-09-19-bare-3.json",
+      "sha256": "144d88d1f28b9153238f3a1154daf71c16aebbf6b719dfc0696f4062826f2484",
+      "bytes": 352591,
+      "status": "failed",
+      "checks": {
+        "passed": 11,
+        "failed": 1,
+        "not_run": 0
+      }
+    },
+    {
+      "path": "2026-09-19-etag.json",
+      "sha256": "15cfea4dc021368a54aecfaa609044a527c96e3d79fb5546016a52f138eefdae",
+      "bytes": 273447,
+      "status": "failed",
+      "checks": {
+        "passed": 7,
+        "failed": 1,
+        "not_run": 4
+      }
+    },
+    {
+      "path": "2026-09-19-race-server.log",
+      "sha256": "8c40c102e30b749d7c5b96a93b8d6fbb4caefa3d1902c9ea519a493fd47d6086",
+      "bytes": 130468
+    },
+    {
+      "path": "2026-09-19-restart.json",
+      "sha256": "d47a3a64117a753e8197c4d4767727f1d12786c59359853a3c5870229acc8709",
+      "bytes": 28212,
+      "status": "passed",
+      "checks": {
+        "passed": 1,
+        "failed": 0,
+        "not_run": 0
+      }
+    }
+  ]
+}

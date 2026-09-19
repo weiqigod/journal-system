@@ -85,7 +85,7 @@ Access decisions consider the actor, action, patient, organizational scope, care
 
 This assumes trusted modules shipped through the project release process. Untrusted extensions would need a separate execution and permission design. Language, database, framework, and physical storage boundaries remain undecided.
 
-The [record model comparison](record-model-comparison.md) walks through concurrent signing, corrected results, and cross-setting handover. It recommends an openEHR-based clinical-content prototype with product-owned workflow behavior and FHIR exchange, compared against a FHIR-native implementation. The preference is provisional; no implementation has been tested.
+The [record model comparison](record-model-comparison.md) walks through concurrent signing, corrected results, and cross-setting handover. It recommends an openEHR-based clinical-content prototype with product-owned workflow behavior and FHIR exchange, compared against a FHIR-native implementation. The preference is provisional. An [initial EHRbase repository probe](prototype-findings.md) now provides limited runtime evidence, including unresolved concurrency failures; the clinical cases remain unverified.
 
 Candidates assessed:
 
