@@ -1,0 +1,57 @@
+--- a/rest-openehr/src/main/java/org/ehrbase/rest/openehr/OpenehrCompositionController.java
++++ b/rest-openehr/src/main/java/org/ehrbase/rest/openehr/OpenehrCompositionController.java
+@@ -191,8 +191,19 @@
+ 
+         final Optional<InternalResponse<CompositionResponseData>> respData;
+         try {
+-            ObjectVersionId ifMatchId = new ObjectVersionId(ifMatch);
+-            // ifMatch header has to be tested for correctness already above
++            // openEHR ETags quote the version identifier; retain bare identifiers for compatibility.
++            String versionId = ifMatch.trim();
++            if (versionId.startsWith("W/")) {
++                throw new PreconditionFailedException("If-Match requires a strong version identifier");
++            }
++            if (versionId.length() >= 2 && versionId.startsWith("\"") && versionId.endsWith("\"")) {
++                versionId = versionId.substring(1, versionId.length() - 1);
++            }
++            ObjectVersionId ifMatchId = new ObjectVersionId(versionId);
++            if (!versionedObjectUid.equals(extractVersionedObjectUidFromVersionUid(versionId))
++                    || !systemService.getSystemId().equals(ifMatchId.getCreatingSystemId().getValue())) {
++                throw new PreconditionFailedException("If-Match does not identify the requested composition version");
++            }
+             String compositionVersionUid = compositionService
+                     .update(ehrId, ifMatchId, compoObj)
+                     .orElseThrow(() -> new InternalServerException("Failed to create composition"))
+--- a/service/src/main/java/org/ehrbase/repository/AbstractVersionedObjectRepository.java
++++ b/service/src/main/java/org/ehrbase/repository/AbstractVersionedObjectRepository.java
+@@ -769,6 +769,8 @@
+         SelectHavingStep<Record> dataSelect = context.select(fields)
+                 .from(versionDataJoin.joined())
+                 .where(pkeyConstraint)
++                .and(versionHead.field(VERSION_PROTOTYPE.SYS_VERSION)
++                        .eq(historyRecord.get(HISTORY_PROTOTYPE.SYS_VERSION)))
+                 .groupBy(versionHead.fields(versionHead.getPrimaryKey().getFieldsArray()));
+ 
+         Field<?>[] historyFields = Streams.concat(Arrays.stream(versionHead.fields()), additionalFields.historyFields())
+@@ -776,10 +778,20 @@
+                 .filter(Objects::nonNull)
+                 .toArray(Field<?>[]::new);
+ 
+-        context.insertInto(tables.history())
++        // The history primary key arbitrates concurrent writers of the same revision.
++        // Only that conflict is handled here; unrelated database errors still propagate.
++        int copied = context.insertInto(tables.history())
+                 .columns(historyFields)
+                 .select(dataSelect)
++                .onConflict(tables.history().getPrimaryKey().getFields())
++                .doNothing()
+                 .execute();
++        if (copied != 1) {
++            if (op == HistoryOperation.DELETE) {
++                throw new StateConflictException(NOT_MATCH_LATEST_VERSION);
++            }
++            throw new PreconditionFailedException(NOT_MATCH_LATEST_VERSION);
++        }
+     }
+ 
+     public Field<String> stringAggregation(final Table<DR> dataHead) {

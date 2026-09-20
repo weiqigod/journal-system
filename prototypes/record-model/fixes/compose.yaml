@@ -1,0 +1,6 @@
+name: journal-record-fixed
+
+services:
+  ehrbase:
+    image: journal-ehrbase:2.36.0-fixed
+    pull_policy: never

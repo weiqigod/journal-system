@@ -14,4 +14,4 @@ An open-source, modular clinical information system aiming for comprehensive cov
 - [Run the repository experiment](prototypes/record-model/README.md)
 - [Earlier draft — v0.2](clinical_information_system_specification_v0.2.md)
 
-**Next:** Resolve the observed repository concurrency failures, then extend verification to signing, result reassessment, and handover. Continue filling the wider coverage gaps alongside these experiments.
+**Next:** Extend verification to signing, result reassessment, and handover using the tested local repository patch. Continue filling the wider coverage gaps alongside these experiments.

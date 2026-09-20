@@ -1,0 +1,17 @@
+{
+  "source_commit": "f48fc903db5e146d60054e20102a8be7a0f61865",
+  "artifacts": [
+    {
+      "path": "upstream/OpenehrCompositionController.java",
+      "source_path": "rest-openehr/src/main/java/org/ehrbase/rest/openehr/OpenehrCompositionController.java",
+      "sha256": "5e9e28525dd696517c3dae48ced2891bf7a6dfa13d9f6119286d5673b12c43b7",
+      "bytes": 20467
+    },
+    {
+      "path": "upstream/AbstractVersionedObjectRepository.java",
+      "source_path": "service/src/main/java/org/ehrbase/repository/AbstractVersionedObjectRepository.java",
+      "sha256": "7a2c900d7c76d5ed400f81e18793257c911b365f9f97dcb5f6ea3d2649cfef93",
+      "bytes": 38556
+    }
+  ]
+}

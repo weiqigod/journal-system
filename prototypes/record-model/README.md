@@ -2,6 +2,8 @@
 
 Executable evidence for the [record-model comparison](../../docs/record-model-comparison.md). Read the [findings](../../docs/prototype-findings.md) before interpreting results. This is a synthetic repository probe, not a clinical application or an adopted product stack.
 
+A [local source patch and regression suite](fixes/README.md) now resolve both observed failures for the tested composition operations. The commands below reproduce the original unpatched baseline.
+
 ## Reproduce
 
 Prerequisites: Docker Compose and Python 3.11+. The observed run used Python 3.13.7 on arm64. Images are pinned by digest; [upstream.lock.json](upstream.lock.json) pins the source documents, SQL bootstrap, OPT, and synthetic fixture. The harness verifies those hashes and the running container images before sending requests.

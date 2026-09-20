@@ -1,0 +1,67 @@
+{
+  "recorded_on": "2026-09-19",
+  "scope": "Local EHRbase source patch; selected composition regressions, not full upstream or clinical verification",
+  "baseline_commit": "38b3ba3",
+  "restart_method": "SIGKILL both journal-record-fixed containers after acknowledged writes, then compose up; volume retained",
+  "artifacts": [
+    {
+      "path": "quoted.json",
+      "sha256": "d9fd9879ce0fceef3a8a1926932cb4cc7e648216c7908f441940de106a01a9a8",
+      "bytes": 837431,
+      "status": "passed",
+      "checks": {
+        "passed": 16,
+        "failed": 0,
+        "not_run": 0
+      }
+    },
+    {
+      "path": "bare.json",
+      "sha256": "6b2db9e992ecaee65866494fe78d693fd5f1d8b4af4ea7da70bdc59f6096bf55",
+      "bytes": 631358,
+      "status": "passed",
+      "checks": {
+        "passed": 16,
+        "failed": 0,
+        "not_run": 0
+      }
+    },
+    {
+      "path": "unpatched-control.json",
+      "sha256": "672fe5c92c9c5b69e56714910b6be0cc26c63d2be12a8a9d45f092f9deeec7fe",
+      "bytes": 423794,
+      "status": "failed",
+      "checks": {
+        "passed": 11,
+        "failed": 2,
+        "not_run": 0
+      }
+    },
+    {
+      "path": "restart.json",
+      "sha256": "9cadc5a06175f874772e49a558535edddbbc4ac1979fcf18b8c96c6122d0f567",
+      "bytes": 28392,
+      "status": "passed",
+      "checks": {
+        "passed": 1,
+        "failed": 0,
+        "not_run": 0
+      }
+    },
+    {
+      "path": "build.json",
+      "sha256": "e2f059fb5d793ede85da8c86d7bf1c23eb686755d197693990dffba7a1b37a57",
+      "bytes": 772
+    },
+    {
+      "path": "archive-comparison.json",
+      "sha256": "b081cbc81e75d333d12aefbb18163bd1828695cad29a696548d2bc17c9fee364",
+      "bytes": 1257
+    },
+    {
+      "path": "build.log",
+      "sha256": "fd8a60b0742fa77d62fa486878c13f318221b74fdf72e38055378631cccfed34",
+      "bytes": 3266
+    }
+  ]
+}
