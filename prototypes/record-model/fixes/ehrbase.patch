@@ -1,6 +1,23 @@
 --- a/rest-openehr/src/main/java/org/ehrbase/rest/openehr/OpenehrCompositionController.java
 +++ b/rest-openehr/src/main/java/org/ehrbase/rest/openehr/OpenehrCompositionController.java
-@@ -191,8 +191,19 @@
+@@ -30,6 +30,8 @@
+ import java.time.LocalDateTime;
+ import java.time.ZoneId;
+ import java.time.ZonedDateTime;
++import java.util.HashMap;
++import java.util.Map;
+ import java.util.Objects;
+ import java.util.Optional;
+ import java.util.OptionalInt;
+@@ -37,6 +39,7 @@
+ import org.ehrbase.api.exception.InternalServerException;
+ import org.ehrbase.api.exception.ObjectNotFoundException;
+ import org.ehrbase.api.exception.PreconditionFailedException;
++import org.ehrbase.api.exception.StateConflictException;
+ import org.ehrbase.api.rest.HttpRestContext;
+ import org.ehrbase.api.service.CompositionService;
+ import org.ehrbase.api.service.SystemService;
+@@ -191,8 +194,30 @@
  
          final Optional<InternalResponse<CompositionResponseData>> respData;
          try {
@@ -8,23 +25,94 @@
 -            // ifMatch header has to be tested for correctness already above
 +            // openEHR ETags quote the version identifier; retain bare identifiers for compatibility.
 +            String versionId = ifMatch.trim();
-+            if (versionId.startsWith("W/")) {
-+                throw new PreconditionFailedException("If-Match requires a strong version identifier");
++            boolean weak = versionId.startsWith("W/");
++            if (weak) {
++                versionId = versionId.substring(2);
 +            }
 +            if (versionId.length() >= 2 && versionId.startsWith("\"") && versionId.endsWith("\"")) {
 +                versionId = versionId.substring(1, versionId.length() - 1);
 +            }
++            if (versionId.split("::", -1).length != 3) {
++                throw new IllegalArgumentException("If-Match requires one version_uid");
++            }
 +            ObjectVersionId ifMatchId = new ObjectVersionId(versionId);
-+            if (!versionedObjectUid.equals(extractVersionedObjectUidFromVersionUid(versionId))
++            UUID ifMatchObjectUid = extractVersionedObjectUidFromVersionUid(versionId);
++            // A missing composition is 404 whatever the precondition; this also scopes the lookup to the EHR.
++            compositionService.getLastVersionNumber(ehrId, versionedObjectUid);
++            if (weak) {
++                throw new PreconditionFailedException("If-Match requires a strong version identifier");
++            }
++            // The service updates the object named by If-Match, so it must be the composition in the URL.
++            if (!versionedObjectUid.equals(ifMatchObjectUid)
 +                    || !systemService.getSystemId().equals(ifMatchId.getCreatingSystemId().getValue())) {
 +                throw new PreconditionFailedException("If-Match does not identify the requested composition version");
 +            }
              String compositionVersionUid = compositionService
                      .update(ehrId, ifMatchId, compoObj)
                      .orElseThrow(() -> new InternalServerException("Failed to create composition"))
+@@ -211,6 +236,8 @@
+                     LocatableUtils.getTemplateId(compoObj));
+         } catch (ObjectNotFoundException e) { // composition not found
+             return ResponseEntity.notFound().build();
++        } catch (PreconditionFailedException e) {
++            return versionConflict(HttpStatus.PRECONDITION_FAILED, ehrId, versionedObjectUid, e.getMessage());
+         } // composition input not parsable / buildable -> bad request handled by BaseController class
+ 
+         // returns 200 with body + headers, 204 only with headers or 500 error depending on what processing above yields
+@@ -270,9 +297,32 @@
+             throw new ObjectNotFoundException(
+                     COMPOSITION,
+                     "No EHR with the supplied ehr_id or no COMPOSITION with the supplied " + "preceding_version_uid.");
++        } catch (StateConflictException e) {
++            return versionConflict(
++                    HttpStatus.CONFLICT,
++                    ehrId,
++                    extractVersionedObjectUidFromVersionUid(precedingVersionUid),
++                    e.getMessage());
+         }
+     }
+ 
++    /**
++     * ITS-REST 1.0.3 returns the latest version_uid in Location and ETag when a version precondition fails.
++     * The failed write has already rolled back; this lookup only reports the version the client must review.
++     */
++    private ResponseEntity<Map<String, String>> versionConflict(
++            HttpStatus status, UUID ehrId, UUID versionedObjectUid, String message) {
++        String latest = versionedObjectUid + "::" + systemService.getSystemId() + "::"
++                + compositionService.getLastVersionNumber(ehrId, versionedObjectUid);
++        HttpHeaders headers = new HttpHeaders();
++        headers.setLocation(createLocationUri(EHR, ehrId.toString(), COMPOSITION, latest));
++        headers.setETag("\"" + latest + "\"");
++        Map<String, String> body = new HashMap<>();
++        body.put("error", status.getReasonPhrase());
++        body.put("message", message);
++        return ResponseEntity.status(status).headers(headers).body(body);
++    }
++
+     private String getLocationUrl(UUID versionedObjectUid, UUID ehrId, int version) {
+         if (version == 0) {
+             version = compositionService.getLastVersionNumber(ehrId, versionedObjectUid);
 --- a/service/src/main/java/org/ehrbase/repository/AbstractVersionedObjectRepository.java
 +++ b/service/src/main/java/org/ehrbase/repository/AbstractVersionedObjectRepository.java
-@@ -769,6 +769,8 @@
+@@ -489,9 +489,14 @@
+         checkIsNextHeadVoId(headVoId, headVersion, nextUid);
+ 
+         if (delRecord != null) {
+-            // update delete record period
+-            delRecord.set(HISTORY_PROTOTYPE.SYS_PERIOD_UPPER, now);
+-            int updateCount = context.executeUpdate(delRecord);
++            // Close the deletion only while it is open; a concurrent restore that closed it first wins.
++            Table<HR> history = tables.history();
++            int updateCount = context.update(history)
++                    .set(history.field(HISTORY_PROTOTYPE.SYS_PERIOD_UPPER), now)
++                    .where(historyCondition.apply(history))
++                    .and(history.field(HISTORY_PROTOTYPE.SYS_VERSION).eq(headVersion))
++                    .and(history.field(HISTORY_PROTOTYPE.SYS_PERIOD_UPPER).isNull())
++                    .execute();
+             if (updateCount != 1) {
+                 // concurrent modification
+                 throw new PreconditionFailedException(NOT_MATCH_LATEST_VERSION);
+@@ -769,6 +774,8 @@
          SelectHavingStep<Record> dataSelect = context.select(fields)
                  .from(versionDataJoin.joined())
                  .where(pkeyConstraint)
@@ -33,7 +121,7 @@
                  .groupBy(versionHead.fields(versionHead.getPrimaryKey().getFieldsArray()));
  
          Field<?>[] historyFields = Streams.concat(Arrays.stream(versionHead.fields()), additionalFields.historyFields())
-@@ -776,10 +778,20 @@
+@@ -776,10 +783,20 @@
                  .filter(Objects::nonNull)
                  .toArray(Field<?>[]::new);
  

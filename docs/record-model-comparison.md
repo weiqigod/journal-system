@@ -6,7 +6,7 @@
 
 ## Scope and evidence
 
-This is a specification-based walkthrough of three synthetic cases, not an implementation benchmark. A subsequent [repository probe](prototype-findings.md) tested a pinned EHRbase release and test template, finding two concurrency-interface failures now resolved by a locally tested source patch. It did not exercise the complete clinical cases or a FHIR mapping. All candidates remain unverified against those cases.
+This is a specification-based walkthrough of three synthetic cases, not an implementation benchmark. A subsequent [repository probe](prototype-findings.md) tested a pinned EHRbase release and test template, finding concurrency and version-precondition failures now resolved by a locally tested source patch. It did not exercise the complete clinical cases or a FHIR mapping. All candidates remain unverified against those cases.
 
 Reviewed references: FHIR R5 5.0.0; openEHR BASE 1.2.0, RM 1.1.0, and REST 1.0.3. These are comparison baselines, not a selection of Swedish interface versions. Resource support, history retention, attestation APIs, and transaction behavior need confirmation in concrete implementations.
 

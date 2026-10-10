@@ -1,27 +1,27 @@
 {
-  "started_at": "2026-09-19T17:25:15.650361+00:00",
+  "started_at": "2026-10-10T14:28:13.234087+00:00",
   "scope": "Repository mechanics only; no clinical signing, reassessment, or handover implementation",
   "status": "passed",
-  "if_match_mode": "bare-diagnostic",
+  "if_match_mode": "etag",
   "qualification": "bare-diagnostic explicitly removes ETag quotes to investigate other behavior; it cannot establish REST conformance",
   "inputs": {
     "upstream_lock_sha256": "79075858ff1782bb9a2ee1307e28d5760095eebcffff56450566b49c764f46fe",
     "compose_sha256": "b547f234e66454a0a402521f7929602bb6bf42fa8b76ae0a81cc0ccbe1000665",
-    "probe_sha256": "054937bb8c392fef3b8cbc64cb0cd6ec1727a263154273bd6abbe2d3a80b6550",
+    "probe_sha256": "47edbf9993d31241e1c1d82419aadd11bd9ecfef532b461cc6a48618968c4280",
     "reference_manifest_sha256": "03c4c2c0ebf2052bd994687a113e2d1901179438c89f6dc325b6630058f39ba8",
     "baseline_probe_sha256": "937444da2821d5d72fbbad164aae5661acd1ac421f7f4db085f251652b090001",
     "fixed_compose_sha256": "32f71594153aecd4ea3f242adcc21d44192434072eac8d3d4ddd9c255c74524f",
-    "build_record_sha256": "e2f059fb5d793ede85da8c86d7bf1c23eb686755d197693990dffba7a1b37a57",
+    "build_record_sha256": "5738760eaece1043e2a9b4a23cc5a187bb1e7431621a7b2f7a5351fee2be4054",
     "containers": {
       "db": {
         "image_reference": "postgres:16@sha256:a3b7f434b2dc57ce85a67e171163eb8ab1a1ebcb39d27484661f26b1dfbe30d6",
         "image_id": "sha256:a3b7f434b2dc57ce85a67e171163eb8ab1a1ebcb39d27484661f26b1dfbe30d6",
-        "started_at": "2026-09-19T17:24:46.910598838Z"
+        "started_at": "2026-10-10T14:28:10.585609069Z"
       },
       "ehrbase": {
         "image_reference": "journal-ehrbase:2.36.0-fixed",
-        "image_id": "sha256:0136d7bc42e5dc6fd5ff37e898a75fa85b908936fbb39e811815bbb36427cb1c",
-        "started_at": "2026-09-19T17:24:49.502343849Z"
+        "image_id": "sha256:003cc86d5b1172586bec6a2781f58a59c8292df23b618013e6db1c0c00883c3c",
+        "started_at": "2026-10-10T14:28:13.1498692Z"
       }
     }
   },
@@ -42,7 +42,7 @@
         ],
         "current_rows": [
           [
-            "77561295-7b7d-446c-a0c0-02428ac50d3b::journal-prototype.local::2"
+            "1be71f28-7154-4b18-9665-190e18c0da71::journal-prototype.local::2"
           ]
         ]
       }
@@ -68,7 +68,7 @@
         "X-Frame-Options": "DENY",
         "Content-Type": "application/json",
         "Transfer-Encoding": "chunked",
-        "Date": "Sat, 19 Sep 2026 17:25:16 GMT",
+        "Date": "Sat, 10 Oct 2026 14:28:17 GMT",
         "Connection": "close"
       },
       "response_body": [
@@ -82,7 +82,7 @@
     },
     {
       "method": "GET",
-      "path": "/ehr/6b65dd8b-3ea4-4256-a71e-e7101cfef689/composition/77561295-7b7d-446c-a0c0-02428ac50d3b::journal-prototype.local::1",
+      "path": "/ehr/1ead30b2-6bc3-47d6-bcd5-b7fe2bbcf65d/composition/1be71f28-7154-4b18-9665-190e18c0da71::journal-prototype.local::1",
       "request_headers": {
         "Accept": "application/json"
       },
@@ -90,9 +90,9 @@
       "status": 200,
       "response_headers": {
         "Vary": "Origin",
-        "Location": "http://127.0.0.1:18080/ehrbase/rest/openehr/v1/ehr/6b65dd8b-3ea4-4256-a71e-e7101cfef689/composition/77561295-7b7d-446c-a0c0-02428ac50d3b::journal-prototype.local::1",
+        "Location": "http://127.0.0.1:18080/ehrbase/rest/openehr/v1/ehr/1ead30b2-6bc3-47d6-bcd5-b7fe2bbcf65d/composition/1be71f28-7154-4b18-9665-190e18c0da71::journal-prototype.local::1",
         "Last-Modified": "Fri, 02 Jan 1970 10:12:04 GMT",
-        "ETag": "\"77561295-7b7d-446c-a0c0-02428ac50d3b::journal-prototype.local::1\"",
+        "ETag": "\"1be71f28-7154-4b18-9665-190e18c0da71::journal-prototype.local::1\"",
         "Content-Disposition": "inline;filename=f.txt",
         "X-Content-Type-Options": "nosniff",
         "X-XSS-Protection": "0",
@@ -102,7 +102,7 @@
         "X-Frame-Options": "DENY",
         "Content-Type": "application/json",
         "Content-Length": "7591",
-        "Date": "Sat, 19 Sep 2026 17:25:16 GMT",
+        "Date": "Sat, 10 Oct 2026 14:28:17 GMT",
         "Connection": "close"
       },
       "response_body": {
@@ -415,13 +415,13 @@
         "archetype_node_id": "openEHR-EHR-COMPOSITION.report-result.v1",
         "uid": {
           "_type": "OBJECT_VERSION_ID",
-          "value": "77561295-7b7d-446c-a0c0-02428ac50d3b::journal-prototype.local::1"
+          "value": "1be71f28-7154-4b18-9665-190e18c0da71::journal-prototype.local::1"
         }
       }
     },
     {
       "method": "GET",
-      "path": "/ehr/6b65dd8b-3ea4-4256-a71e-e7101cfef689/composition/77561295-7b7d-446c-a0c0-02428ac50d3b::journal-prototype.local::2",
+      "path": "/ehr/1ead30b2-6bc3-47d6-bcd5-b7fe2bbcf65d/composition/1be71f28-7154-4b18-9665-190e18c0da71::journal-prototype.local::2",
       "request_headers": {
         "Accept": "application/json"
       },
@@ -429,9 +429,9 @@
       "status": 200,
       "response_headers": {
         "Vary": "Origin",
-        "Location": "http://127.0.0.1:18080/ehrbase/rest/openehr/v1/ehr/6b65dd8b-3ea4-4256-a71e-e7101cfef689/composition/77561295-7b7d-446c-a0c0-02428ac50d3b::journal-prototype.local::2",
+        "Location": "http://127.0.0.1:18080/ehrbase/rest/openehr/v1/ehr/1ead30b2-6bc3-47d6-bcd5-b7fe2bbcf65d/composition/1be71f28-7154-4b18-9665-190e18c0da71::journal-prototype.local::2",
         "Last-Modified": "Fri, 02 Jan 1970 10:12:04 GMT",
-        "ETag": "\"77561295-7b7d-446c-a0c0-02428ac50d3b::journal-prototype.local::2\"",
+        "ETag": "\"1be71f28-7154-4b18-9665-190e18c0da71::journal-prototype.local::2\"",
         "Content-Disposition": "inline;filename=f.txt",
         "X-Content-Type-Options": "nosniff",
         "X-XSS-Protection": "0",
@@ -441,7 +441,7 @@
         "X-Frame-Options": "DENY",
         "Content-Type": "application/json",
         "Content-Length": "7591",
-        "Date": "Sat, 19 Sep 2026 17:25:16 GMT",
+        "Date": "Sat, 10 Oct 2026 14:28:17 GMT",
         "Connection": "close"
       },
       "response_body": {
@@ -754,7 +754,7 @@
         "archetype_node_id": "openEHR-EHR-COMPOSITION.report-result.v1",
         "uid": {
           "_type": "OBJECT_VERSION_ID",
-          "value": "77561295-7b7d-446c-a0c0-02428ac50d3b::journal-prototype.local::2"
+          "value": "1be71f28-7154-4b18-9665-190e18c0da71::journal-prototype.local::2"
         }
       }
     },
@@ -765,7 +765,7 @@
         "Accept": "application/json",
         "Content-Type": "application/json"
       },
-      "request_body": "{\"q\":\"SELECT c/uid/value FROM EHR e CONTAINS COMPOSITION c WHERE e/ehr_id/value = $ehr_id\",\"query_parameters\":{\"ehr_id\":\"6b65dd8b-3ea4-4256-a71e-e7101cfef689\"}}",
+      "request_body": "{\"q\":\"SELECT c/uid/value FROM EHR e CONTAINS COMPOSITION c WHERE e/ehr_id/value = $ehr_id\",\"query_parameters\":{\"ehr_id\":\"1ead30b2-6bc3-47d6-bcd5-b7fe2bbcf65d\"}}",
       "status": 200,
       "response_headers": {
         "Vary": "Origin",
@@ -777,15 +777,15 @@
         "X-Frame-Options": "DENY",
         "Content-Type": "application/json",
         "Transfer-Encoding": "chunked",
-        "Date": "Sat, 19 Sep 2026 17:25:16 GMT",
+        "Date": "Sat, 10 Oct 2026 14:28:17 GMT",
         "Connection": "close"
       },
       "response_body": {
         "meta": {
           "_type": "RESULTSET",
           "_schema_version": "1.0.3",
-          "_created": "2026-09-19T17:25:16.734359141Z",
-          "_executed_aql": "SELECT c/uid/value FROM EHR e[ehr_id/value='6b65dd8b-3ea4-4256-a71e-e7101cfef689'] CONTAINS COMPOSITION c",
+          "_created": "2026-10-10T14:28:17.992751635Z",
+          "_executed_aql": "SELECT c/uid/value FROM EHR e[ehr_id/value='1ead30b2-6bc3-47d6-bcd5-b7fe2bbcf65d'] CONTAINS COMPOSITION c",
           "resultsize": 1
         },
         "q": "SELECT c/uid/value FROM EHR e CONTAINS COMPOSITION c WHERE e/ehr_id/value = $ehr_id",
@@ -797,14 +797,14 @@
         ],
         "rows": [
           [
-            "77561295-7b7d-446c-a0c0-02428ac50d3b::journal-prototype.local::2"
+            "1be71f28-7154-4b18-9665-190e18c0da71::journal-prototype.local::2"
           ]
         ]
       }
     }
   ],
   "runtime_variant": "local-source-patch",
-  "previous_report_sha256": "6b2db9e992ecaee65866494fe78d693fd5f1d8b4af4ea7da70bdc59f6096bf55",
+  "previous_report_sha256": "968109a582df612fc69cef44db1e28ba6c973bc21642cb6fa561d7730b14070f",
   "previous_failed_checks": [],
-  "finished_at": "2026-09-19T17:25:16.684385+00:00"
+  "finished_at": "2026-10-10T14:28:17.929918+00:00"
 }

@@ -1,22 +1,24 @@
 {
   "original_jar_sha256": "87195401c6212d5546e7f42f5dd912896bbf9c417b14ec8f43e333e38255e039",
-  "patched_jar_sha256": "09d0097b789d80bc6b7fbbf034ffd2721834a6a3fb2078d6214398a89e6ad95f",
+  "patched_jar_sha256": "b06ac77c2962441a50ef1332495f6fba26458be7c4cd41fd07b8e92e5631b275",
   "unchanged_outer_entries": 382,
   "changed_nested_entries": {
-    "BOOT-INF/lib/service-2.36.0.jar": [
-      "org/ehrbase/repository/AbstractVersionedObjectRepository$AdditionalCopyToHistoryFields.class",
-      "org/ehrbase/repository/AbstractVersionedObjectRepository$Tables.class",
-      "org/ehrbase/repository/AbstractVersionedObjectRepository$ParsedRow.class",
-      "org/ehrbase/repository/AbstractVersionedObjectRepository.class",
-      "org/ehrbase/repository/AbstractVersionedObjectRepository$VersionDataJoin.class",
-      "org/ehrbase/repository/AbstractVersionedObjectRepository$HistoryOperation.class",
-      "org/ehrbase/repository/AbstractVersionedObjectRepository$AdditionalDataQuerySelectFields.class"
-    ],
     "BOOT-INF/lib/rest-openehr-2.36.0.jar": [
       "org/ehrbase/rest/openehr/OpenehrCompositionController.class"
+    ],
+    "BOOT-INF/lib/service-2.36.0.jar": [
+      "org/ehrbase/repository/AbstractVersionedObjectRepository$AdditionalCopyToHistoryFields.class",
+      "org/ehrbase/repository/AbstractVersionedObjectRepository$AdditionalDataQuerySelectFields.class",
+      "org/ehrbase/repository/AbstractVersionedObjectRepository$HistoryOperation.class",
+      "org/ehrbase/repository/AbstractVersionedObjectRepository$ParsedRow.class",
+      "org/ehrbase/repository/AbstractVersionedObjectRepository$Tables.class",
+      "org/ehrbase/repository/AbstractVersionedObjectRepository$VersionDataJoin.class",
+      "org/ehrbase/repository/AbstractVersionedObjectRepository.class"
     ]
   },
+  "unexpected_changes": [],
   "status": "passed",
   "original_image_id": "sha256:c8e642264b73637e0576ec01b5c73f5dc9be6f34eb3644f0ced890c5f916640a",
-  "patched_image_id": "sha256:0136d7bc42e5dc6fd5ff37e898a75fa85b908936fbb39e811815bbb36427cb1c"
+  "patched_image_id": "sha256:003cc86d5b1172586bec6a2781f58a59c8292df23b618013e6db1c0c00883c3c",
+  "build_record_sha256": "5738760eaece1043e2a9b4a23cc5a187bb1e7431621a7b2f7a5351fee2be4054"
 }

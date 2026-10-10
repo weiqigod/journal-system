@@ -1,46 +1,59 @@
 {
-  "recorded_on": "2026-09-19",
+  "recorded_on": "2026-10-10",
   "scope": "Local EHRbase source patch; selected composition regressions, not full upstream or clinical verification",
   "baseline_commit": "38b3ba3",
+  "supersedes_commit": "52bddd4",
   "restart_method": "SIGKILL both journal-record-fixed containers after acknowledged writes, then compose up; volume retained",
   "artifacts": [
     {
       "path": "quoted.json",
-      "sha256": "d9fd9879ce0fceef3a8a1926932cb4cc7e648216c7908f441940de106a01a9a8",
-      "bytes": 837431,
+      "sha256": "968109a582df612fc69cef44db1e28ba6c973bc21642cb6fa561d7730b14070f",
+      "bytes": 828515,
       "status": "passed",
       "checks": {
-        "passed": 16,
+        "passed": 18,
         "failed": 0,
         "not_run": 0
       }
     },
     {
       "path": "bare.json",
-      "sha256": "6b2db9e992ecaee65866494fe78d693fd5f1d8b4af4ea7da70bdc59f6096bf55",
-      "bytes": 631358,
+      "sha256": "ab70e55063fae069a3656cea4c2d2c094fedca9b19301584e2b3461722ffb7d3",
+      "bytes": 828487,
       "status": "passed",
       "checks": {
-        "passed": 16,
+        "passed": 18,
         "failed": 0,
         "not_run": 0
       }
     },
     {
       "path": "unpatched-control.json",
-      "sha256": "672fe5c92c9c5b69e56714910b6be0cc26c63d2be12a8a9d45f092f9deeec7fe",
-      "bytes": 423794,
+      "sha256": "f9ea68d291f7a4679e44c7b9515895329622b37bab7cdf68b6a6bc176162ccab",
+      "bytes": 672263,
       "status": "failed",
       "checks": {
         "passed": 11,
-        "failed": 2,
+        "failed": 5,
         "not_run": 0
-      }
+      },
+      "failed_checks": [
+        "concurrent_update",
+        "url_binding",
+        "forced_update_race",
+        "forced_delete_race",
+        "forced_restore_race"
+      ]
+    },
+    {
+      "path": "unpatched-control-server.log",
+      "sha256": "374974c7035d15c08784f751dd539fcf9da8b8a3c7e9a253460e5b93c2ea6040",
+      "bytes": 138394
     },
     {
       "path": "restart.json",
-      "sha256": "9cadc5a06175f874772e49a558535edddbbc4ac1979fcf18b8c96c6122d0f567",
-      "bytes": 28392,
+      "sha256": "77c44f179d706f162b79b8f11315253f2084b73062a81b1edbd0844d6e5f9684",
+      "bytes": 28379,
       "status": "passed",
       "checks": {
         "passed": 1,
@@ -50,18 +63,18 @@
     },
     {
       "path": "build.json",
-      "sha256": "e2f059fb5d793ede85da8c86d7bf1c23eb686755d197693990dffba7a1b37a57",
+      "sha256": "5738760eaece1043e2a9b4a23cc5a187bb1e7431621a7b2f7a5351fee2be4054",
       "bytes": 772
     },
     {
       "path": "archive-comparison.json",
-      "sha256": "b081cbc81e75d333d12aefbb18163bd1828695cad29a696548d2bc17c9fee364",
-      "bytes": 1257
+      "sha256": "6c185b208e95ed94366885f6ff7bf768fd8b791c26e2b5e9cf8e9fb8d2c8802b",
+      "bytes": 1378
     },
     {
       "path": "build.log",
-      "sha256": "fd8a60b0742fa77d62fa486878c13f318221b74fdf72e38055378631cccfed34",
-      "bytes": 3266
+      "sha256": "387401960cb434386f896a27c4d5f8fa949ddaa3565f4340ff38c6c51530d8d8",
+      "bytes": 3523
     }
   ]
 }

@@ -2,7 +2,7 @@
 
 Executable evidence for the [record-model comparison](../../docs/record-model-comparison.md). Read the [findings](../../docs/prototype-findings.md) before interpreting results. This is a synthetic repository probe, not a clinical application or an adopted product stack.
 
-A [local source patch and regression suite](fixes/README.md) now resolve both observed failures for the tested composition operations. The commands below reproduce the original unpatched baseline.
+A [local source patch and regression suite](fixes/README.md) now resolve the observed failures for the tested composition operations. The commands below reproduce the original unpatched baseline.
 
 ## Reproduce
 

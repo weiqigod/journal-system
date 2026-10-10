@@ -1,10 +1,10 @@
 {
   "image": "journal-ehrbase:2.36.0-fixed",
-  "image_id": "sha256:0136d7bc42e5dc6fd5ff37e898a75fa85b908936fbb39e811815bbb36427cb1c",
+  "image_id": "sha256:003cc86d5b1172586bec6a2781f58a59c8292df23b618013e6db1c0c00883c3c",
   "architecture": "arm64",
   "inputs": {
     "Dockerfile": "d28528e4edd2f8eb58bb591cc2534eabb81b08c3d7789f2153585c88ad4e1afe",
-    "ehrbase.patch": "bc9a6ebc386443bc209fa6809fe56d68a3fa75ee0e74034a67bed848f8e18ebe",
+    "ehrbase.patch": "f6b900e7ff0ce03e07bf5760a0b4d22156fa295d97ab0b07ac74d569c186ca47",
     "source-lock.json": "2b36d7a688cb20378ff55fa85a1f7e813c888805cbac73d0f4119c9362d30e52",
     "build.py": "84114d2051f57a1f19edb806f4a620de36442155b4054f9b2342a60606b5a725",
     "upstream/OpenehrCompositionController.java": "5e9e28525dd696517c3dae48ced2891bf7a6dfa13d9f6119286d5673b12c43b7",
