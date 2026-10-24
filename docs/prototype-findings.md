@@ -47,6 +47,6 @@ The [build and evidence manifest](../prototypes/record-model/fixes/evidence/mani
 
 ## Next experiment
 
-Use the patched experiment to extend the shared cases to exact reviewed snapshots and attestations, durable correction-to-reassessment coordination, and item-level handover acceptance. Select maintained clinical archetypes with authoring sources, a concrete FHIR comparison server and profiles, and terminology/validator versions. Use the same expected outcomes for both candidates.
+Use the patched experiment to extend the shared cases to exact reviewed snapshots and attestations, durable correction-to-reassessment coordination, and item-level handover acceptance. Select maintained clinical archetypes with authoring sources, a concrete FHIR comparison server and profiles, and terminology/validator versions. Use the same expected outcomes for both candidates. Its pass/fail criteria are the **Verify** statements of [DOC-005](clinical-requirements.md#doc-005--signing-and-confirmation), [DOC-007](clinical-requirements.md#doc-007--correction-and-amendment), [DOC-008](clinical-requirements.md#doc-008--change-history), [ORD-006](clinical-requirements.md#ord-006--result-review-and-follow-up), [WF-005](clinical-requirements.md#wf-005--handover), and [INT-004](platform-requirements.md#int-004--reliable-state-changing-exchange).
 
 The three end-to-end [comparison cases](record-model-comparison.md) remain unverified. The restart result concerns acknowledged writes; interrupted transactions, repository/workflow crash boundaries, and backup restoration remain open.

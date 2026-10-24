@@ -123,6 +123,9 @@ The system shall distinguish unfinished documentation from information considere
 **Status:** Proposed  
 The system shall support explicit signing or confirmation where required by workflow, policy, or jurisdiction.
 
+**Verify:** Confirm reviewed content. The confirmation identifies the user, time, and exact versions and presentation reviewed, which remain retrievable after a template change. If that content or a reference required to be current changes before confirmation, confirmation fails visibly and records no attestation; confirming after re-review succeeds. Fixtures: [case 1](record-model-comparison.md#case-1--concurrent-signing).  
+**Open:** [DOC-Q01](#clinical-documentation), [INF-Q02](#information-requirements).
+
 ### DOC-006 — Countersigning or supervisory confirmation
 **Category:** Care-setting-specific / Jurisdiction-specific  
 **Status:** Decision required  
@@ -133,10 +136,16 @@ The system shall support countersigning or supervisory confirmation where requir
 **Status:** Proposed  
 The system shall support correction and amendment without silently destroying or rewriting previously recorded clinical information.
 
+**Verify:** Correct an item that has been reviewed or confirmed. The earlier revision remains retrievable and unchanged, references to it still resolve, and the new revision identifies the one it supersedes. The new revision is not presented as reviewed or confirmed until it is. Fixtures: [case 2](record-model-comparison.md#case-2--corrected-result-after-review).  
+**Open:** [INF-Q02](#information-requirements), [DOC-Q02](#clinical-documentation).
+
 ### DOC-008 — Change history
 **Category:** Core  
 **Status:** Proposed  
 It shall be possible to determine relevant previous states of clinical documentation, who made a change, and when it occurred.
+
+**Verify:** After sequential and concurrent changes to an item, its history lists every committed revision with author and recording time, and each earlier state is retrievable unchanged. Rejected or failed changes add no revision.  
+**Open:** [DOC-Q02](#clinical-documentation), [DOC-Q04](#clinical-documentation).
 
 ### DOC-009 — Longitudinal presentation
 **Category:** Core  
@@ -320,6 +329,9 @@ The system shall support viewing relevant measurements and results over time.
 **Status:** Proposed  
 The system shall support responsibility for receiving, reviewing, acknowledging, and following up results where the clinical workflow requires it.
 
+**Verify:** Review a result, then receive its correction twice. The review stays linked to the version reviewed, the correction is current but unreviewed, and exactly one reassessment is assigned to a responsible recipient. Interrupt processing between storing the correction and assigning reassessment; after recovery, the outcome is the same. Fixtures: [case 2](record-model-comparison.md#case-2--corrected-result-after-review).  
+**Open:** [ORD-Q02](#orders-investigations-and-results), [INF-Q03](#information-requirements).
+
 ### ORD-007 — Critical results
 **Category:** Core / Care-setting-specific  
 **Status:** Proposed  
@@ -405,6 +417,9 @@ The system shall support role- and context-sensitive work lists such as ward lis
 **Category:** Core / Care-setting-specific  
 **Status:** Proposed  
 The system should support controlled handover of relevant responsibility, pending work, and clinical context.
+
+**Verify:** Hand over pending items with their clinical context. Each item always has exactly one accountable owner; responsibility moves from the sender only when the receiver accepts that item or a defined fallback applies. Delivery receipt, rejection, or acceptance of a superseded handover does not move it, and the sender sees unaccepted items as outstanding. A result corrected after transfer reaches the owner at that time. Fixtures: [case 3](record-model-comparison.md#case-3--hospital-to-home-care-handover).  
+**Open:** [WF-Q04](#care-plans-tasks-and-clinical-workflow), [INT-Q03](platform-requirements.md#interoperability).
 
 ### WF-006 — Discharge planning
 **Category:** Care-setting-specific  

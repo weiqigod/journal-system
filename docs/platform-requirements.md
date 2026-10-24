@@ -24,6 +24,9 @@ Information exchange shall preserve clinically relevant meaning, context, proven
 **Status:** Proposed  
 Exchange that changes clinical or operational state shall handle retries, duplicate messages, partial failure, and delayed delivery without uncontrolled duplicate clinical actions.
 
+**Verify:** Retry after a lost acknowledgement, deliver a message twice, and deliver an older source revision after a newer one. Each intended change takes effect once under one operation identity, and the older revision does not replace newer state. Unconfirmed delivery stays visible until reconciled. After a failure partway through an exchange, the outcome is complete or held in a visible intermediate state that recovery resolves.  
+**Open:** [INT-Q03](#interoperability), [INF-Q03](clinical-requirements.md#information-requirements).
+
 ### INT-005 — Provenance of imported information
 **Category:** Core  
 **Status:** Proposed  
