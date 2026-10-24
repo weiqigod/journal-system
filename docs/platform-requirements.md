@@ -95,6 +95,9 @@ Technical clients and integrations shall use separately governed identities and 
 **Status:** Proposed  
 The system shall support timely change or removal of access when employment, assignment, role, organizational affiliation, or care responsibility changes.
 
+**Verify:** For each of employment, assignment, role, organizational affiliation, and care responsibility, record a change at its authoritative source, then repeat a request the earlier state permitted. Within the deployment's declared maximum delay, including in sessions opened before the change, the request is decided on the new state. A role change leaves no permission held only through the previous role, and a dated change takes effect at its stated time.  
+**Open:** [IAM-Q01](#identity-authentication-and-authorization), [IAM-Q03](#identity-authentication-and-authorization).
+
 ### Open questions
 
 - **IAM-Q01:** Which identity infrastructure is used in the first deployment?
