@@ -127,6 +127,9 @@ Access logging shall capture the user, patient, time, and relevant organizationa
 **Status:** Proposed  
 Audit and access records shall be protected against unauthorized alteration and deletion.
 
+**Verify:** Attempt to alter and delete existing audit and access records as a clinical user, a system administrator, a technical identity, and with the application's runtime database identity. Each attempt is refused and recorded, and the records are unchanged. A change made directly in storage is detected, with the affected records identified, at the tamper-evidence level the deployment declares. Disposal after the retention period removes only eligible records and is itself recorded.  
+**Open:** [AUD-Q02](#audit-access-logging-and-monitoring), [AUD-Q03](#audit-access-logging-and-monitoring).
+
 ### AUD-004 — Access monitoring
 **Category:** Core / Jurisdiction-specific  
 **Status:** Proposed  
