@@ -64,10 +64,16 @@ Actions performed by human users shall be attributable to individually identifia
 **Status:** Proposed  
 Access to patient information shall be restrictable according to job function, organizational context, care relationship, purpose, and other relevant factors.
 
+**Verify:** For each of job function, organizational context, care relationship, and purpose, and for a policy combining them, a request that differs from a permitted one only in a restricted factor is denied. The denial holds for direct reads, search, export, APIs, and background work, and derived summaries and counts disclose none of the denied content.  
+**Open:** [Q-SEC-002](decisions.md#security-and-privacy), [IAM-Q04](#identity-authentication-and-authorization).
+
 ### IAM-004 — Context-sensitive authorization
 **Category:** Core  
 **Status:** Proposed  
 Authorization shall be capable of considering both relatively stable user attributes and the context of the current access request.
+
+**Verify:** One user with unchanged role and affiliation is permitted or denied according to the request's patient, care relationship, unit, and declared purpose. Decisions use the context at disclosure: after a care relationship ends or a restriction is added, cached views, queued exports, and retried deliveries no longer disclose the affected information. Fixtures: [case 3](record-model-comparison.md#case-3--hospital-to-home-care-handover).  
+**Open:** [IAM-Q02](#identity-authentication-and-authorization), [IAM-Q03](#identity-authentication-and-authorization).
 
 ### IAM-005 — External identity infrastructure
 **Category:** Jurisdiction-specific / Deployment-specific  
