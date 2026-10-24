@@ -138,6 +138,9 @@ Audit and access records shall be protected against unauthorized alteration and 
 **Status:** Proposed  
 The product shall provide functionality or export mechanisms sufficient for systematic monitoring of access to patient information.
 
+**Verify:** Using the product's monitoring function or its export, an authorized reviewer lists access by patient, by user, and by care unit for a chosen period. Consecutive exports cover the log without gaps or duplicates, reconcile with its entry counts, and use a documented, versioned format. Only monitoring roles can retrieve these records, and each retrieval is itself logged.  
+**Open:** [AUD-Q01](#audit-access-logging-and-monitoring), [AUD-Q04](#audit-access-logging-and-monitoring).
+
 ### AUD-005 — Risk-based review
 **Category:** Core  
 **Status:** Proposed  
