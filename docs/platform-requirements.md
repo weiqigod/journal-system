@@ -114,6 +114,9 @@ The system shall support timely change or removal of access when employment, ass
 **Status:** Proposed  
 The system shall record access to patient information with sufficient detail to support investigation, accountability, and jurisdictional monitoring requirements.
 
+**Verify:** Run scripted accesses through every access path, including summaries and background work. Every disclosure has a log entry, and no entry records a disclosure that did not happen. If the log cannot be written, the access is refused or follows a declared fallback whose entries reach the log after recovery; nothing is disclosed without an eventual entry. Disclosures completed before an abrupt restart remain logged. Each supported jurisdiction profile's access-logging obligations trace to logged fields, demonstrated by a sample investigation.  
+**Open:** [AVL-Q04](#availability-and-continuity), [Q-SEC-004](decisions.md#security-and-privacy).
+
 ### AUD-002 — Access-log context
 **Category:** Core  
 **Status:** Proposed  
