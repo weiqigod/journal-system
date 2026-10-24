@@ -119,6 +119,9 @@ The system shall record access to patient information with sufficient detail to 
 **Status:** Proposed  
 Access logging shall capture the user, patient, time, and relevant organizational or technical context needed to understand the access.
 
+**Verify:** Access one patient's information by direct read, search, export, summary, API client, and background job, and make one denied request. Each log entry identifies the individual user or technical identity and anyone acted for; the patient; time; action and outcome; the information disclosed; the access path; and the care unit, care relationship, declared purpose, and policy version the decision used. A reviewer can establish who saw what, when, and on what basis without reading the record's clinical content.  
+**Open:** [AUD-Q04](#audit-access-logging-and-monitoring), [IAM-Q02](#identity-authentication-and-authorization).
+
 ### AUD-003 — Protection of audit information
 **Category:** Core  
 **Status:** Proposed  
