@@ -146,6 +146,9 @@ The product shall provide functionality or export mechanisms sufficient for syst
 **Status:** Proposed  
 Monitoring should be able to identify patterns that may warrant review, such as unusual timing, exceptional access, broad access, or access across unexpected organizational boundaries.
 
+**Verify:** Seed ordinary access with known cases of unusual timing, exceptional access, broad access, and access across unexpected organizational boundaries. The product's monitoring, or a reference rule set applied to its export, flags every seeded case for review and identifies the entries behind it. Flags raised by the ordinary access stay within the deployment's declared review volume.  
+**Open:** [AUD-Q01](#audit-access-logging-and-monitoring), [IAM-Q04](#identity-authentication-and-authorization).
+
 ### AUD-006 — Administrative and configuration audit
 **Category:** Core  
 **Status:** Proposed  
