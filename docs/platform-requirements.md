@@ -155,9 +155,12 @@ Monitoring should be able to identify patterns that may warrant review, such as 
 Changes to permissions, security settings, clinical configuration, terminology, decision-support rules, and other safety-relevant configuration shall be auditable.
 
 ### AUD-007 — Patient access to access history
-**Category:** Jurisdiction-specific  
-**Status:** Decision required  
-The system shall support the information needed for patient visibility into access history where required.
+**Category:** Core / Jurisdiction-specific  
+**Status:** Proposed  
+The system shall produce a patient's access history from the access log. The jurisdiction profile and deployment configuration determine whether patients and representatives receive it, through which channel, which entries it includes, how staff are identified, and after what delay.
+
+**Verify:** Under each supported configuration, request one patient's access history for a chosen period. It contains every logged access to that patient in the period except entries the configuration excludes, and nothing about other patients. Staff are identified at the configured level of detail, and entries newer than the configured delay are omitted. Excluded entries remain in the access log, and each disclosure is itself logged with the configuration version it used. With the patient channel disabled, patient requests are refused while authorized staff can still produce the history. A representative receives it only when both the configuration and their authorization allow it.  
+**Open:** [AUD-Q05](#audit-access-logging-and-monitoring), [SE-1177-Q04](sweden.md#1177).
 
 ### Open questions
 
@@ -165,6 +168,7 @@ The system shall support the information needed for patient visibility into acce
 - **AUD-Q02:** What retention periods apply to different forms of audit information?
 - **AUD-Q03:** What level of tamper evidence is required?
 - **AUD-Q04:** Which audit data may itself contain sensitive patient information?
+- **AUD-Q05:** Which channels, entries, staff details, exclusions, and delays for patient access history does each jurisdiction profile require or permit?
 
 ---
 

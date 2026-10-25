@@ -60,6 +60,7 @@ The Swedish implementation must determine which patient-facing functions are pro
 - **SE-1177-Q01:** Which clinical information shall be made available through 1177 journal?
 - **SE-1177-Q02:** Which patient interactions should occur through 1177 rather than a product-specific patient interface?
 - **SE-1177-Q03:** What delay, review, or withholding rules apply to particular information sets?
+- **SE-1177-Q04:** Is patient access history provided through 1177 Journal, as an extract on request from the care provider, or both, and which entries are withheld?
 
 ## Swedish identity and trust infrastructure
 

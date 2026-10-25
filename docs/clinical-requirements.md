@@ -519,9 +519,9 @@ If patient-submitted information is in scope, the system shall clearly distingui
 Patient-facing access shall support authorized representatives where required by the care model and applicable rules.
 
 ### PRT-004 — Patient visibility of access history
-**Category:** Jurisdiction-specific  
-**Status:** Decision required  
-The system shall support patient access to relevant access-history information where required.
+**Category:** Core / Jurisdiction-specific  
+**Status:** Proposed  
+Specified by [AUD-007](platform-requirements.md#aud-007--patient-access-to-access-history).
 
 ### Open questions
 
