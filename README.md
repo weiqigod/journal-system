@@ -14,4 +14,11 @@ An open-source, modular clinical information system aiming for comprehensive cov
 - [Run the repository experiment](prototypes/record-model/README.md)
 - [Earlier draft — v0.2](clinical_information_system_specification_v0.2.md)
 
-**Next:** Extend verification to signing, result reassessment, and handover using the tested local repository patch. Continue filling the wider coverage gaps alongside these experiments.
+**Next:** Review the [laboratory result loop](docs/workflow-laboratory-results.md) with primary-care practitioners using the [session script](docs/review-session-laboratory-results.md), then build and verify that slice. Continue filling the wider coverage gaps alongside it.
+
+## License
+
+- **Code, scripts, and configuration** in `prototypes/`: [EUPL-1.2](LICENSE).
+- **Specification and documentation**, the Markdown files in the repository root and `docs/`: [CC BY 4.0](LICENSE-DOCS).
+- **Copied upstream material** keeps its original license: everything under `references/upstream/`, and the files listed in `prototypes/record-model/upstream.lock.json` and `prototypes/record-model/fixes/source-lock.json`. The manifests record each license.
+- **The EHRbase source patch** (`prototypes/record-model/fixes/ehrbase.patch`) changes Apache-2.0 code and is also offered under Apache-2.0, so it can be submitted upstream.

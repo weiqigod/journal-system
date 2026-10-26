@@ -45,7 +45,7 @@ Links identify existing draft requirements, not completed coverage. The last col
 | Modules and international variation | [ADM, MOD](platform-requirements.md#administration-and-configuration), [JUR](platform-requirements.md#jurisdiction-profiles), [localization](platform-requirements.md#internationalization-and-localization) | Extension boundaries, compatibility, configuration changes, terminology, regional variation, and translation. |
 | Operation and information lifecycle | [Quality requirements](platform-requirements.md#non-functional-requirements), [MIG](assurance.md#migration) | Installation, upgrades, monitoring, support, security response, downtime, recovery, import/export, archive, and exit. |
 | Safety and verification | [Assurance](assurance.md) | Workflow hazards, realistic testing, accessibility, practitioner feedback, and evidence for each supported configuration. |
-| Open-source maintenance | No dedicated requirements | License choice, contribution process, module maintainers, reproducible development setup, documentation, and release policy. |
+| Open-source maintenance | No dedicated requirements; [license](../README.md#license) adopted | Contribution process, module maintainers, reproducible development setup, documentation, and release policy. |
 
 ## Developing the detail
 
