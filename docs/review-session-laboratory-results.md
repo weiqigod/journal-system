@@ -1,6 +1,6 @@
 # Review session: laboratory result loop
 
-[Laboratory result loop](workflow-laboratory-results.md) · **Status:** Script for the first practitioner review; not yet run · **Date:** 2026-10-26
+[Laboratory result loop](workflow-laboratory-results.md) · [Svensk version](review-session-laboratory-results.sv.md) · **Status:** Script for the first practitioner review; not yet run · **Date:** 2026-10-26
 
 A 30-minute walkthrough that tests the draft rules and failure cases of the [laboratory result loop](workflow-laboratory-results.md) against how a primary-care clinic actually works. It follows [practitioner testing](assurance.md#practitioner-testing-and-dogfooding): synthetic patient, no software, findings linked to rules and cases.
 
