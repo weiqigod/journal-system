@@ -211,6 +211,9 @@ The system shall support controlled adoption and updating of externally maintain
 **Status:** Proposed  
 Configuration shall not be used to redefine clinically fundamental concepts in ways that make safety, interoperability, or testing dependent on arbitrary local interpretation.
 
+**Verify:** For each concept the product declares fundamental, including patient identity, signed and corrected status, clinical and recording time, units of measure, and the distinctions of [INF-007](clinical-requirements.md#inf-007--unknown-and-absent-information), attempt through each configuration path to change its meaning: remap a status or code, change a unit or its conversion, alter a declared state transition, or record absent values as negative. Validation refuses each attempt, names the concept, and nothing takes effect. Changes within the declared limits, such as layout, display labels, and terminology bindings, are accepted, and a relabeled item still exports with its unchanged underlying concept. A change of meaning is accepted only as a versioned extension under [MOD-005](#mod-005--governed-extension). In each accepted configuration, the shared conformance tests pass unchanged, and content exported from the same clinical input matches the reference configuration apart from declared presentation elements.  
+**Open:** [ADM-Q01](#administration-and-configuration), [MOD-Q03](#modularity-and-configuration).
+
 ### Open questions
 
 - **ADM-Q01:** Which configuration may a healthcare organization change without a product release?
