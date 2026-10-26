@@ -14,7 +14,7 @@ An open-source, modular clinical information system aiming for comprehensive cov
 - [Run the repository experiment](prototypes/record-model/README.md)
 - [Earlier draft — v0.2](clinical_information_system_specification_v0.2.md)
 
-**Next:** Review the [laboratory result loop](docs/workflow-laboratory-results.md) with primary-care practitioners using the [session script](docs/review-session-laboratory-results.md), then build and verify that slice. Continue filling the wider coverage gaps alongside it.
+**Next:** Build and verify the [laboratory result loop](docs/workflow-laboratory-results.md) against its research-grounded [scenarios](docs/scenarios-laboratory-results.md). Continue filling the wider coverage gaps alongside it.
 
 ## License
 

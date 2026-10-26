@@ -54,7 +54,8 @@ The master owns product direction, scope, and specification rules. The documents
 | [Foundational design exploration](docs/foundational-design.md) | Proposed ownership, information lifecycle, and module boundaries; exploratory, not adopted architecture. |
 | [Clinical requirements](docs/clinical-requirements.md) | Patient identity, encounters, records, clinical workflows, consent, patient participation, information semantics, and summaries. |
 | [Platform requirements](docs/platform-requirements.md) | Integration, access, audit, configuration, modules, quality requirements, and jurisdiction-profile mechanisms. |
-| [Laboratory result loop](docs/workflow-laboratory-results.md) | First end-to-end workflow slice: states, draft rules, failure cases, and clinical review questions. |
+| [Laboratory result loop](docs/workflow-laboratory-results.md) | First end-to-end workflow slice: states, draft rules, failure cases, and Swedish practice evidence. |
+| [Laboratory result scenarios](docs/scenarios-laboratory-results.md) | Research-grounded acceptance scenarios for the laboratory result loop. |
 | [Assurance](docs/assurance.md) | Regulation, clinical safety, verification, and migration requirements. |
 | [Verification references](docs/verification-references.md) | Pinned external contracts and their use in prototype cases; informative, not adopted implementation choices. |
 | [Prototype findings](docs/prototype-findings.md) | Observed repository checks, failures, and evidence limits; not completed clinical workflow verification. |
