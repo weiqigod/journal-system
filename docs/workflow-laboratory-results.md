@@ -108,4 +108,4 @@ For each step, record actor, time, and source ([INF-002](clinical-requirements.m
 1. Write **Verify** criteria for each draft rule once reviewed, in its owning requirement.
 2. Extend the prototype fixtures from case 2 to F1–F4, F7, and F9, which need no Swedish interface decision.
 3. Add F5, F10, and F13 after the interface and 1177 questions are answered.
-4. Run each case with a synthetic patient in a walkthrough with at least one primary-care clinician and nurse, and record findings against this document.
+4. Run each case with a synthetic patient in a walkthrough with at least one primary-care clinician and nurse, using the [review session script](review-session-laboratory-results.md), and record findings against this document.
