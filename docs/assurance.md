@@ -14,6 +14,9 @@ The intended purpose of the product and any independently regulated capability s
 **Status:** Externally driven  
 A documented assessment shall determine whether the product or any capability is subject to medical-device, clinical-software, national information-system, or other sector-specific regulation in each supported jurisdiction.
 
+**Verify:** For each capability and supported jurisdiction, a dated, versioned assessment records the intended purpose under [REG-001](#reg-001--intended-purpose); each instrument considered, including in the EU [Regulation (EU) 2017/745](http://data.europa.eu/eli/reg/2017/745/oj) (MDR), [Regulation (EU) 2017/746](http://data.europa.eu/eli/reg/2017/746/oj) (IVDR), and [Regulation (EU) 2025/327](http://data.europa.eu/eli/reg/2025/327/oj) (EHDS); the conclusion and class for each, with reasoning; and who reviewed it. A change to a capability's intended purpose or to an applicable instrument reopens the assessment before the next release.  
+**Open:** [REG-Q02](#regulatory-and-legal-requirements-management), [REG-Q04](#regulatory-and-legal-requirements-management).
+
 ### REG-003 — Scope boundaries
 **Status:** Proposed  
 Where different capabilities have materially different regulatory obligations, their product and governance boundaries shall be made explicit.
@@ -22,12 +25,38 @@ Where different capabilities have materially different regulatory obligations, t
 **Status:** Proposed  
 Externally imposed requirements shall be traceable to the product requirements, evidence, controls, and release scope that satisfy them.
 
+### REG-005 — European Health Data Space conformity
+**Status:** Externally driven  
+Where the product is placed on the market or put into service in the EU as an EHR system for priority categories of personal electronic health data, it shall include the European interoperability and logging software components and meet the EHDS essential requirements and common specifications for those categories from their application dates.
+
+**Verify:** For each priority category the product processes, the technical documentation maps every Annex II essential requirement to product requirements and evidence. The interoperability component exchanges that category in the European electronic health record exchange format, and the logging component records health professionals' access in the specified format, each passing the applicable European digital testing environment. The conformity steps that Chapter III assigns to the responsible party are complete before the product is released for that category.  
+**Open:** [REG-Q01](#regulatory-and-legal-requirements-management), [REG-Q05](#regulatory-and-legal-requirements-management), [REG-Q06](#regulatory-and-legal-requirements-management).
+
+### EU instruments (informative)
+
+[Regulation (EU) 2025/327](http://data.europa.eu/eli/reg/2025/327/oj) on the European Health Data Space applies generally from 26 March 2027. Its EHR-system obligations in Chapter III apply in stages under Article 105:
+
+| Scope | From |
+|---|---|
+| Patient summaries, electronic prescriptions, electronic dispensations (Article 14(1)(a)–(c)) | 26 March 2029 |
+| Imaging studies and reports, medical test results including laboratory results, discharge reports (Article 14(1)(d)–(f)) | 26 March 2031 |
+| EHR systems developed in-house by healthcare providers or offered as a service (Article 26(2)) | 26 March 2031 |
+
+- The two harmonised components are defined in Article 2 and required by Article 25. General-purpose software used in healthcare is excluded.
+- The [laboratory result loop](workflow-laboratory-results.md) processes medical test results, so the 2031 date applies to it.
+- The logging component sets an exchange format for access information. [AUD-001](platform-requirements.md#aud-001--patient-information-access-logging) still owns what access logging must record; the EHDS format is an external constraint to map to it.
+- Under the MDR, software with a medical purpose for individual patients may qualify as a medical device. Record storage and display usually does not, but capabilities such as decision support or dose calculation may. Qualify each capability separately, using the Medical Device Coordination Group's [software guidance](https://health.ec.europa.eu/medical-devices-sector/new-regulations/guidance-mdcg-endorsed-documents-and-other-guidance_en) (MDCG 2019-11), and keep the boundaries explicit under [REG-003](#reg-003--scope-boundaries).
+- Medical devices and IVDs that claim interoperability with the harmonised components must also meet the EHDS requirements for them (Article 27).
+
 ### Open questions
 
 - **REG-Q01:** Who holds the applicable manufacturer and operational responsibilities for the first deployment used in actual care?
 - **REG-Q02:** Which capabilities may independently trigger medical-device regulation?
 - **REG-Q03:** Which quality-management obligations apply to the first release?
 - **REG-Q04:** Which regulatory assessments must be repeated for each jurisdiction?
+- **REG-Q05:** Under the EHDS, is the open-source project a manufacturer placing an EHR system on the market, or does each healthcare provider that deploys it put an in-house system into service under Article 26(2) and hold the conformity obligations?
+- **REG-Q06:** Which priority categories does the first increment process, and so which EHDS application dates and common specifications apply?
+- **REG-Q07:** Does the [Cyber Resilience Act](http://data.europa.eu/eli/reg/2024/2847/oj) apply to the product or its distribution, given its provisions for open-source software and its relationship to EHDS and the MDR?
 
 ---
 
