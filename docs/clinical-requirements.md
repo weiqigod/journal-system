@@ -559,6 +559,9 @@ Information obtained from external systems shall retain sufficient source contex
 **Status:** Proposed  
 Coded clinical information shall retain enough information about the terminology and human-readable meaning to support safe display and exchange.
 
+**Verify:** Record coded entries from each declared code system, including one with the clinician's own wording beside the code, one received from an external system with that system's display text, and one whose code a later terminology update retires. Each entry retains its code, code system, code system version, and the text shown when it was recorded or received. After terminology updates, a display-language change, and an upgrade, each entry still shows its original meaning, with a retired code marked inactive and never shown with another concept's text; the original wording remains retrievable. Exported entries carry the same code, system, version, and original text, and a reference receiving system reproduces them. A code from a system the deployment does not hold is shown with its original text and flagged as unresolved, not dropped or shown as a bare code.  
+**Open:** [CLI-Q02](#clinical-facts-and-health-information), [INF-Q04](#information-requirements).
+
 ### INF-007 — Unknown and absent information
 **Status:** Proposed  
 Where clinically significant, the system shall distinguish between concepts such as unknown, not asked, not applicable, explicitly negative, and unavailable rather than treating them as interchangeable absence.
