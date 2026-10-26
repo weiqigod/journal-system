@@ -1,6 +1,6 @@
 # Clinical Information System — Master Specification
 
-**Status:** Draft · **Version:** 0.3 · **Date:** 2026-09-19
+**Status:** Draft · **Version:** 0.4 · **Date:** 2026-10-26
 
 Start here for product direction and scope; use the document map for detailed requirements and definitions.
 
@@ -36,11 +36,11 @@ Specify workflows, information needs, constraints, and verification criteria. Ke
 
 Boundaries remain open. Modules may depend on one another; separate deployment is not required. Profiles may require extensions, integrations, or operational procedures beyond settings. New jurisdictions should use maintained modules and profiles without country-specific product forks. Configuration constraints are specified in [ADM-005](docs/platform-requirements.md#adm-005--configuration-boundaries) and [MOD-004](docs/platform-requirements.md#mod-004--configuration-scope-and-conflicts).
 
-### Development and practitioner feedback
+### Development and verification
 
-Development proceeds without a customer acceptance or procurement process. People working in care will test and dogfood working increments; their feedback informs workflow design, usability, and priorities. Early sessions use synthetic patients and realistic scenarios, as described in [Assurance](docs/assurance.md#practitioner-testing-and-dogfooding).
+Development proceeds without a customer acceptance or procurement process and without practitioner dogfooding. Workflows are grounded in published sources: regulations, regional routines, laboratory and service instructions, reported incidents, and studies. Each workflow records its evidence and is verified against scenarios built from it, using synthetic patients, as described in [Assurance](docs/assurance.md#scenario-based-verification). Where sources disagree or are silent, the workflow states the assumption it makes.
 
-Testable behavior, clinical safety, privacy, and deployment-specific obligations remain part of quality. Assess readiness for actual care separately from prototype feedback, for each supported setting and jurisdiction. The first testers provide a starting point, not a boundary on product scope.
+Testable behavior, clinical safety, privacy, and deployment-specific obligations remain part of quality. Assess readiness for actual care separately from development verification, for each supported setting and jurisdiction.
 
 Compare selected assumptions with a second jurisdiction before claiming generality. That comparison does not commit the first release to another country; selection remains open under [JUR-Q01](docs/platform-requirements.md#jurisdiction-profiles).
 
@@ -82,7 +82,7 @@ Enable authorized users to document, find, and use patient information safely. D
 
 Requirements use the following statuses:
 
-- **Proposed** — draft behavior to refine through implementation, verification, and practitioner feedback.
+- **Proposed** — draft behavior to refine through implementation, verification, and published evidence.
 - **Externally driven** — clearly required by an identified external obligation, standard, or jurisdictional rule; exact implementation still requires validation.
 - **Decision required** — detailed behavior, applicability, or delivery boundary depends on an unresolved decision; this does not remove its domain from the product ambition.
 
@@ -106,7 +106,7 @@ Priority is intentionally not assigned in this version except where an external 
 1. Review the coverage map for missing domains, roles, and cross-setting journeys.
 2. Define representative workflows across that breadth: actors, triggers, information changes, handovers, completion, and failures.
 3. Identify shared guarantees, module dependencies, local variation, and integrations; compare selected assumptions with another jurisdiction.
-4. Build working increments and iterate with available care workers; link findings to requirements and regression checks.
+4. Build working increments and verify them against research-grounded scenarios; link findings to requirements and regression checks.
 5. Develop safety, privacy, operational, and jurisdiction evidence alongside capabilities; set measurable quality targets for actual care use.
 
 ## Change log
@@ -116,3 +116,4 @@ Priority is intentionally not assigned in this version except where an external 
 | 0.1 | 2026-09-19 | Initial Swedish-oriented structured specification. |
 | 0.2 | 2026-09-19 | Reframed as a general clinical information system with Sweden as the initial case study. Translated to English. Removed premature architecture, system-context, and internal data-model proposals. Added requirement categories for core, care-setting, jurisdiction, and deployment variation. |
 | 0.3 | 2026-09-19 | Adopted comprehensive modular scope with Sweden first and practitioner dogfooding. Added module, localization, and profile requirements with verification criteria. Split the master from supporting definitions and a coverage map; requirement IDs retained. |
+| 0.4 | 2026-10-26 | Dropped practitioner dogfooding: workflows are grounded in published sources and verified against research-grounded scenarios. Added the laboratory result loop as the first workflow slice and EU regulatory requirements. |

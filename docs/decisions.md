@@ -8,7 +8,7 @@ The [foundational design exploration](foundational-design.md) proposes answers f
 
 ## Product and care settings
 
-- **Q-PROD-001:** Which care settings and roles can the first dogfooding participants exercise, and which need additional reviewers?
+- **Q-PROD-001:** Which care settings and roles do the first increments' scenarios cover, and which remain unexercised?
 - **Q-PROD-002:** Resolved direction: a comprehensive clinical information system, built incrementally. Which workflows form the first usable increment remains open.
 - **Q-PROD-003:** See [ACT-Q01](terminology.md#open-question-act-q01).
 - **Q-PROD-004:** Which inpatient workflows and dependencies should be developed together?

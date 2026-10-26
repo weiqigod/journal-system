@@ -2,7 +2,7 @@
 
 An open-source, modular clinical information system aiming for comprehensive coverage across countries and care settings. Sweden is the first target.
 
-**Approach:** Map the full scope, build working increments, and improve them through testing and dogfooding with people working in care.
+**Approach:** Map the full scope, build working increments, and verify them against scenarios grounded in published regulations, routines, and incident reports.
 
 **Stage:** Specification and executable repository experiments; no clinical application yet. Implementation order, module boundaries, and product technology remain open.
 

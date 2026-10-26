@@ -145,11 +145,11 @@ Representative care workers shall exercise critical end-to-end workflows in real
 **Status:** Proposed  
 Safety-relevant deployment configuration shall be verified before activation and after material change.
 
-### Practitioner testing and dogfooding
+### Scenario-based verification
 
-The development feedback loop starts with people working in care who are available to test. Early sessions use synthetic patients, a separate test environment, and simulated external services. Participants try ordinary work, interruptions, handovers, and recovery from mistakes; findings record the scenario, expected behavior, observed behavior, and impact, linked to a requirement or coverage gap.
+Development is verified against scenarios grounded in published sources: regulations, regional routines, laboratory and service instructions, incident reports, and studies. Each scenario cites its sources and states any assumption where they disagree or are silent. Scenarios use synthetic patients, a separate test environment, and simulated external services, and cover ordinary work, interruptions, handovers, and recovery from mistakes. Results record the scenario, expected and observed behavior, and impact, linked to a requirement or coverage gap. The [laboratory result scenarios](scenarios-laboratory-results.md) are the first set.
 
-Repeat scenarios after changes and turn reproducible defects into regression checks. Record which roles and settings were exercised and which remain unreviewed. These sessions guide development without a customer sign-off process. Readiness for actual care also needs the safety, privacy, integration, and operational evidence defined in this specification.
+Repeat scenarios after changes and turn reproducible defects into regression checks. Record which roles and settings the scenarios cover and which remain unexercised. Readiness for actual care also needs [TST-008](#tst-008--clinical-workflow-validation) and the safety, privacy, integration, and operational evidence defined in this specification.
 
 ---
 

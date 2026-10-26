@@ -2,7 +2,7 @@
 
 [Master specification](../SPECIFICATION.md) · Draft supporting specification.
 
-The following questions define the first Swedish profile across the [product coverage map](coverage.md). Initial dogfooding settings and implementation order remain open under [Q-PROD-001](decisions.md#product-and-care-settings) and [Q-PROD-002](decisions.md#product-and-care-settings).
+The following questions define the first Swedish profile across the [product coverage map](coverage.md). Initial care settings and implementation order remain open under [Q-PROD-001](decisions.md#product-and-care-settings) and [Q-PROD-002](decisions.md#product-and-care-settings).
 
 ## Swedish patient identity
 

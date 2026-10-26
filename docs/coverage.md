@@ -2,7 +2,7 @@
 
 [Master specification](../SPECIFICATION.md) · Working scope inventory.
 
-The product ambition covers the areas below from the outset. This map makes gaps visible without prescribing every feature or module. It is an inventory to expand through practitioner review, not a claim of exhaustive requirements or implemented support. Each area may combine shared capabilities, specialist modules, profiles, and integrations; those boundaries remain open.
+The product ambition covers the areas below from the outset. This map makes gaps visible without prescribing every feature or module. It is an inventory to expand through research, not a claim of exhaustive requirements or implemented support. Each area may combine shared capabilities, specialist modules, profiles, and integrations; those boundaries remain open.
 
 ## Care settings and populations
 
@@ -44,7 +44,7 @@ Links identify existing draft requirements, not completed coverage. The last col
 | Access, privacy, and accountability | [IAM, AUD](platform-requirements.md#identity-authentication-and-authorization), [CON](clinical-requirements.md#consent-restrictions-and-patient-choices) | Role and purpose rules, restrictions, exceptional access, representatives, disclosures, and monitoring. |
 | Modules and international variation | [ADM, MOD](platform-requirements.md#administration-and-configuration), [JUR](platform-requirements.md#jurisdiction-profiles), [localization](platform-requirements.md#internationalization-and-localization) | Extension boundaries, compatibility, configuration changes, terminology, regional variation, and translation. |
 | Operation and information lifecycle | [Quality requirements](platform-requirements.md#non-functional-requirements), [MIG](assurance.md#migration) | Installation, upgrades, monitoring, support, security response, downtime, recovery, import/export, archive, and exit. |
-| Safety and verification | [Assurance](assurance.md) | Workflow hazards, realistic testing, accessibility, practitioner feedback, and evidence for each supported configuration. |
+| Safety and verification | [Assurance](assurance.md) | Workflow hazards, realistic testing, accessibility, and scenario evidence for each supported configuration. |
 | Open-source maintenance | No dedicated requirements; [license](../README.md#license) adopted | Contribution process, module maintainers, reproducible development setup, documentation, and release policy. |
 
 ## Developing the detail
