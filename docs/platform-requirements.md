@@ -154,6 +154,9 @@ Monitoring should be able to identify patterns that may warrant review, such as 
 **Status:** Proposed  
 Changes to permissions, security settings, clinical configuration, terminology, decision-support rules, and other safety-relevant configuration shall be auditable.
 
+**Verify:** Change one item in each of these classes, and in every other class the deployment declares safety-relevant, through each change path: the administration interface, the API, configuration import or deployment, and terminology update. Each change has an audit entry identifying the individual or technical identity and anyone acted for; the time; the item; its prior and new values or versions; the approval or reason where the deployment requires one; and when the change takes effect. Secret values are recorded only as identifiers or fingerprints. Refused and failed changes are recorded with their outcome, and no entry records a change that did not happen. Replaying the entries in order from a known baseline reproduces the configuration in effect. A change made directly in storage, bypassing these paths, is detected at the tamper-evidence level the deployment declares.  
+**Open:** [ADM-Q02](#administration-and-configuration), [AUD-Q03](#audit-access-logging-and-monitoring).
+
 ### AUD-007 — Patient access to access history
 **Category:** Core / Jurisdiction-specific  
 **Status:** Proposed  
