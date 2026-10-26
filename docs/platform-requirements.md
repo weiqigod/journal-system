@@ -182,10 +182,16 @@ The system shall produce a patient's access history from the access log. The jur
 **Status:** Proposed  
 The system shall support controlled and traceable configuration of templates, terminology bindings, workflow rules, permissions, and other configurable behavior.
 
+**Verify:** For templates, terminology bindings, workflow rules, permissions, and each other class the deployment declares configurable, attempt a change as an unauthorized user, submit a change that fails validation, and make a valid change. The unauthorized and invalid changes are refused and nothing takes effect. Where the deployment requires approval, a change takes effect only after an authorized approver other than its author approves it. A valid change takes effect only as a new, identified configuration version. Reverting restores the prior values as another new version and leaves the reverted change in the history.  
+**Open:** [ADM-Q01](#administration-and-configuration), [ADM-Q02](#administration-and-configuration).
+
 ### ADM-002 — Configuration history
 **Category:** Core  
 **Status:** Proposed  
 For safety-relevant configuration it shall be possible to determine what configuration was effective at a given historical point where this matters for understanding a clinical event.
+
+**Verify:** Make a sequence of safety-relevant configuration changes, including one scheduled to take effect later and one reversal, and record clinical actions between them. For any chosen past time, the system returns the configuration versions and values then in effect; queries just before and just after a change's effective time return the versions on either side of it. Results match an independent record kept by the test and the versions [MOD-007](#mod-007--reproducible-configuration-context) retained on each action, and they are unchanged after later changes and an upgrade.  
+**Open:** [MOD-Q05](#modularity-and-configuration).
 
 ### ADM-003 — Organizational separation
 **Category:** Deployment-specific  
