@@ -124,7 +124,7 @@ From the published sources listed under [Evidence](#evidence). Regions and labor
 ## Verification plan
 
 1. Write **Verify** criteria for each draft rule in its owning requirement as the slice is built.
-2. The [lab-loop prototype](../prototypes/lab-loop/README.md) runs S1–S10 and the remaining failure cases as automated tests, with in-memory state and simulated laboratory messages. Building it settled R4's correction-before-review behavior and added R13 and R14.
+2. The [lab-loop prototype](../prototypes/lab-loop/README.md) runs S1–S10 and the remaining failure cases as automated tests, with simulated laboratory messages. Result content can be stored in the patched EHRbase as openEHR compositions; workflow state stays in memory. Building it settled R4's correction-before-review behavior and added R13 and R14.
 3. Add F5, F10, and F13 after the interface and 1177 questions are answered.
 4. Run the [scenarios](scenarios-laboratory-results.md) end to end as acceptance tests, recording expected and observed outcome per step.
 

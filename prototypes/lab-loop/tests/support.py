@@ -3,19 +3,31 @@
 from __future__ import annotations
 
 import itertools
+import os
 from datetime import datetime
 
 from lab_loop import Clock, Config, LabLoop, LabMessage, ResultStatus, Role
+from lab_loop.records import EhrbaseRecordStore, MemoryRecordStore
 
 MONDAY = datetime(2026, 11, 2, 9, 0)
 LAB = "Klinisk kemi"
 UNIT = "vc"
 
 _message_ids = itertools.count(1)
+_ehrbase = None
+
+
+def record_store():
+    """The in-memory store, or the local EHRbase when LAB_LOOP_RECORDS=ehrbase."""
+    global _ehrbase
+    if os.environ.get("LAB_LOOP_RECORDS") == "ehrbase":
+        _ehrbase = _ehrbase or EhrbaseRecordStore()
+        return _ehrbase
+    return MemoryRecordStore()
 
 
 def clinic(start: datetime = MONDAY, **config) -> LabLoop:
-    loop = LabLoop(Config(**config), Clock(start))
+    loop = LabLoop(Config(**config), Clock(start), record_store())
     loop.add_unit(UNIT, "Vårdcentral Norr", monitor_id="sara", manager_id="maria")
     loop.add_unit("other", "Vårdcentral Syd", monitor_id="olof", manager_id="olof")
     for id, name, role, unit in [

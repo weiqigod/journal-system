@@ -105,18 +105,21 @@ class LabMessage:
 
 @dataclass
 class ResultVersion:
+    """Workflow index of one result version; the content is in the record store at `version_uid`.
+
+    Status and flags are kept here because the rules act on them. A late older
+    version is never written to the record store and has no `version_uid`.
+    """
+
     lab_sequence: int
     status: ResultStatus
-    value: float | None
-    unit: str
-    reference_range: str | None
     abnormal: bool
     critical: bool
-    comment: str | None
     received_at: datetime
     message_id: str
     source: str
     document_received_at: datetime | None
+    version_uid: str | None
 
 
 @dataclass
@@ -126,6 +129,7 @@ class Result:
     patient_id: str
     analyte: str
     laboratory: str
+    ehr_id: str
     versions: list[ResultVersion] = field(default_factory=list)
     patient_visible_at: datetime | None = None
 

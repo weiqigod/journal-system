@@ -1,9 +1,14 @@
 """Operations of the laboratory result loop and the draft rules R1–R14.
 
 Rule numbers refer to docs/workflow-laboratory-results.md. Each public
-operation runs as one transaction: if it raises, all state is restored, so an
-interrupted operation cannot leave a stored result without its obligation (F4).
-State is in memory; durability across process restarts is out of scope.
+operation runs as one transaction: if it raises, all workflow state is restored,
+so an interrupted operation cannot leave a stored result without its obligation
+(F4). Workflow state is in memory; durability across process restarts is out of
+scope.
+
+Result content lives in a record store (records.py), outside that transaction.
+A record write survives a workflow rollback; the retry finds it by its key
+instead of writing a duplicate.
 """
 
 from __future__ import annotations
@@ -34,6 +39,7 @@ from .model import (
     Task,
     Unit,
 )
+from .records import MemoryRecordStore, ResultContent
 
 OPEN = ObligationStatus.OPEN
 
@@ -83,14 +89,17 @@ class _State:
     notifications: list[Notification] = field(default_factory=list)
     audit: list[AuditEvent] = field(default_factory=list)
     messages: set[str] = field(default_factory=set)
+    late_messages: dict[str, LabMessage] = field(default_factory=dict)
+    ehrs: dict[str, list[str]] = field(default_factory=dict)
     interface_up: bool = True
     next_id: int = 1
 
 
 class LabLoop:
-    def __init__(self, config: Config | None = None, clock: Clock | None = None):
+    def __init__(self, config: Config | None = None, clock: Clock | None = None, records=None):
         self.config = config or Config()
         self.clock = clock or Clock(datetime.now())
+        self.records = records or MemoryRecordStore()
         self.db = _State()
         self.fault: str | None = None
         self._depth = 0
@@ -107,6 +116,7 @@ class LabLoop:
 
     def add_patient(self, id: str, pnr: str, name: str, unit_id: str) -> Patient:
         self.db.patients[id] = Patient(id, pnr, name, unit_id)
+        self.db.ehrs[id] = [self.records.create_ehr()]
         return self.db.patients[id]
 
     def set_interface(self, up: bool, by: str) -> None:
@@ -195,25 +205,35 @@ class LabLoop:
         result = next((r for r in self.db.results.values()
                        if r.request_id == request.id and r.analyte == msg.analyte), None)
         if result is None:
-            result = Result(self._id("res"), request.id, request.patient_id, msg.analyte, msg.laboratory)
+            result = Result(self._id("res"), request.id, request.patient_id, msg.analyte, msg.laboratory,
+                            self.db.ehrs[request.patient_id][0])
             self.db.results[result.id] = result
         if any(v.lab_sequence == msg.lab_sequence for v in result.versions):
             self._audit(msg.laboratory, "resent version ignored", result.id, msg.message_id)
             return result
         previous = result.current
-        version = ResultVersion(
-            msg.lab_sequence, msg.status, msg.value, msg.unit, msg.reference_range, msg.abnormal, msg.critical,
-            msg.comment, self.now, msg.message_id, msg.source, msg.document_received_at)
+        if previous and msg.lab_sequence < previous.lab_sequence:
+            # F2: writing it would make it the record's current version, so only the message is kept.
+            result.versions.append(self._version(msg, None))
+            self.db.late_messages[msg.message_id] = replace(msg)
+            self._audit(msg.laboratory, "late older version kept as history", result.id)
+            return result
+        key = f"{msg.laboratory}|{request.id}|{msg.analyte}|{msg.lab_sequence}"
+        uid = self.records.find(result.ehr_id, key)
+        if uid is None:
+            content = ResultContent(key, request.id, msg.laboratory, msg.analyte, msg.status, msg.value, msg.unit,
+                                    msg.reference_range, msg.comment, self.now)
+            head = previous.version_uid if previous else None
+            uid = self.records.write(result.ehr_id, head, content)
+        self._fault_point("after_record_written")
+        version = self._version(msg, uid)
         result.versions.append(version)
         self._fault_point("after_result_stored")
-        if previous and version.lab_sequence < previous.lab_sequence:
-            self._audit(msg.laboratory, "late older version kept as history", result.id)  # F2
-            return result
         if version.status is ResultStatus.WITHHELD:  # R13, F6
             request.specimen = "rejected"
             monitor = self.db.units[request.unit_id].monitor_id
             task = Task(self._id("task"), "recollect", request.unit_id, monitor, request.patient_id, request.id,
-                        self.now, version.comment)
+                        self.now, msg.comment)
             self.db.tasks[task.id] = task
             self._notify(monitor, "recollection", task.id)
             self._notify(self._responsible(request.orderer_id, request.unit_id), "result withheld", request.id)
@@ -224,6 +244,16 @@ class LabLoop:
             self._assign_review(request, result, version)
         self._update_request(request)
         return result
+
+    def _version(self, msg: LabMessage, version_uid: str | None) -> ResultVersion:
+        return ResultVersion(msg.lab_sequence, msg.status, msg.abnormal, msg.critical, self.now, msg.message_id,
+                             msg.source, msg.document_received_at, version_uid)
+
+    def content(self, result_id: str, lab_sequence: int | None = None) -> ResultContent:
+        """Read a result version's content from the record store; the current version by default."""
+        result = self.db.results[result_id]
+        version = result.version(lab_sequence) if lab_sequence else result.current
+        return self.records.read(result.ehr_id, version.version_uid)
 
     def _assign_review(self, request: Request, result: Result, version: ResultVersion) -> None:
         """R1: one obligation per result version that needs review, always with an owner."""
@@ -456,11 +486,12 @@ class LabLoop:
         """What staff see about one result, including its patient visibility (F13)."""
         result = self.db.results[result_id]
         version = result.current
+        content = self.content(result_id)
         open_ob = next(iter(self._obligations(result_id=result.id, status=OPEN)), None)
         reviewed = any(r.result_id == result.id and r.lab_sequence == version.lab_sequence
                        for r in self.db.reviews.values())
         return {
-            "value": version.value, "unit": version.unit, "status": version.status, "comment": version.comment,
+            "value": content.value, "unit": content.unit, "status": content.status, "comment": content.comment,
             "corrected": version.status is ResultStatus.CORRECTED, "versions": len(result.versions),
             "reviewed": reviewed, "owner": open_ob.owner_id if open_ob else None,
             "visible_to_patient": result.patient_visible_at is not None, "visible_since": result.patient_visible_at,
@@ -472,8 +503,9 @@ class LabLoop:
         for result in self.db.results.values():
             version = result.current
             if result.patient_id == patient_id and result.analyte == analyte and version.status is not ResultStatus.WITHHELD:
-                rows.append({"at": version.received_at, "value": version.value, "unit": version.unit,
-                             "reference_range": version.reference_range, "comment": version.comment})
+                content = self.content(result.id)
+                rows.append({"at": version.received_at, "value": content.value, "unit": content.unit,
+                             "reference_range": content.reference_range, "comment": content.comment})
         return sorted(rows, key=lambda row: row["at"])
 
     def merge_patients(self, duplicate_id: str, surviving_id: str, by: str) -> None:
@@ -488,6 +520,8 @@ class LabLoop:
                     ob.patient_id = surviving_id
                     self._history(ob, by, f"moved from patient {duplicate_id} by merge")
             self.db.patients[duplicate_id].merged_into = surviving_id
+            # The record store cannot move compositions between EHRs; the survivor keeps both.
+            self.db.ehrs[surviving_id] += self.db.ehrs[duplicate_id]
             self._audit(by, "patients merged", duplicate_id, surviving_id)
 
     # Internals
