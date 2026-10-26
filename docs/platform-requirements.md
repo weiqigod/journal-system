@@ -203,6 +203,9 @@ If multiple healthcare providers share an installation, requirements for informa
 **Status:** Proposed  
 The system shall support controlled adoption and updating of externally maintained terminology and code systems.
 
+**Verify:** For each code system the deployment declares, import a valid new release, a release that fails the publisher's integrity check or expected format, and a release from a source the deployment has not declared. The failing and undeclared releases are refused and nothing changes. Before an accepted release takes effect, the system reports the bindings, value sets, rules, and templates that use concepts it retires, changes, or replaces. The release takes effect as a new configuration version under [ADM-001](#adm-001--controlled-configuration), retaining its code system, release identifier, and source. Entries recorded earlier keep their original codes, code system versions, and display text; a code the release retires still displays with its original meaning and is marked inactive. New entries use the new release from its effective time. Reverting to the prior release leaves entries recorded under the new one unchanged.  
+**Open:** [CLI-Q02](clinical-requirements.md#clinical-facts-and-health-information), [ADM-Q02](#administration-and-configuration).
+
 ### ADM-005 — Configuration boundaries
 **Category:** Core  
 **Status:** Proposed  
