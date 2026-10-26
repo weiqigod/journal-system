@@ -53,7 +53,7 @@ Each lifecycle is owned separately and linked, as proposed in the [foundational 
 | Request | draft → sent → accepted · rejected → in progress → completed; cancelled; overdue | Cancellation after collection does not erase the specimen or any result. |
 | Specimen | awaiting collection → collected → received → analysed; rejected or lost → recollection requested | Rejection reason comes from the laboratory. |
 | Result (per observation) | preliminary → final → corrected (new version); entered in error | Each version is retained; arrival order does not define the current version. |
-| Review obligation | open → reviewed → follow-up recorded → closed; reassigned; overdue; superseded by correction | A review binds to one result version. |
+| Review obligation | open → reviewed → follow-up recorded → closed; reassigned; overdue | A review binds to one result version. A correction before review moves the open obligation to the newer version; after review it opens a new obligation (R4). |
 
 ## Rules (draft)
 
@@ -122,7 +122,7 @@ From the published sources listed under [Evidence](#evidence). Regions and labor
 ## Verification plan
 
 1. Write **Verify** criteria for each draft rule in its owning requirement as the slice is built.
-2. Extend the prototype fixtures from case 2 to F1–F4, F7, F9, F15, and F17, which need no Swedish interface decision.
+2. The [lab-loop prototype](../prototypes/lab-loop/README.md) runs S1–S10 and the remaining failure cases as automated tests, with in-memory state and simulated laboratory messages. It also lists the decisions this outline left open.
 3. Add F5, F10, and F13 after the interface and 1177 questions are answered.
 4. Run the [scenarios](scenarios-laboratory-results.md) end to end as acceptance tests, recording expected and observed outcome per step.
 

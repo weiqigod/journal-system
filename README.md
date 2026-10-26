@@ -4,7 +4,7 @@ An open-source, modular clinical information system aiming for comprehensive cov
 
 **Approach:** Map the full scope, build working increments, and verify them against scenarios grounded in published regulations, routines, and incident reports.
 
-**Stage:** Specification and executable repository experiments; no clinical application yet. Implementation order, module boundaries, and product technology remain open.
+**Stage:** Specification, a record-store experiment, and a laboratory workflow prototype; no clinical application yet. Implementation order, module boundaries, and product technology remain open.
 
 ## Specification
 
@@ -12,9 +12,10 @@ An open-source, modular clinical information system aiming for comprehensive cov
 - [Coverage map and gaps](docs/coverage.md)
 - [Prototype findings and evidence](docs/prototype-findings.md)
 - [Run the repository experiment](prototypes/record-model/README.md)
+- [Run the laboratory result loop prototype](prototypes/lab-loop/README.md)
 - [Earlier draft — v0.2](clinical_information_system_specification_v0.2.md)
 
-**Next:** Build and verify the [laboratory result loop](docs/workflow-laboratory-results.md) against its research-grounded [scenarios](docs/scenarios-laboratory-results.md). Continue filling the wider coverage gaps alongside it.
+**Next:** The [laboratory result loop](docs/workflow-laboratory-results.md) has a [prototype](prototypes/lab-loop/README.md) passing its [scenarios](docs/scenarios-laboratory-results.md); settle the decisions it lists, then connect it to a record store and a laboratory message format. Continue filling the wider coverage gaps alongside it.
 
 ## License
 
