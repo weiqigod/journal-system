@@ -10,14 +10,14 @@ Python 3.11 or later, standard library only. From this directory:
 python3 -m unittest -v
 ```
 
-The observed run used Python 3.13.7: 38 tests, all passing.
+The observed run used Python 3.13.7: 43 tests, all passing.
 
 ## Layout
 
 - `lab_loop/model.py` — records: requests, result versions, review obligations, reviews, phone calls, tasks, intake queue, notifications, audit.
-- `lab_loop/service.py` — operations and rules R1–R12. Each operation runs as one transaction and restores all state if it fails.
+- `lab_loop/service.py` — operations and rules R1–R14. Each operation runs as one transaction and restores all state if it fails.
 - `tests/test_scenarios.py` — S1–S10, one test class per scenario.
-- `tests/test_failure_cases.py` — failure cases not already covered by a scenario (F2, F4, F5, F9, F11, F12, F14), plus R1 ownership fallbacks, correction before review, and refusals leaving no partial state.
+- `tests/test_failure_cases.py` — failure cases not already covered by a scenario (F2, F4, F5, F9, F11, F12, F14), plus R1 ownership fallbacks, correction before review, R14 review authority, and refusals leaving no partial state.
 
 ## Coverage
 
@@ -29,26 +29,28 @@ The observed run used Python 3.13.7: 38 tests, all passing.
 | R4, F1, F2, F3 | S4, `F2LateOlderVersion`, `CorrectionBeforeReview` |
 | R5 | S5 |
 | R7, F7, F17 | S2, S2c |
+| R13, F6 | S3 |
+| R14, F14 | `R14ReviewAuthority`, `F14NoAccess` |
 | R8, F5 | S8, `F5UnknownPatient` |
 | R9, F10 | S10 |
 | R10, F15 | S9 |
 | R11 | S1 |
 | R12, F16 | S2b |
 | F4 | `F4CrashBetweenResultAndObligation` |
-| F6 | S3 |
 | F9, F11, F12, F14 | matching `F…` classes |
 
 Each rule was also checked by disabling it in a copy of the code and confirming that at least one test fails.
 
-## Decisions the specification left open
+## Decisions made while building
 
-Building the rules required choices the workflow does not yet state. They are assumptions of this prototype:
+Building the rules exposed four gaps in the workflow outline. They are now settled there:
 
-1. **A correction before review moves the open obligation to the newer version** instead of closing one and opening another. The workflow's state table lists "superseded by correction"; one obligation per result with a version pointer proved simpler and still satisfies R1.
-2. **A withheld result creates no review obligation.** It creates a recollection task for the unit's monitor, and the request stays open until a usable result arrives.
-3. **A phoned value cannot be reviewed until the electronic result arrives.** Actions can be recorded against it at once.
-4. **Only a physician at the patient's listed unit may review.** This stands in for the authorization rules of [IAM-004](../../docs/platform-requirements.md#iam-004--context-sensitive-authorization).
-5. **Escalation timing:** reminder at 7 days, escalation to the monitor and manager 2 days later; overdue requests go to the orderer at the expected time and to the monitor 3 days later. All are configuration.
+1. **Correction before review** moves the open obligation to the corrected version (R4).
+2. **A withheld result** creates a recollection task for the unit's monitor and notifies the orderer; the request stays open and can become overdue (R13).
+3. **A phoned value** takes actions at once, but sign-off waits for the electronic result (R7).
+4. **Review authority:** an active physician at the ordering unit, or staff the deployment authorises to review their own orders (R14). Config: `review_roles`, `review_own_orders_roles`.
+
+Timing defaults are configuration: reminder at 7 days, escalation to the monitor and manager 2 days later; overdue requests go to the orderer at the expected time and to the monitor 3 days later.
 
 ## Not covered
 

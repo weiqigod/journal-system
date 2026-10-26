@@ -15,7 +15,7 @@ An open-source, modular clinical information system aiming for comprehensive cov
 - [Run the laboratory result loop prototype](prototypes/lab-loop/README.md)
 - [Earlier draft — v0.2](clinical_information_system_specification_v0.2.md)
 
-**Next:** The [laboratory result loop](docs/workflow-laboratory-results.md) has a [prototype](prototypes/lab-loop/README.md) passing its [scenarios](docs/scenarios-laboratory-results.md); settle the decisions it lists, then connect it to a record store and a laboratory message format. Continue filling the wider coverage gaps alongside it.
+**Next:** The [laboratory result loop](docs/workflow-laboratory-results.md) has a [prototype](prototypes/lab-loop/README.md) passing its [scenarios](docs/scenarios-laboratory-results.md); next, connect it to a record store and a laboratory message format. Continue filling the wider coverage gaps alongside it.
 
 ## License
 

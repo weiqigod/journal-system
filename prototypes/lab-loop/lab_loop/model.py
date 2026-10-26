@@ -197,6 +197,7 @@ class Task:
     id: str
     kind: str
     unit_id: str
+    owner_id: str
     patient_id: str
     request_id: str
     created_at: datetime

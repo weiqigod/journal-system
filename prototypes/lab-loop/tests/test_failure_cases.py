@@ -2,7 +2,7 @@
 
 import unittest
 
-from lab_loop import ObligationStatus, Refused, ResultStatus, SimulatedCrash
+from lab_loop import ObligationStatus, Refused, ResultStatus, Role, SimulatedCrash
 
 from .support import LAB, UNIT, clinic, message, obligation_for
 
@@ -131,6 +131,35 @@ class F14NoAccess(unittest.TestCase):
         ob = obligation_for(loop, loop.receive(message(loop, request.id, "K", 4.0)).id)
         with self.assertRaises(Refused):
             loop.review(ob.id, "eva", "no_action", inform="letter")
+
+
+class R14ReviewAuthority(unittest.TestCase):
+    def _result(self, loop, patient, orderer):
+        request = loop.order(patient, orderer, ("INR",), LAB)
+        return obligation_for(loop, loop.receive(message(loop, request.id, "INR", 2.4, "")).id)
+
+    def test_nurse_cannot_review_by_default(self):
+        loop = clinic()
+        ob = self._result(loop, "anna", "eva")
+        with self.assertRaises(Refused):
+            loop.review(ob.id, "eva", "no_action", inform="phone")
+
+    def test_deployment_can_let_nurses_review_their_own_orders_only(self):
+        loop = clinic(review_own_orders_roles=frozenset({Role.NURSE}))
+        own = self._result(loop, "anna", "eva")
+        loop.review(own.id, "eva", "no_action", inform="phone")
+        loop.add_staff("nils", "Nils (nurse)", Role.NURSE, UNIT)
+        other = self._result(loop, "bengt", "nils")
+        with self.assertRaises(Refused):
+            loop.review(other.id, "eva", "no_action", inform="phone")
+
+    def test_ordering_unit_reviews_patient_listed_elsewhere(self):
+        loop = clinic()
+        loop.add_patient("gustav", "TEST-GUSTAV", "Gustav (visiting)", "other")
+        ob = self._result(loop, "gustav", "holm")
+        with self.assertRaises(Refused):
+            loop.review(ob.id, "olsson", "no_action", inform="phone")
+        loop.review(ob.id, "sand", "no_action", inform="phone")
 
 
 class RefusalsChangeNothing(unittest.TestCase):

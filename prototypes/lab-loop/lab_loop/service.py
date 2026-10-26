@@ -1,4 +1,4 @@
-"""Operations of the laboratory result loop and the draft rules R1–R12.
+"""Operations of the laboratory result loop and the draft rules R1–R14.
 
 Rule numbers refer to docs/workflow-laboratory-results.md. Each public
 operation runs as one transaction: if it raises, all state is restored, so an
@@ -53,6 +53,8 @@ class Config:
     overdue_request_grace: timedelta = timedelta(days=3)
     opening: time = time(8)
     publish_to_patient: bool = True
+    review_roles: frozenset[Role] = frozenset({Role.PHYSICIAN})
+    review_own_orders_roles: frozenset[Role] = frozenset()
 
 
 class Clock:
@@ -121,8 +123,9 @@ class LabLoop:
             patient = self._patient(patient_id)
             sent_at = planned_for or self.now
             channel = "electronic" if self.db.interface_up else "paper"
+            unit_id = self.db.staff[orderer_id].unit_id if orderer_id else patient.unit_id
             request = Request(
-                id=self._id("req"), patient_id=patient.id, orderer_id=orderer_id, unit_id=patient.unit_id,
+                id=self._id("req"), patient_id=patient.id, orderer_id=orderer_id, unit_id=unit_id,
                 tests=tuple(tests), laboratory=laboratory, channel=channel,
                 status=RequestStatus.PLANNED if sent_at > self.now else RequestStatus.SENT,
                 sent_at=sent_at, expected_by=sent_at + turnaround, linked_review_id=linked_review_id)
@@ -206,12 +209,14 @@ class LabLoop:
         if previous and version.lab_sequence < previous.lab_sequence:
             self._audit(msg.laboratory, "late older version kept as history", result.id)  # F2
             return result
-        if version.status is ResultStatus.WITHHELD:
-            request.specimen = "rejected"  # F6
-            task = Task(self._id("task"), "recollect", request.unit_id, request.patient_id, request.id,
+        if version.status is ResultStatus.WITHHELD:  # R13, F6
+            request.specimen = "rejected"
+            monitor = self.db.units[request.unit_id].monitor_id
+            task = Task(self._id("task"), "recollect", request.unit_id, monitor, request.patient_id, request.id,
                         self.now, version.comment)
             self.db.tasks[task.id] = task
-            self._notify(self.db.units[request.unit_id].monitor_id, "recollection", task.id)
+            self._notify(monitor, "recollection", task.id)
+            self._notify(self._responsible(request.orderer_id, request.unit_id), "result withheld", request.id)
             return result
         if self.config.publish_to_patient and result.patient_visible_at is None:
             result.patient_visible_at = self.now
@@ -288,11 +293,9 @@ class LabLoop:
                inform: str | None = None, agreed_not_to_inform: bool = False,
                follow_up: dict | None = None) -> Review:
         ob = self._obligation(obligation_id)
-        reviewer = self.db.staff[reviewer_id]
-        patient = self._patient(ob.patient_id)
-        if not reviewer.active or reviewer.role is not Role.PHYSICIAN or reviewer.unit_id != patient.unit_id:
+        if not self._may_review(reviewer_id, self.db.requests[ob.request_id]):
             self._audit(reviewer_id, "review refused: no access", ob.id)  # F14: logged although refused
-            raise Refused("reviewer has no access to this patient")
+            raise Refused("reviewer may not review this result")
         with self._transaction():
             if ob.status is not OPEN:
                 raise Refused("obligation is not open")
@@ -329,6 +332,20 @@ class LabLoop:
             except Refused as refusal:
                 outcome[ob_id] = refusal
         return outcome
+
+    def _may_review(self, staff_id: str, request: Request) -> bool:
+        """R14: an active reviewer at the ordering unit, by role or, where allowed, for their own orders."""
+        staff = self.db.staff[staff_id]
+        if not staff.active or staff.unit_id != request.unit_id:
+            return False
+        return staff.role in self.config.review_roles or (
+            staff.role in self.config.review_own_orders_roles and request.orderer_id == staff_id)
+
+    def complete_task(self, task_id: str, by: str, note: str | None = None) -> None:
+        with self._transaction():
+            task = self.db.tasks[task_id]
+            task.done_at = self.now
+            self._audit(by, f"{task.kind} task done", task.id, note)
 
     def record_patient_informed(self, obligation_ids: list[str], actor: str, method: str) -> None:
         with self._transaction():

@@ -75,6 +75,15 @@ class S2CriticalPotassiumFriday(unittest.TestCase):
         call = self.loop.db.calls[self.call.id]
         self.assertEqual((call.caller, call.received_by, call.at), ("lab: Lena", "eva", datetime(2026, 11, 6, 16, 40)))
 
+    def test_phoned_value_takes_actions_but_waits_for_electronic_result_to_be_reviewed(self):
+        loop = self.loop
+        loop.record_action(self.ob.id, "sand", "sent to emergency department")
+        with self.assertRaises(Refused):
+            loop.review(self.ob.id, "holm", "emergency", inform="phone")
+        loop.clock.advance(days=3)
+        loop.tick()
+        self.assertIn(self.request.id, [n.ref for n in loop.notifications_for("holm", "result overdue")])
+
     def test_electronic_result_links_to_call_without_second_alert(self):
         loop = self.loop
         loop.record_action(self.ob.id, "sand", "assessed by phone; sent to emergency department")
@@ -131,8 +140,14 @@ class S3HaemolysedSample(unittest.TestCase):
         self.assertEqual(view["comment"], "haemolysed sample, new sample requested")
         self.assertEqual(self.loop.obligations(analyte="K"), [])
         tasks = list(self.loop.db.tasks.values())
-        self.assertEqual([(t.kind, t.request_id) for t in tasks], [("recollect", self.request.id)])
+        self.assertEqual([(t.kind, t.owner_id, t.request_id) for t in tasks], [("recollect", "sara", self.request.id)])
+        self.assertEqual([n.ref for n in self.loop.notifications_for("holm", "result withheld")], [self.request.id])
         self.assertIs(self.loop.db.requests[self.request.id].status, RequestStatus.SENT)
+
+    def test_withheld_request_still_becomes_overdue(self):
+        self.loop.clock.advance(days=3)
+        self.loop.tick()
+        self.assertEqual([n.ref for n in self.loop.notifications_for("holm", "result overdue")], [self.request.id])
 
     def test_new_sample_completes_request(self):
         loop = self.loop

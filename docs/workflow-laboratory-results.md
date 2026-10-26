@@ -60,15 +60,17 @@ Each lifecycle is owned separately and linked, as proposed in the [foundational 
 - **R1:** Every final or corrected result for a request has exactly one open or closed review obligation per version that requires review, with a named responsible person or team at all times.
 - **R2:** Receiving, displaying, or publishing a result to the patient never marks it reviewed.
 - **R3:** A review records the exact result version, the reviewer, the time, and the follow-up decision. A decision to take no action on an abnormal result includes its reasoning.
-- **R4:** A correction after review creates one new obligation linked to the earlier review, and the corrected value is shown as unreviewed.
+- **R4:** A correction after review creates one new obligation linked to the earlier review, and the corrected value is shown as unreviewed. A correction before review moves the open obligation to the corrected version and records the move in its history, so the reviewer always signs off the current version.
 - **R5:** An obligation not closed within the deployment's declared time is escalated, first as a reminder to its owner, then to the unit's designated monitor or manager; it never expires silently. The Swedish routines examined use seven days.
 - **R6:** A clinician leaving or becoming unavailable cannot leave an obligation without an owner. Planned absence requires handing over open obligations; unplanned absence lets a designated person reassign them.
-- **R7:** A critical value reported by phone is recorded with who called, who received it, and when, and starts the critical-result path even if the electronic result has not yet arrived. A critical flag in the electronic result starts the same path when no call was recorded.
+- **R7:** A critical value reported by phone is recorded with who called, who received it, and when, and starts the critical-result path even if the electronic result has not yet arrived. A critical flag in the electronic result starts the same path when no call was recorded. Actions are recorded against the phoned value at once, but sign-off waits for the electronic result, because a review binds to a stored result version (R3); if none arrives, R10 flags the request.
 - **R8:** A result that cannot be matched to a patient and request, or has no identifiable orderer, goes to a monitored unit queue, never to nobody and never attached by best guess.
 - **R9:** Requests and results that are pending, failed, or of unknown delivery status are visible to the clinic until reconciled.
 - **R10:** A sent request without a final result after its expected turnaround is flagged to the orderer and, if still unresolved, to the unit's designated monitor.
 - **R11:** The follow-up decision records how and when the patient is informed, or that the patient agreed not to be informed of this result.
 - **R12:** A critical value handled out of hours by another service appears to the responsible clinician on the next working day with the actions taken, and still requires their review.
+- **R13:** A result the laboratory withholds, such as a haemolysed sample, creates no review obligation. It creates a recollection task owned by the unit's designated monitor and notifies the orderer. The request stays open, so R10 applies until a usable result arrives.
+- **R14:** A result may be reviewed by an active physician at the ordering unit, or by staff whose role the deployment authorises to review their own orders, such as nurses for tests they ordered. Responsibility follows the ordering unit, not the unit where the patient is listed. Other attempts are refused and logged. This is the slice's stand-in for [IAM-004](platform-requirements.md#iam-004--context-sensitive-authorization).
 
 ## Failure and delay cases
 
@@ -87,7 +89,7 @@ Each lifecycle is owned separately and linked, as proposed in the [foundational 
 | F11 | Patient records merged or split after results arrive | Results and obligations follow the corrected identity; history shows the move. | [PAT-005](clinical-requirements.md#pat-005--identity-correction-and-duplicate-resolution), [PAT-006](clinical-requirements.md#pat-006--reversal-of-incorrect-patient-merge) |
 | F12 | Unit or reference range changes between results | Trend shows each value with its own unit and range; no silent conversion. | [ORD-004](clinical-requirements.md#ord-004--units-ranges-and-abnormality), [ORD-005](clinical-requirements.md#ord-005--trends) |
 | F13 | Patient sees a result before clinician review | Staff can see that the result is visible to the patient and unreviewed. | [PRT-001](clinical-requirements.md#prt-001--patient-access-to-information), [SE-1177-Q03](sweden.md) |
-| F14 | Reviewer lacks access to the patient | Review refused and logged; obligation stays open and escalates. | [IAM-004](platform-requirements.md#iam-004--context-sensitive-authorization), [AUD-001](platform-requirements.md#aud-001--patient-information-access-logging) |
+| F14 | Reviewer lacks review authority for the result | R14: review refused and logged; obligation stays open and escalates. | [IAM-004](platform-requirements.md#iam-004--context-sensitive-authorization), [AUD-001](platform-requirements.md#aud-001--patient-information-access-logging) |
 | F15 | Expected result never arrives | R10. | [ORD-002](clinical-requirements.md#ord-002--external-fulfillment) |
 | F16 | Critical value reported out of hours to another service | R12. | [ORD-007](clinical-requirements.md#ord-007--critical-results) |
 | F17 | Laboratory does not phone a repeated critical value | R7, by the electronic flag. | [ORD-007](clinical-requirements.md#ord-007--critical-results) |
@@ -122,7 +124,7 @@ From the published sources listed under [Evidence](#evidence). Regions and labor
 ## Verification plan
 
 1. Write **Verify** criteria for each draft rule in its owning requirement as the slice is built.
-2. The [lab-loop prototype](../prototypes/lab-loop/README.md) runs S1–S10 and the remaining failure cases as automated tests, with in-memory state and simulated laboratory messages. It also lists the decisions this outline left open.
+2. The [lab-loop prototype](../prototypes/lab-loop/README.md) runs S1–S10 and the remaining failure cases as automated tests, with in-memory state and simulated laboratory messages. Building it settled R4's correction-before-review behavior and added R13 and R14.
 3. Add F5, F10, and F13 after the interface and 1177 questions are answered.
 4. Run the [scenarios](scenarios-laboratory-results.md) end to end as acceptance tests, recording expected and observed outcome per step.
 
