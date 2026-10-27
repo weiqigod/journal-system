@@ -4,7 +4,7 @@ An open-source, modular clinical information system aiming for comprehensive cov
 
 **Approach:** Map the full scope, build working increments, and verify them against scenarios grounded in published regulations, routines, and incident reports.
 
-**Stage:** Specification, a record-store experiment, and a laboratory workflow prototype; no clinical application yet. Implementation order, module boundaries, and product technology remain open.
+**Stage:** Specification, a record-store experiment, and a laboratory workflow prototype; no clinical application yet. The [development approach](SPECIFICATION.md#development-approach) is adopted: C# backend, PostgreSQL, clean architecture, object orientation, domain-driven design, test-driven development, and vertical slices. Implementation order, module boundaries, and the rest of the technology remain open.
 
 ## Specification
 
@@ -15,7 +15,7 @@ An open-source, modular clinical information system aiming for comprehensive cov
 - [Run the laboratory result loop prototype](prototypes/lab-loop/README.md)
 - [Earlier draft — v0.2](clinical_information_system_specification_v0.2.md)
 
-**Next:** Decide the development philosophy, roadmap, backlog, and technology stack. No product code is written until those are settled. Work on the [laboratory result loop prototype](prototypes/lab-loop/README.md) has stopped: it tested the [workflow rules](docs/workflow-laboratory-results.md) against its [scenarios](docs/scenarios-laboratory-results.md) and EHRbase, and its findings are in [prototype findings](docs/prototype-findings.md). It is not designed to scale and is not the start of the product. Continue filling the wider coverage gaps alongside these decisions.
+**Next:** Decide the roadmap, the backlog, and the rest of the technology stack ([open development questions](docs/decisions.md#development)). No product code is written until those are settled. Work on the [laboratory result loop prototype](prototypes/lab-loop/README.md) has stopped: it tested the [workflow rules](docs/workflow-laboratory-results.md) against its [scenarios](docs/scenarios-laboratory-results.md) and EHRbase, and its findings are in [prototype findings](docs/prototype-findings.md). It is not designed to scale and is not the start of the product. Continue filling the wider coverage gaps alongside these decisions.
 
 ## License
 

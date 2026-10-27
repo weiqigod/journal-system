@@ -85,7 +85,7 @@ The [foundational design exploration](foundational-design.md) proposes answers f
 
 These decisions come before any product code; see the [master](../SPECIFICATION.md#recommended-next-specification-work). The [interaction surfaces](../SPECIFICATION.md#interaction-surfaces) direction constrains them.
 
-- **Q-DEV-001:** What development philosophy does the project follow, including how increments are chosen, verified, and released?
+- **Q-DEV-001:** What development philosophy does the project follow? Resolved: clean architecture, object orientation, domain-driven design, test-driven development, and delivery in vertical slices ([development approach](../SPECIFICATION.md#development-approach)). How increments are chosen and released remains open.
 - **Q-DEV-002:** What is the roadmap: the order of workflows and the first usable increment ([Q-PROD-002](#product-and-care-settings))?
 - **Q-DEV-003:** How is the backlog kept, and how does it trace to requirements and scenarios?
-- **Q-DEV-004:** Which language, database, framework, and record model does the product use ([SUR-Q02](platform-requirements.md#user-surfaces-and-assistants), [SCL-Q01](platform-requirements.md#scalability))?
+- **Q-DEV-004:** Which language, database, framework, and record model does the product use? Resolved: C# for all backend code, PostgreSQL as the database. Frameworks, the record model, and the technology of the graphical client and assistant surfaces remain open ([SUR-Q02](platform-requirements.md#user-surfaces-and-assistants), [SCL-Q01](platform-requirements.md#scalability)).
