@@ -24,7 +24,7 @@ Then, from this directory:
 LAB_LOOP_RECORDS=ehrbase python3 -m unittest -v
 ```
 
-The observed runs used Python 3.13.7 and the `journal-ehrbase:2.36.0-fixed` image: 51 tests, all passing with both stores.
+The observed runs used Python 3.13.7 and the `journal-ehrbase:2.36.0-fixed` image: 60 tests, all passing with both stores.
 
 ## Layout
 
@@ -33,6 +33,7 @@ The observed runs used Python 3.13.7 and the `journal-ehrbase:2.36.0-fixed` imag
 - `lab_loop/records.py` — the record stores and the mapping between result content and the openEHR template.
 - `tests/test_scenarios.py` — S1–S10, one test class per scenario.
 - `tests/test_record_store.py` — the boundary between workflow and record store: content location, corrections as composition versions, late versions, concurrent record changes, crashes between the two stores, and merges.
+- `tests/test_reconciliation.py` — R15: lost results and corrections adopted, late resends restoring flags, outside changes, missing entries, and entries without a known request.
 - `tests/test_failure_cases.py` — failure cases not already covered by a scenario (F2, F4, F5, F9, F11, F12, F14), plus R1 ownership fallbacks, correction before review, R14 review authority, and refusals leaving no partial state.
 
 ## Coverage
@@ -52,6 +53,7 @@ The observed runs used Python 3.13.7 and the `journal-ehrbase:2.36.0-fixed` imag
 | R10, F15 | S9 |
 | R11 | S1 |
 | R12, F16 | S2b |
+| R15, F19, F20, F21 | `test_reconciliation.py` |
 | F4 | `F4CrashBetweenResultAndObligation` |
 | F9, F11, F12, F14 | matching `F…` classes |
 
@@ -71,7 +73,7 @@ If another writer changes a composition first, EHRbase returns 412 and the workf
 2. **The template has no status for a withheld result.** It is stored as "Cancelled/Aborted", which is an approximation.
 3. **Record versions follow arrival order.** A late older laboratory version cannot be stored as history without becoming the record's current version. The prototype keeps only the message. A real design needs the laboratory's version in the content, or a separate history.
 4. **Compositions cannot move between EHRs.** After a patient merge, the surviving patient keeps references to both EHRs.
-5. **A record written before a crash is safe only if the message is resent.** If the laboratory never resends, the composition exists with no workflow entry. A reconciliation job comparing record keys with workflow state is still needed.
+5. **A record written before a crash is safe only if the message is resent.** If the laboratory never resends, the composition exists with no workflow entry. The reconciliation job below handles this.
 6. **The template requires the observation's state section,** which this mapping writes empty.
 
 
@@ -86,6 +88,20 @@ Building the rules exposed four gaps in the workflow outline. They are now settl
 
 Timing defaults are configuration: reminder at 7 days, escalation to the monitor and manager 2 days later; overdue requests go to the orderer at the expected time and to the monitor 3 days later.
 
+## Reconciliation
+
+`LabLoop.reconcile()` compares the current compositions in each known EHR with the workflow's result versions (R15). It is meant to run on a schedule; the prototype only provides the call.
+
+| Found | Action |
+|---|---|
+| Composition with a workflow key but no workflow entry | Adopted as a result, or as a correction if it is newer than the workflow's version, with an owner. Treated as abnormal, since the flags are not in the record. The monitor is notified. |
+| Laboratory later resends that version | Its flags replace the assumed ones; a critical flag starts the critical path. |
+| Composition whose request the workflow does not know | Reported to the monitor; not adopted. Retrying the original intake files it without a duplicate. |
+| Newer composition version not written by the workflow | Reported; not adopted. |
+| Workflow version whose composition is gone | Reported. |
+
+Entries younger than `reconcile_after` (default one hour) are skipped, because their message may still be resent. Every action is audited.
+
 ## Not covered
 
-Workflow persistence across restarts, concurrent users, a real laboratory message format, 1177 publication, authentication, the reconciliation job in finding 5, and the user interface.
+Workflow persistence across restarts, concurrent users, a real laboratory message format, 1177 publication, authentication, scheduling of the reconciliation job, and the user interface.

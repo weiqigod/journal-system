@@ -43,6 +43,10 @@ class RecordConflict(Exception):
     """The composition changed since the expected version."""
 
 
+class RecordMissing(Exception):
+    """The requested composition version does not exist."""
+
+
 @dataclass(frozen=True)
 class ResultContent:
     key: str
@@ -59,6 +63,18 @@ class ResultContent:
 
 def object_id(version_uid: str) -> str:
     return version_uid.split("::")[0]
+
+
+def record_key(laboratory: str, request_id: str, analyte: str, lab_sequence: int) -> str:
+    return f"{laboratory}|{request_id}|{analyte}|{lab_sequence}"
+
+
+def parse_key(key: str) -> tuple[str, str, str, int] | None:
+    """Split a key written by the workflow; None for a key written by anyone else."""
+    parts = key.split("|")
+    if len(parts) != 4 or not parts[3].isdigit():
+        return None
+    return parts[0], parts[1], parts[2], int(parts[3])
 
 
 class MemoryRecordStore:
@@ -89,10 +105,19 @@ class MemoryRecordStore:
                      for versions in [self._versions[oid]] if versions[-1][1].key == key), None)
 
     def read(self, ehr_id: str, version_uid: str) -> ResultContent:
-        return next(content for uid, content in self._versions[object_id(version_uid)] if uid == version_uid)
+        found = [content for uid, content in self._versions.get(object_id(version_uid), []) if uid == version_uid]
+        if not found:
+            raise RecordMissing(version_uid)
+        return found[0]
 
     def compositions(self, ehr_id: str) -> list[str]:
         return [self._versions[oid][-1][0] for oid in self._ehrs[ehr_id]]
+
+    def delete(self, ehr_id: str, version_uid: str) -> None:
+        """Remove a composition, as a backup restored from before it was written would. Used by tests."""
+        oid = object_id(version_uid)
+        self._ehrs[ehr_id].remove(oid)
+        del self._versions[oid]
 
 
 class EhrbaseRecordStore:
@@ -134,8 +159,16 @@ class EhrbaseRecordStore:
         return rows[0][0] if rows else None
 
     def read(self, ehr_id: str, version_uid: str) -> ResultContent:
-        _, composition = self._expect("GET", f"/ehr/{ehr_id}/composition/{version_uid}", 200)
+        status, _, composition = self._request("GET", f"/ehr/{ehr_id}/composition/{version_uid}")
+        if status in (204, 404):
+            raise RecordMissing(version_uid)
+        if status != 200:
+            raise RuntimeError(f"read failed: {status} {str(composition)[:300]}")
         return self._content(composition)
+
+    def delete(self, ehr_id: str, version_uid: str) -> None:
+        """Delete a composition's current version, so it no longer appears as current. Used by tests."""
+        self._expect("DELETE", f"/ehr/{ehr_id}/composition/{version_uid}", 204)
 
     def compositions(self, ehr_id: str) -> list[str]:
         rows = self._query("SELECT c/uid/value FROM EHR e CONTAINS COMPOSITION c WHERE e/ehr_id/value = $ehr",

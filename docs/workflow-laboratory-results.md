@@ -71,6 +71,7 @@ Each lifecycle is owned separately and linked, as proposed in the [foundational 
 - **R12:** A critical value handled out of hours by another service appears to the responsible clinician on the next working day with the actions taken, and still requires their review.
 - **R13:** A result the laboratory withholds, such as a haemolysed sample, creates no review obligation. It creates a recollection task owned by the unit's designated monitor and notifies the orderer. The request stays open, so R10 applies until a usable result arrives.
 - **R14:** A result may be reviewed by an active physician at the ordering unit, or by staff whose role the deployment authorises to review their own orders, such as nurses for tests they ordered. Responsibility follows the ordering unit, not the unit where the patient is listed. Other attempts are refused and logged. This is the slice's stand-in for [IAM-004](platform-requirements.md#iam-004--context-sensitive-authorization).
+- **R15:** A reconciliation job regularly compares the clinical record store with workflow state. A record entry the workflow does not know, older than the retry window, is adopted with an owner and treated as abnormal until the laboratory resends its flags; one without a known request goes to the unit's monitor. Record changes made outside the workflow, and workflow entries missing from the record store, are reported to the monitor and never repaired automatically.
 
 ## Failure and delay cases
 
@@ -94,6 +95,9 @@ Each lifecycle is owned separately and linked, as proposed in the [foundational 
 | F16 | Critical value reported out of hours to another service | R12. | [ORD-007](clinical-requirements.md#ord-007--critical-results) |
 | F17 | Laboratory does not phone a repeated critical value | R7, by the electronic flag. | [ORD-007](clinical-requirements.md#ord-007--critical-results) |
 | F18 | Abnormal result reviewed with no action and no reasoning | Review refused until reasoning is recorded (R3). | [ORD-006](clinical-requirements.md#ord-006--result-review-and-follow-up) |
+| F19 | Result saved to the record store, then a crash, and the message is never resent | R15: adopted with an owner. | [INT-004](platform-requirements.md#int-004--reliable-state-changing-exchange) |
+| F20 | Record entry missing, for example after restoring an older backup | R15: reported. | [INF-003](clinical-requirements.md#inf-003--explicit-history) |
+| F21 | Record entry changed outside the workflow | R15: reported, not adopted. | [DOC-008](clinical-requirements.md#doc-008--change-history) |
 
 ## Information to capture
 
@@ -124,7 +128,7 @@ From the published sources listed under [Evidence](#evidence). Regions and labor
 ## Verification plan
 
 1. Write **Verify** criteria for each draft rule in its owning requirement as the slice is built.
-2. The [lab-loop prototype](../prototypes/lab-loop/README.md) runs S1–S10 and the remaining failure cases as automated tests, with simulated laboratory messages. Result content can be stored in the patched EHRbase as openEHR compositions; workflow state stays in memory. Building it settled R4's correction-before-review behavior and added R13 and R14.
+2. The [lab-loop prototype](../prototypes/lab-loop/README.md) runs S1–S10 and the remaining failure cases as automated tests, with simulated laboratory messages. Result content can be stored in the patched EHRbase as openEHR compositions, with a reconciliation job between the two stores (R15); workflow state stays in memory. Building it settled R4's correction-before-review behavior and added R13 and R14.
 3. Add F5, F10, and F13 after the interface and 1177 questions are answered.
 4. Run the [scenarios](scenarios-laboratory-results.md) end to end as acceptance tests, recording expected and observed outcome per step.
 

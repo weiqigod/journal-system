@@ -109,6 +109,8 @@ class ResultVersion:
 
     Status and flags are kept here because the rules act on them. A late older
     version is never written to the record store and has no `version_uid`.
+    A `reconciled` version was recovered from the record store without its
+    message, so its flags are assumed until the laboratory resends it.
     """
 
     lab_sequence: int
@@ -120,6 +122,7 @@ class ResultVersion:
     source: str
     document_received_at: datetime | None
     version_uid: str | None
+    reconciled: bool = False
 
 
 @dataclass

@@ -8,7 +8,8 @@ scope.
 
 Result content lives in a record store (records.py), outside that transaction.
 A record write survives a workflow rollback; the retry finds it by its key
-instead of writing a duplicate.
+instead of writing a duplicate. `reconcile` recovers or reports what is left
+when no retry comes (R15).
 """
 
 from __future__ import annotations
@@ -39,7 +40,7 @@ from .model import (
     Task,
     Unit,
 )
-from .records import MemoryRecordStore, ResultContent
+from .records import MemoryRecordStore, ResultContent, object_id, parse_key, record_key
 
 OPEN = ObligationStatus.OPEN
 
@@ -61,6 +62,7 @@ class Config:
     publish_to_patient: bool = True
     review_roles: frozenset[Role] = frozenset({Role.PHYSICIAN})
     review_own_orders_roles: frozenset[Role] = frozenset()
+    reconcile_after: timedelta = timedelta(hours=1)
 
 
 class Clock:
@@ -93,6 +95,14 @@ class _State:
     ehrs: dict[str, list[str]] = field(default_factory=dict)
     interface_up: bool = True
     next_id: int = 1
+
+
+@dataclass
+class ReconciliationReport:
+    adopted: list[str] = field(default_factory=list)
+    unmatched: list[str] = field(default_factory=list)
+    changed_outside: list[str] = field(default_factory=list)
+    missing: list[str] = field(default_factory=list)
 
 
 class LabLoop:
@@ -208,7 +218,11 @@ class LabLoop:
             result = Result(self._id("res"), request.id, request.patient_id, msg.analyte, msg.laboratory,
                             self.db.ehrs[request.patient_id][0])
             self.db.results[result.id] = result
-        if any(v.lab_sequence == msg.lab_sequence for v in result.versions):
+        existing = next((v for v in result.versions if v.lab_sequence == msg.lab_sequence), None)
+        if existing and existing.reconciled:
+            self._restore_flags(result, existing, msg)
+            return result
+        if existing:
             self._audit(msg.laboratory, "resent version ignored", result.id, msg.message_id)
             return result
         previous = result.current
@@ -218,7 +232,7 @@ class LabLoop:
             self.db.late_messages[msg.message_id] = replace(msg)
             self._audit(msg.laboratory, "late older version kept as history", result.id)
             return result
-        key = f"{msg.laboratory}|{request.id}|{msg.analyte}|{msg.lab_sequence}"
+        key = record_key(msg.laboratory, request.id, msg.analyte, msg.lab_sequence)
         uid = self.records.find(result.ehr_id, key)
         if uid is None:
             content = ResultContent(key, request.id, msg.laboratory, msg.analyte, msg.status, msg.value, msg.unit,
@@ -443,6 +457,86 @@ class LabLoop:
                 if "unit" not in request.overdue_flags and now >= request.expected_by + cfg.overdue_request_grace:
                     request.overdue_flags.add("unit")
                     self._notify(self.db.units[request.unit_id].monitor_id, "result overdue", request.id)
+
+    # Reconciliation
+
+    def reconcile(self) -> ReconciliationReport:
+        """R15: compare the record store with workflow state and recover or report each difference.
+
+        Entries younger than `reconcile_after` are skipped, since their message may still be retried.
+        """
+        report = ReconciliationReport()
+        with self._transaction():
+            heads = {}
+            for result in self.db.results.values():
+                written = [v for v in result.versions if v.version_uid]
+                if written:
+                    head = max(written, key=lambda v: v.lab_sequence)
+                    heads[object_id(head.version_uid)] = (result, head)
+            present = set()
+            for ehr_id in sorted({e for ehrs in self.db.ehrs.values() for e in ehrs}):
+                for uid in self.records.compositions(ehr_id):
+                    present.add(object_id(uid))
+                    known = heads.get(object_id(uid))
+                    if known and known[1].version_uid == uid:
+                        continue
+                    content = self.records.read(ehr_id, uid)
+                    if self.now - content.recorded_at >= self.config.reconcile_after:
+                        self._reconcile_entry(ehr_id, uid, content, known, report)
+            for oid, (result, head) in heads.items():
+                if oid not in present:
+                    report.missing.append(result.id)
+                    self._reconcile_notice("record entry missing", result.id, head.version_uid,
+                                           self.db.requests[result.request_id].unit_id)
+        return report
+
+    def _reconcile_entry(self, ehr_id: str, uid: str, content: ResultContent, known, report) -> None:
+        parsed = parse_key(content.key)
+        patient_id = next(p for p, ehrs in self.db.ehrs.items() if ehr_id in ehrs)
+        unit_id = self._patient(patient_id).unit_id
+        if known:
+            result, head = known
+            if parsed and parsed[1:3] == (result.request_id, result.analyte) and parsed[3] > head.lab_sequence:
+                report.adopted.append(self._adopt(content, parsed[3]).id)  # a correction whose message was lost
+            else:
+                report.changed_outside.append(uid)
+                self._reconcile_notice("record changed outside the workflow", result.id, uid, unit_id)
+            return
+        request = self.db.requests.get(content.request_id)
+        if parsed is None or request is None or self._patient(request.patient_id).id != self._patient(patient_id).id:
+            report.unmatched.append(uid)
+            self._reconcile_notice("record entry without a known request", uid, content.key, unit_id)
+            return
+        report.adopted.append(self._adopt(content, parsed[3]).id)
+
+    def _adopt(self, content: ResultContent, lab_sequence: int) -> Result:
+        """Recover a result whose message was lost. Its flags are unknown, so it is treated as abnormal."""
+        request = self.db.requests[content.request_id]
+        msg = LabMessage(
+            message_id=f"reconciled:{content.key}", laboratory=content.laboratory, unit_id=request.unit_id,
+            patient_pnr=self._patient(request.patient_id).pnr, analyte=content.analyte, lab_sequence=lab_sequence,
+            status=content.status, value=content.value, unit=content.unit or "", reference_range=content.reference_range,
+            abnormal=True, comment=content.comment, request_id=request.id)
+        result = self._store(request, msg)
+        result.version(lab_sequence).reconciled = True
+        for ob in self._obligations(result_id=result.id, status=OPEN):
+            self._history(ob, "reconciliation", "recovered from record store; laboratory flags unknown, "
+                                                "treated as abnormal until the laboratory resends")
+        self._reconcile_notice("result recovered from record store", result.id, content.key, request.unit_id)
+        return result
+
+    def _restore_flags(self, result: Result, version: ResultVersion, msg: LabMessage) -> None:
+        version.abnormal, version.critical, version.reconciled = msg.abnormal, msg.critical, False
+        for ob in self._obligations(result_id=result.id, status=OPEN):
+            if ob.lab_sequence == version.lab_sequence:
+                self._history(ob, msg.laboratory, "laboratory flags restored from resent message")
+                if msg.critical and not ob.critical:
+                    self._start_critical(ob, "critical flag in resent message")
+        self._audit(msg.laboratory, "flags restored for recovered result", result.id, msg.message_id)
+
+    def _reconcile_notice(self, action: str, ref: str, detail: str, unit_id: str) -> None:
+        self._audit("reconciliation", action, ref, detail)
+        self._notify(self.db.units[unit_id].monitor_id, "reconciliation", ref)
 
     # Queries
 
