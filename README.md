@@ -15,7 +15,7 @@ An open-source, modular clinical information system aiming for comprehensive cov
 - [Run the laboratory result loop prototype](prototypes/lab-loop/README.md)
 - [Earlier draft — v0.2](clinical_information_system_specification_v0.2.md)
 
-**Next:** The [laboratory result loop](docs/workflow-laboratory-results.md) has a [prototype](prototypes/lab-loop/README.md) passing its [scenarios](docs/scenarios-laboratory-results.md); its results can be stored in EHRbase, with reconciliation between the two stores. Next, a laboratory message format. Continue filling the wider coverage gaps alongside it.
+**Next:** The [laboratory result loop](docs/workflow-laboratory-results.md) has a [prototype](prototypes/lab-loop/README.md) passing its [scenarios](docs/scenarios-laboratory-results.md); it receives FHIR laboratory reports and stores results in EHRbase, with reconciliation between the two stores. Next, persistent workflow state and a rule for laboratory retractions. Continue filling the wider coverage gaps alongside it.
 
 ## License
 

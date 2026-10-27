@@ -101,6 +101,7 @@ class LabMessage:
     request_id: str | None = None
     source: str = "electronic"
     document_received_at: datetime | None = None
+    problem: str | None = None  # set by an adapter when the message cannot be processed automatically
 
 
 @dataclass

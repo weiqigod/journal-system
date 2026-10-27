@@ -98,6 +98,8 @@ Each lifecycle is owned separately and linked, as proposed in the [foundational 
 | F19 | Result saved to the record store, then a crash, and the message is never resent | R15: adopted with an owner. | [INT-004](platform-requirements.md#int-004--reliable-state-changing-exchange) |
 | F20 | Record entry missing, for example after restoring an older backup | R15: reported. | [INF-003](clinical-requirements.md#inf-003--explicit-history) |
 | F21 | Record entry changed outside the workflow | R15: reported, not adopted. | [DOC-008](clinical-requirements.md#doc-008--change-history) |
+| F22 | Laboratory report uses an unknown analysis code | Held in the unit's intake queue with the code; never dropped. | [CLI-010](clinical-requirements.md#cli-010--clinical-terminology-and-coding) |
+| F23 | Laboratory withdraws a result as entered in error | Held for manual handling; no rule yet for a result already reviewed or shown to the patient. | [DOC-007](clinical-requirements.md#doc-007--correction-and-amendment) |
 
 ## Information to capture
 
@@ -120,7 +122,8 @@ From the published sources listed under [Evidence](#evidence). Regions and labor
 
 ## Open questions
 
-- Which laboratory interface and message standard the first deployment uses, and whether the laboratory system or this product is authoritative for request status ([ORD-Q04](clinical-requirements.md#orders-investigations-and-results)).
+- Which laboratory interface and message standard the first deployment uses, and whether the laboratory system or this product is authoritative for request status ([ORD-Q04](clinical-requirements.md#orders-investigations-and-results)). The prototype receives FHIR R4 reports shaped after HL7 Europe Laboratory Report 2.0.0 ([E14](#evidence)); current Swedish laboratory practice is unverified.
+- What happens to a reviewed or patient-visible result that the laboratory withdraws as entered in error (F23).
 - Which code system identifies analyses, and whether results reach NPÖ ([SE-NPO-Q01](sweden.md)).
 - Which region's 1177 publication rules the first deployment follows ([SE-1177-Q03](sweden.md)).
 - How the first laboratory reports haemolysed samples: withheld, or reported with a comment. Practice is set locally ([E12](#evidence)).
@@ -147,3 +150,4 @@ From the published sources listed under [Evidence](#evidence). Regions and labor
 - **E11:** SVT Nyheter Blekinge. [Prostataläkare får kritik – gav felaktiga cancerbesked](https://www.svt.se/nyheter/lokalt/blekinge/prostatalakare-far-kritik-gav-felaktiga-cancerbesked), 2020-05-09.
 - **E12:** Lippi G, et al. [Practical recommendations for managing hemolyzed samples in clinical chemistry testing](https://www.degruyterbrill.com/document/doi/10.1515/cclm-2017-1104/html). Clin Chem Lab Med. 2018;56(5):718–27.
 - **E13:** Karolinska Universitetssjukhuset. [Lex Maria-ärende K2021-4489](https://www.karolinska.se/om-oss/kvalitet-och-resultat/avvikelser-och-lex-maria/alla-lex-maria-arenden/2021/09/k2021-4489): mixed-up laboratory batches produced four incorrect reports, corrected late.
+- **E14:** HL7 Europe. [Laboratory Report](https://hl7.eu/fhir/laboratory/), version 2.0.0 (STU 2), FHIR R4. Checked 2026-10-27.

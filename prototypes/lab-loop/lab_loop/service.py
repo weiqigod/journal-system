@@ -174,7 +174,9 @@ class LabLoop:
             self.db.messages.add(msg.message_id)
             request = self.db.requests.get(msg.request_id) if msg.request_id else None
             patient = self._patient_by_pnr(msg.patient_pnr)
-            if msg.source == "scanned":
+            if msg.problem:
+                reason = msg.problem
+            elif msg.source == "scanned":
                 reason = "scanned document needs an identity check"
             elif patient is None:
                 reason = "unknown patient"

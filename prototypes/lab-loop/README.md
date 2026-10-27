@@ -1,6 +1,6 @@
 # Laboratory result loop prototype
 
-Prototype code, not production code. It implements the draft rules of the [laboratory result loop](../../docs/workflow-laboratory-results.md) as a Python library and runs the [scenarios](../../docs/scenarios-laboratory-results.md) as automated tests. Its purpose is to show whether the rules hold together as software. It has no user interface, no real laboratory interface, and only synthetic patients.
+Prototype code, not production code. It implements the draft rules of the [laboratory result loop](../../docs/workflow-laboratory-results.md) as a Python library and runs the [scenarios](../../docs/scenarios-laboratory-results.md) as automated tests. Its purpose is to show whether the rules hold together as software. It has no user interface, no network laboratory connection, and only synthetic patients. Laboratory reports can be received as FHIR documents.
 
 Workflow state is in memory. Result content goes to a clinical record store: an in-memory stand-in by default, or the patched EHRbase from the [record-model experiment](../record-model/fixes/README.md), which stores each result as an openEHR composition using that experiment's pinned laboratory template.
 
@@ -24,16 +24,18 @@ Then, from this directory:
 LAB_LOOP_RECORDS=ehrbase python3 -m unittest -v
 ```
 
-The observed runs used Python 3.13.7 and the `journal-ehrbase:2.36.0-fixed` image: 60 tests, all passing with both stores.
+The observed runs used Python 3.13.7 and the `journal-ehrbase:2.36.0-fixed` image: 69 tests, all passing with both stores.
 
 ## Layout
 
 - `lab_loop/model.py` — records: requests, result versions, review obligations, reviews, phone calls, tasks, intake queue, notifications, audit.
 - `lab_loop/service.py` — operations and rules R1–R14. Each operation runs as one transaction and restores all workflow state if it fails.
 - `lab_loop/records.py` — the record stores and the mapping between result content and the openEHR template.
+- `lab_loop/fhir.py` — receives laboratory reports as FHIR R4 document Bundles.
 - `tests/test_scenarios.py` — S1–S10, one test class per scenario.
 - `tests/test_record_store.py` — the boundary between workflow and record store: content location, corrections as composition versions, late versions, concurrent record changes, crashes between the two stores, and merges.
 - `tests/test_reconciliation.py` — R15: lost results and corrections adopted, late resends restoring flags, outside changes, missing entries, and entries without a known request.
+- `tests/test_fhir.py` — FHIR reports: content and flags, duplicates, corrections, withheld results, unknown codes and patients, rejected Bundles, and a crash partway through a Bundle.
 - `tests/test_failure_cases.py` — failure cases not already covered by a scenario (F2, F4, F5, F9, F11, F12, F14), plus R1 ownership fallbacks, correction before review, R14 review authority, and refusals leaving no partial state.
 
 ## Coverage
@@ -102,6 +104,31 @@ Timing defaults are configuration: reminder at 7 days, escalation to the monitor
 
 Entries younger than `reconcile_after` (default one hour) are skipped, because their message may still be resent. Every action is audited.
 
+## Laboratory message format
+
+`FhirLabAdapter` receives one laboratory report as a FHIR R4 document Bundle shaped after [HL7 Europe Laboratory Report 2.0.0](https://hl7.eu/fhir/laboratory/), the European guide being aligned with the EHDS laboratory report models. It is the prototype's choice, not a decision: which format the first Swedish laboratory sends is still open under [ORD-Q04](../../docs/clinical-requirements.md#orders-investigations-and-results).
+
+| FHIR element | Workflow use |
+|---|---|
+| `Patient.identifier` with system `urn:oid:1.2.752.129.2.1.3.1` | Personnummer for matching the patient |
+| `DiagnosticReport.basedOn` → `ServiceRequest.identifier` of type `PLAC` | The workflow's request ID |
+| `ServiceRequest.requester` → `Organization.identifier` | The laboratory's customer code, mapped to the ordering unit |
+| `DiagnosticReport.performer` → `Organization.name` | Laboratory |
+| `Observation.code.coding` | Mapped to the test name through a configured table, so LOINC, NPU, or local codes can be used |
+| `Observation.meta.versionId` | Laboratory version, which orders corrections |
+| `Observation.status` | `preliminary`, `final`, `amended`/`corrected`, and `cancelled` (withheld) |
+| `Observation.interpretation` | `H`, `L`, `A` are abnormal; `HH`, `LL`, `AA` are critical |
+| `valueQuantity`, `referenceRange`, `note`, `dataAbsentReason` | Value, unit, range, and comment |
+
+Each Observation becomes one message, identified by Bundle identifier, Observation ID, and version, so a resent Bundle yields only duplicates. The returned `ReceiveOutcome` is the acknowledgement: results stored, results held in the intake queue, and duplicates. A Bundle that is not a document, lacks a personnummer or performing laboratory, or references an Observation it does not contain is rejected whole with `MessageRejected`, and nothing is stored. An unknown analysis code, an `entered-in-error` or other unhandled status, or a missing version goes to the unit's intake queue with the reason. If processing stops partway through a Bundle, resending it stores only what is missing.
+
+The tests use LOINC codes. The adapter reads only the elements above and does not validate Bundles against the guide's profiles; the HL7 validator would be the next step. The guide is based on FHIR R4, while the specification's [verification references](../../docs/verification-references.md) pin R5 for the record-model comparison.
+
+Building it showed two more gaps in the workflow:
+
+1. **A laboratory retraction (`entered-in-error`) has no rule.** It goes to the intake queue for manual handling. The workflow needs to say what happens to a result already reviewed or shown to the patient when the laboratory withdraws it.
+2. **An unknown analysis code is a normal event,** for example when a laboratory adds a test. It must not drop the result; it is held with the code so the mapping can be extended.
+
 ## Not covered
 
-Workflow persistence across restarts, concurrent users, a real laboratory message format, 1177 publication, authentication, scheduling of the reconciliation job, and the user interface.
+Workflow persistence across restarts, concurrent users, sending orders to the laboratory, a network transport for reports, profile validation, 1177 publication, authentication, scheduling of the reconciliation job, and the user interface.
