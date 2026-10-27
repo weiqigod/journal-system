@@ -3,8 +3,8 @@
 Rule numbers refer to docs/workflow-laboratory-results.md. Each public
 operation runs as one transaction: if it raises, all workflow state is restored,
 so an interrupted operation cannot leave a stored result without its obligation
-(F4). Workflow state is in memory; durability across process restarts is out of
-scope.
+(F4). With a `path`, each committed operation is also written to a SQLite file
+(store.py) and reloaded on start; without one, workflow state is in memory.
 
 Result content lives in a record store (records.py), outside that transaction.
 A record write survives a workflow rollback; the retry finds it by its key
@@ -41,6 +41,7 @@ from .model import (
     Unit,
 )
 from .records import MemoryRecordStore, ResultContent, object_id, parse_key, record_key
+from .store import WorkflowStore
 
 OPEN = ObligationStatus.OPEN
 
@@ -106,28 +107,34 @@ class ReconciliationReport:
 
 
 class LabLoop:
-    def __init__(self, config: Config | None = None, clock: Clock | None = None, records=None):
+    def __init__(self, config: Config | None = None, clock: Clock | None = None, records=None,
+                 path: str | None = None):
         self.config = config or Config()
         self.clock = clock or Clock(datetime.now())
         self.records = records or MemoryRecordStore()
-        self.db = _State()
+        self.store = WorkflowStore(path) if path else None
+        self.db = (self.store.load(_State) if self.store else None) or _State()
         self.fault: str | None = None
         self._depth = 0
 
     # Setup
 
     def add_unit(self, id: str, name: str, monitor_id: str, manager_id: str) -> Unit:
-        self.db.units[id] = Unit(id, name, monitor_id, manager_id)
-        return self.db.units[id]
+        with self._transaction():
+            self.db.units[id] = Unit(id, name, monitor_id, manager_id)
+            return self.db.units[id]
 
     def add_staff(self, id: str, name: str, role: Role, unit_id: str) -> Staff:
-        self.db.staff[id] = Staff(id, name, role, unit_id)
-        return self.db.staff[id]
+        with self._transaction():
+            self.db.staff[id] = Staff(id, name, role, unit_id)
+            return self.db.staff[id]
 
     def add_patient(self, id: str, pnr: str, name: str, unit_id: str) -> Patient:
-        self.db.patients[id] = Patient(id, pnr, name, unit_id)
-        self.db.ehrs[id] = [self.records.create_ehr()]
-        return self.db.patients[id]
+        ehr_id = self.records.create_ehr()  # an EHR left unused by a crash here is harmless
+        with self._transaction():
+            self.db.patients[id] = Patient(id, pnr, name, unit_id)
+            self.db.ehrs[id] = [ehr_id]
+            return self.db.patients[id]
 
     def set_interface(self, up: bool, by: str) -> None:
         with self._transaction():
@@ -366,7 +373,8 @@ class LabLoop:
                follow_up: dict | None = None) -> Review:
         ob = self._obligation(obligation_id)
         if not self._may_review(reviewer_id, self.db.requests[ob.request_id]):
-            self._audit(reviewer_id, "review refused: no access", ob.id)  # F14: logged although refused
+            with self._transaction():
+                self._audit(reviewer_id, "review refused: no access", ob.id)  # F14: logged although refused
             raise Refused("reviewer may not review this result")
         with self._transaction():
             if ob.status is not OPEN:
@@ -566,6 +574,10 @@ class LabLoop:
         self._audit("reconciliation", action, ref, detail)
         self._notify(self.db.units[unit_id].monitor_id, "reconciliation", ref)
 
+    def close(self) -> None:
+        if self.store:
+            self.store.close()
+
     # Queries
 
     @property
@@ -672,6 +684,9 @@ class LabLoop:
         self._depth = 1
         try:
             yield
+            self._fault_point("before_commit")
+            if self.store:
+                self.store.save(snapshot, self.db)
         except BaseException:
             self.db = snapshot
             raise

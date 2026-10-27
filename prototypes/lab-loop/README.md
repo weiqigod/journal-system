@@ -2,7 +2,7 @@
 
 Prototype code, not production code. It implements the draft rules of the [laboratory result loop](../../docs/workflow-laboratory-results.md) as a Python library and runs the [scenarios](../../docs/scenarios-laboratory-results.md) as automated tests. Its purpose is to show whether the rules hold together as software. It has no user interface, no network laboratory connection, and only synthetic patients. Laboratory reports can be received as FHIR documents.
 
-Workflow state is in memory. Result content goes to a clinical record store: an in-memory stand-in by default, or the patched EHRbase from the [record-model experiment](../record-model/fixes/README.md), which stores each result as an openEHR composition using that experiment's pinned laboratory template.
+Workflow state is kept in memory and, optionally, in a SQLite file that survives restarts. Result content goes to a clinical record store: an in-memory stand-in by default, or the patched EHRbase from the [record-model experiment](../record-model/fixes/README.md), which stores each result as an openEHR composition using that experiment's pinned laboratory template.
 
 ## Run
 
@@ -24,7 +24,9 @@ Then, from this directory:
 LAB_LOOP_RECORDS=ehrbase python3 -m unittest -v
 ```
 
-The observed runs used Python 3.13.7 and the `journal-ehrbase:2.36.0-fixed` image: 74 tests, all passing with both stores.
+`LAB_LOOP_STATE=sqlite` runs every test with workflow state in a temporary SQLite file, and checks after each commit that reloading the file reproduces the state exactly. It combines with either record store.
+
+The observed runs used Python 3.13.7 and the `journal-ehrbase:2.36.0-fixed` image: 80 tests, all passing in all four combinations. One test, which kills a process between the two stores, runs only against EHRbase, since the in-memory record store does not outlive a process.
 
 ## Layout
 
@@ -32,10 +34,12 @@ The observed runs used Python 3.13.7 and the `journal-ehrbase:2.36.0-fixed` imag
 - `lab_loop/service.py` — operations and rules R1–R14. Each operation runs as one transaction and restores all workflow state if it fails.
 - `lab_loop/records.py` — the record stores and the mapping between result content and the openEHR template.
 - `lab_loop/fhir.py` — receives laboratory reports as FHIR R4 document Bundles.
+- `lab_loop/store.py` — saves workflow state to SQLite.
 - `tests/test_scenarios.py` — S1–S11, one test class per scenario.
 - `tests/test_record_store.py` — the boundary between workflow and record store: content location, corrections as composition versions, late versions, concurrent record changes, crashes between the two stores, and merges.
 - `tests/test_reconciliation.py` — R15: lost results and corrections adopted, late resends restoring flags, outside changes, missing entries, and entries without a known request.
 - `tests/test_fhir.py` — FHIR reports: content and flags, duplicates, corrections, withheld results, unknown codes and patients, rejected Bundles, and a crash partway through a Bundle.
+- `tests/test_persistence.py` — encoding, restarts, a crash before commit, and a process killed between the record write and the workflow commit.
 - `tests/test_failure_cases.py` — failure cases not already covered by a scenario (F2, F4, F5, F9, F11, F12, F14), plus R1 ownership fallbacks, correction before review, R14 review authority, and refusals leaving no partial state.
 
 ## Coverage
@@ -130,6 +134,14 @@ Building it showed two more gaps in the workflow:
 1. **A laboratory retraction (`entered-in-error`) had no rule.** R16 now covers it: in EHRbase the composition is deleted, which ends its current version while keeping earlier versions readable, and the clinician must acknowledge the withdrawal.
 2. **An unknown analysis code is a normal event,** for example when a laboratory adds a test. It must not drop the result; it is held with the code so the mapping can be extended.
 
+## Workflow persistence
+
+With `LabLoop(..., path="workflow.sqlite")`, each committed operation writes the rows it changed in one SQLite transaction, and a new `LabLoop` on the same path resumes from the last commit. Rows are JSON documents keyed by collection and ID, such as `obligations/ob12`, readable with the sqlite3 shell. An operation interrupted before its commit leaves the file at the previous commit.
+
+The test that kills a process shows the full chain: the child process writes a result to EHRbase and is killed before its workflow commit. After restart, the workflow has no trace of the result; reconciliation adopts the orphaned composition with an owner, and that survives a further restart.
+
+Each commit compares the whole state with its value before the operation, so its cost grows with the amount of data. One process at a time may use a file; concurrent users are not supported.
+
 ## Not covered
 
-Workflow persistence across restarts, concurrent users, sending orders to the laboratory, a network transport for reports, profile validation, 1177 publication, authentication, scheduling of the reconciliation job, and the user interface.
+Concurrent users and processes, sending orders to the laboratory, a network transport for reports, profile validation, 1177 publication, authentication, scheduling of the reconciliation job, and the user interface.

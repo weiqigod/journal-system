@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import itertools
 import os
+import tempfile
 from datetime import datetime
 
 from lab_loop import Clock, Config, LabLoop, LabMessage, ResultStatus, Role
@@ -26,8 +27,33 @@ def record_store():
     return MemoryRecordStore()
 
 
-def clinic(start: datetime = MONDAY, **config) -> LabLoop:
-    loop = LabLoop(Config(**config), Clock(start), record_store())
+def state_path() -> str | None:
+    """A fresh SQLite file when LAB_LOOP_STATE=sqlite; otherwise workflow state stays in memory."""
+    if os.environ.get("LAB_LOOP_STATE") != "sqlite":
+        return None
+    handle, path = tempfile.mkstemp(suffix=".sqlite")
+    os.close(handle)
+    return path
+
+
+def checked(loop: LabLoop) -> LabLoop:
+    """Make every commit verify that reloading the file reproduces the committed state."""
+    save = loop.store.save
+
+    def save_and_verify(before, after):
+        save(before, after)
+        if loop.store.load(type(after)) != after:
+            raise AssertionError("workflow state did not survive a reload")
+
+    loop.store.save = save_and_verify
+    return loop
+
+
+def clinic(start: datetime = MONDAY, path: str | None = None, records=None, **config) -> LabLoop:
+    path = path or state_path()
+    loop = LabLoop(Config(**config), Clock(start), records or record_store(), path)
+    if loop.store:
+        checked(loop)
     loop.add_unit(UNIT, "Vårdcentral Norr", monitor_id="sara", manager_id="maria")
     loop.add_unit("other", "Vårdcentral Syd", monitor_id="olof", manager_id="olof")
     for id, name, role, unit in [

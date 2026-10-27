@@ -74,7 +74,8 @@ class R1AlwaysAnOwner(unittest.TestCase):
         loop = clinic()
         request = loop.order("anna", "nyberg", ("K",), LAB)
         loop.depart("nyberg", by="sara", handover_to="falk")
-        loop.db.staff["falk"].active = False  # account closed outside the departure routine
+        with loop._transaction():  # account closed outside the departure routine
+            loop.db.staff["falk"].active = False
         result = loop.receive(message(loop, request.id, "K", 4.0))
         self.assertEqual(obligation_for(loop, result.id).owner_id, "sara")
 
