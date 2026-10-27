@@ -106,8 +106,9 @@ Priority is intentionally not assigned in this version except where an external 
 1. Review the coverage map for missing domains, roles, and cross-setting journeys.
 2. Define representative workflows across that breadth: actors, triggers, information changes, handovers, completion, and failures.
 3. Identify shared guarantees, module dependencies, local variation, and integrations; compare selected assumptions with another jurisdiction.
-4. Build working increments and verify them against research-grounded scenarios; link findings to requirements and regression checks.
-5. Develop safety, privacy, operational, and jurisdiction evidence alongside capabilities; set measurable quality targets for actual care use.
+4. Decide the development philosophy, roadmap, backlog, and technology stack, including scale targets ([SCL-Q01](docs/platform-requirements.md#scalability)). No product code is written before these decisions.
+5. Build working increments and verify them against research-grounded scenarios; link findings to requirements and regression checks. Prototypes written before step 4 test rules only and are not reused as product code.
+6. Develop safety, privacy, operational, and jurisdiction evidence alongside capabilities; set measurable quality targets for actual care use.
 
 ## Change log
 

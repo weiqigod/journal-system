@@ -1,6 +1,6 @@
 # Laboratory result loop prototype
 
-Prototype code, not production code. It implements the draft rules of the [laboratory result loop](../../docs/workflow-laboratory-results.md) as a Python library and runs the [scenarios](../../docs/scenarios-laboratory-results.md) as automated tests. Its purpose is to show whether the rules hold together as software. It has no user interface, no network laboratory connection, and only synthetic patients. Laboratory reports can be received as FHIR documents.
+Prototype code, not production code. Work on it has stopped and it will not become the product: it keeps all workflow state in one process's memory, so it cannot scale, and no technology stack has been chosen for the product. It implements the draft rules of the [laboratory result loop](../../docs/workflow-laboratory-results.md) as a Python library and runs the [scenarios](../../docs/scenarios-laboratory-results.md) as automated tests. Its purpose is to show whether the rules hold together as software. It has no user interface, no network laboratory connection, and only synthetic patients. Laboratory reports can be received as FHIR documents.
 
 Workflow state is kept in memory and, optionally, in a SQLite file that survives restarts. Result content goes to a clinical record store: an in-memory stand-in by default, or the patched EHRbase from the [record-model experiment](../record-model/fixes/README.md), which stores each result as an openEHR composition using that experiment's pinned laboratory template.
 
