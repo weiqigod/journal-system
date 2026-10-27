@@ -27,6 +27,7 @@ STATUS = {
     "amended": ResultStatus.CORRECTED,
     "corrected": ResultStatus.CORRECTED,
     "cancelled": ResultStatus.WITHHELD,
+    "entered-in-error": ResultStatus.ENTERED_IN_ERROR,
 }
 
 

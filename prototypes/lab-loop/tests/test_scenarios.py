@@ -337,5 +337,45 @@ class S10InterfaceDown(unittest.TestCase):
         self.assertTrue(all(o.owner_id == "holm" and o.result_id for o in loop.obligations()))
 
 
+
+class S11ResultWithdrawn(unittest.TestCase):
+    def setUp(self):
+        self.loop = loop = clinic()
+        self.request = loop.order("carl", "holm", ("ALT",), LAB)
+        self.result = loop.receive(message(loop, self.request.id, "ALT", 3.1, "µkat/L", abnormal=True))
+        self.first = obligation_for(loop, self.result.id)
+
+    def withdraw(self, seq=2):
+        self.loop.receive(message(self.loop, self.request.id, "ALT", None, "", seq=seq,
+                                  status=ResultStatus.ENTERED_IN_ERROR, comment="sample identity uncertain"))
+
+    def test_withdrawal_after_review_needs_acknowledgement(self):
+        loop = self.loop
+        review = loop.review(self.first.id, "holm", "referral", reasoning="raised ALT", inform="phone")
+        loop.record_patient_informed([self.first.id], "holm", "phone")
+        loop.clock.advance(days=2)
+        self.withdraw()
+        view = loop.staff_view(self.result.id)
+        self.assertEqual((view["value"], view["withdrawn_value"], view["comment"], view["visible_to_patient"]),
+                         (None, 3.1, "sample identity uncertain", True))
+        self.assertEqual(loop.trend("carl", "ALT"), [])
+        self.assertEqual(loop.db.reviews[review.id].lab_sequence, 1)
+        [ack] = loop.obligations(result_id=self.result.id, status=OPEN)
+        self.assertEqual((ack.withdrawal, ack.prior_review_id, ack.owner_id), (True, review.id, "holm"))
+        self.assertIn(ack.id, [n.ref for n in loop.notifications_for("holm", "result withdrawn")])
+        with self.assertRaises(Refused):
+            loop.review(ack.id, "holm", "no_action", inform="phone")
+        loop.review(ack.id, "holm", "no_action", reasoning="referral cancelled; new sample ordered",
+                    inform="phone")
+        self.assertEqual(loop.content(self.result.id, 1).value, 3.1)
+
+    def test_withdrawal_before_review_reuses_the_open_obligation(self):
+        self.withdraw()
+        [ob] = self.loop.obligations(result_id=self.result.id)
+        self.assertEqual((ob.id, ob.withdrawal, ob.lab_sequence), (self.first.id, True, 2))
+        self.withdraw(seq=3)
+        self.assertEqual(len(self.loop.obligations()), 1)
+
+
 if __name__ == "__main__":
     unittest.main()

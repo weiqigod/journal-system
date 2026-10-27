@@ -26,6 +26,7 @@ class ResultStatus(Enum):
     FINAL = "final"
     CORRECTED = "corrected"
     WITHHELD = "withheld"
+    ENTERED_IN_ERROR = "entered in error"
 
 
 class ObligationStatus(Enum):
@@ -136,6 +137,7 @@ class Result:
     ehr_id: str
     versions: list[ResultVersion] = field(default_factory=list)
     patient_visible_at: datetime | None = None
+    withdrawn_reason: str | None = None
 
     @property
     def current(self) -> ResultVersion | None:
@@ -174,6 +176,7 @@ class Obligation:
     lab_sequence: int | None = None
     status: ObligationStatus = ObligationStatus.OPEN
     critical: bool = False
+    withdrawal: bool = False
     call_id: str | None = None
     handled_elsewhere: str | None = None
     prior_review_id: str | None = None

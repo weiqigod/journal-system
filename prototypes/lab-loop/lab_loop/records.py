@@ -113,6 +113,12 @@ class MemoryRecordStore:
     def compositions(self, ehr_id: str) -> list[str]:
         return [self._versions[oid][-1][0] for oid in self._ehrs[ehr_id]]
 
+    def withdraw(self, ehr_id: str, version_uid: str) -> None:
+        """End a composition's current version while keeping its history readable. Repeating it is harmless."""
+        oid = object_id(version_uid)
+        if oid in self._ehrs[ehr_id]:
+            self._ehrs[ehr_id].remove(oid)
+
     def delete(self, ehr_id: str, version_uid: str) -> None:
         """Remove a composition, as a backup restored from before it was written would. Used by tests."""
         oid = object_id(version_uid)
@@ -165,6 +171,16 @@ class EhrbaseRecordStore:
         if status != 200:
             raise RuntimeError(f"read failed: {status} {str(composition)[:300]}")
         return self._content(composition)
+
+    def withdraw(self, ehr_id: str, version_uid: str) -> None:
+        """Delete the composition's current version; earlier versions stay readable. Repeating it is harmless."""
+        status, _, body = self._request("DELETE", f"/ehr/{ehr_id}/composition/{version_uid}")
+        if status == 404:
+            status, _, body = self._request("GET", f"/ehr/{ehr_id}/composition/{object_id(version_uid)}")
+            if status == 204:
+                return  # already deleted
+        if status != 204:
+            raise RuntimeError(f"withdraw failed: {status} {str(body)[:300]}")
 
     def delete(self, ehr_id: str, version_uid: str) -> None:
         """Delete a composition's current version, so it no longer appears as current. Used by tests."""

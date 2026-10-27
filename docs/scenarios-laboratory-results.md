@@ -2,7 +2,7 @@
 
 [Laboratory result loop](workflow-laboratory-results.md) · **Status:** Acceptance scenarios grounded in published Swedish routines, laboratory instructions, and reported incidents; not practitioner-reviewed · **Date:** 2026-10-26
 
-Each scenario is a realistic sequence for the [laboratory result loop](workflow-laboratory-results.md). Patients and values are synthetic; values follow the cited laboratories' limits but are not clinical guidance. Source references (E1–E13) point to the workflow's [evidence list](workflow-laboratory-results.md#evidence). Rules (R) and failure cases (F) are defined there.
+Each scenario is a realistic sequence for the [laboratory result loop](workflow-laboratory-results.md). Patients and values are synthetic; values follow the cited laboratories' limits but are not clinical guidance. Source references (E1–E14) point to the workflow's [evidence list](workflow-laboratory-results.md#evidence). Rules (R) and failure cases (F) are defined there.
 
 A scenario passes when every **Expect** line holds. Run each against a deployment configured with a 7-day review deadline, the critical limits of the named laboratory, and Stockholm-style 1177 publication unless stated.
 
@@ -152,3 +152,17 @@ The connection to the laboratory is down for a full working day.
 - Requests made during the outage are recorded so their results can be matched when they arrive; none are lost (R9, F10).
 - The phoned value is recorded as in S2, and the electronic result later links to it.
 - After reconnection, each result appears once and reaches its owner; nothing from the outage day is left without an obligation.
+
+## S11 — Result withdrawn after review
+
+**Grounded in:** E13, E14.
+
+1. Carl Ek's ALT of 3.1 µkat/L is flagged high. Dr Holm reviews it, refers him for an ultrasound, and phones him.
+2. Two days later the laboratory withdraws the result as entered in error: sample identity uncertain.
+
+**Expect:**
+- The result is no longer shown as a current value or in trends. Staff see it as withdrawn, with the reason and the withdrawn value; the patient-visibility state is unchanged (R16).
+- Dr Holm's review stays linked to the withdrawn version, and the value stays readable in the record history.
+- Dr Holm gets one new obligation linked to the earlier review. "No action" is refused without reasoning; the acknowledgement records what happens to the referral and how Carl is informed.
+
+**Variant — withdrawn before review.** The open obligation becomes the acknowledgement; no second obligation is created, and a repeated withdrawal changes nothing.

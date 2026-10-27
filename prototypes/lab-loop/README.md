@@ -24,7 +24,7 @@ Then, from this directory:
 LAB_LOOP_RECORDS=ehrbase python3 -m unittest -v
 ```
 
-The observed runs used Python 3.13.7 and the `journal-ehrbase:2.36.0-fixed` image: 69 tests, all passing with both stores.
+The observed runs used Python 3.13.7 and the `journal-ehrbase:2.36.0-fixed` image: 74 tests, all passing with both stores.
 
 ## Layout
 
@@ -32,7 +32,7 @@ The observed runs used Python 3.13.7 and the `journal-ehrbase:2.36.0-fixed` imag
 - `lab_loop/service.py` — operations and rules R1–R14. Each operation runs as one transaction and restores all workflow state if it fails.
 - `lab_loop/records.py` — the record stores and the mapping between result content and the openEHR template.
 - `lab_loop/fhir.py` — receives laboratory reports as FHIR R4 document Bundles.
-- `tests/test_scenarios.py` — S1–S10, one test class per scenario.
+- `tests/test_scenarios.py` — S1–S11, one test class per scenario.
 - `tests/test_record_store.py` — the boundary between workflow and record store: content location, corrections as composition versions, late versions, concurrent record changes, crashes between the two stores, and merges.
 - `tests/test_reconciliation.py` — R15: lost results and corrections adopted, late resends restoring flags, outside changes, missing entries, and entries without a known request.
 - `tests/test_fhir.py` — FHIR reports: content and flags, duplicates, corrections, withheld results, unknown codes and patients, rejected Bundles, and a crash partway through a Bundle.
@@ -56,6 +56,7 @@ The observed runs used Python 3.13.7 and the `journal-ehrbase:2.36.0-fixed` imag
 | R11 | S1 |
 | R12, F16 | S2b |
 | R15, F19, F20, F21 | `test_reconciliation.py` |
+| R16, F23 | S11, `WithdrawnResults`, FHIR `entered-in-error` tests |
 | F4 | `F4CrashBetweenResultAndObligation` |
 | F9, F11, F12, F14 | matching `F…` classes |
 
@@ -116,17 +117,17 @@ Entries younger than `reconcile_after` (default one hour) are skipped, because t
 | `DiagnosticReport.performer` → `Organization.name` | Laboratory |
 | `Observation.code.coding` | Mapped to the test name through a configured table, so LOINC, NPU, or local codes can be used |
 | `Observation.meta.versionId` | Laboratory version, which orders corrections |
-| `Observation.status` | `preliminary`, `final`, `amended`/`corrected`, and `cancelled` (withheld) |
+| `Observation.status` | `preliminary`, `final`, `amended`/`corrected`, `cancelled` (withheld), and `entered-in-error` (withdrawn, R16) |
 | `Observation.interpretation` | `H`, `L`, `A` are abnormal; `HH`, `LL`, `AA` are critical |
 | `valueQuantity`, `referenceRange`, `note`, `dataAbsentReason` | Value, unit, range, and comment |
 
-Each Observation becomes one message, identified by Bundle identifier, Observation ID, and version, so a resent Bundle yields only duplicates. The returned `ReceiveOutcome` is the acknowledgement: results stored, results held in the intake queue, and duplicates. A Bundle that is not a document, lacks a personnummer or performing laboratory, or references an Observation it does not contain is rejected whole with `MessageRejected`, and nothing is stored. An unknown analysis code, an `entered-in-error` or other unhandled status, or a missing version goes to the unit's intake queue with the reason. If processing stops partway through a Bundle, resending it stores only what is missing.
+Each Observation becomes one message, identified by Bundle identifier, Observation ID, and version, so a resent Bundle yields only duplicates. The returned `ReceiveOutcome` is the acknowledgement: results stored, results held in the intake queue, and duplicates. A Bundle that is not a document, lacks a personnummer or performing laboratory, or references an Observation it does not contain is rejected whole with `MessageRejected`, and nothing is stored. An unknown analysis code, an unhandled status such as `registered`, or a missing version goes to the unit's intake queue with the reason. If processing stops partway through a Bundle, resending it stores only what is missing.
 
 The tests use LOINC codes. The adapter reads only the elements above and does not validate Bundles against the guide's profiles; the HL7 validator would be the next step. The guide is based on FHIR R4, while the specification's [verification references](../../docs/verification-references.md) pin R5 for the record-model comparison.
 
 Building it showed two more gaps in the workflow:
 
-1. **A laboratory retraction (`entered-in-error`) has no rule.** It goes to the intake queue for manual handling. The workflow needs to say what happens to a result already reviewed or shown to the patient when the laboratory withdraws it.
+1. **A laboratory retraction (`entered-in-error`) had no rule.** R16 now covers it: in EHRbase the composition is deleted, which ends its current version while keeping earlier versions readable, and the clinician must acknowledge the withdrawal.
 2. **An unknown analysis code is a normal event,** for example when a laboratory adds a test. It must not drop the result; it is held with the code so the mapping can be extended.
 
 ## Not covered

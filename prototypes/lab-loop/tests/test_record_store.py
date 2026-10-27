@@ -100,6 +100,25 @@ class CrashBetweenStores(unittest.TestCase):
         self.assertEqual(loop.db.results[result.id].current.version_uid, current)
 
 
+
+class WithdrawnResults(unittest.TestCase):
+    def test_withdrawn_result_leaves_current_record_but_keeps_history(self):
+        loop = clinic()
+        request = loop.order("carl", "holm", ("ALT",), LAB)
+        result = loop.receive(message(loop, request.id, "ALT", 3.1, "µkat/L"))
+        uid = result.current.version_uid
+        loop.fault = "after_record_written"
+        withdrawal = message(loop, request.id, "ALT", None, "", seq=2, status=ResultStatus.ENTERED_IN_ERROR,
+                             comment="sample identity uncertain")
+        with self.assertRaises(SimulatedCrash):
+            loop.receive(withdrawal)
+        loop.receive(withdrawal)
+        self.assertEqual(loop.records.compositions(result.ehr_id), [])
+        self.assertEqual(loop.records.read(result.ehr_id, uid).value, 3.1)
+        loop.clock.advance(days=1)
+        self.assertEqual(loop.reconcile().missing, [])
+
+
 class MergeAcrossRecords(unittest.TestCase):
     def test_duplicate_records_stay_readable_after_merge(self):
         loop = clinic()

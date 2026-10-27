@@ -234,6 +234,8 @@ class LabLoop:
             self.db.late_messages[msg.message_id] = replace(msg)
             self._audit(msg.laboratory, "late older version kept as history", result.id)
             return result
+        if msg.status is ResultStatus.ENTERED_IN_ERROR:
+            return self._withdraw(request, result, previous, msg)
         key = record_key(msg.laboratory, request.id, msg.analyte, msg.lab_sequence)
         uid = self.records.find(result.ehr_id, key)
         if uid is None:
@@ -259,6 +261,30 @@ class LabLoop:
         if version.status in (ResultStatus.FINAL, ResultStatus.CORRECTED) or version.critical:
             self._assign_review(request, result, version)
         self._update_request(request)
+        return result
+
+    def _withdraw(self, request: Request, result: Result, previous: ResultVersion | None, msg: LabMessage):
+        """R16: a withdrawn result keeps its history and must be acknowledged by the responsible clinician."""
+        if previous is None:
+            del self.db.results[result.id]
+            return self._to_intake(msg, request.unit_id, "laboratory withdrew a result that was never received")
+        if previous.status is ResultStatus.ENTERED_IN_ERROR:
+            self._audit(msg.laboratory, "result already withdrawn", result.id, msg.message_id)
+            return result
+        self.records.withdraw(result.ehr_id, previous.version_uid)
+        self._fault_point("after_record_written")
+        version = self._version(msg, None)
+        result.versions.append(version)
+        result.withdrawn_reason = msg.comment or "entered in error"
+        ob = next(iter(self._obligations(result_id=result.id, status=OPEN)), None)
+        if ob:
+            ob.lab_sequence, ob.withdrawal = version.lab_sequence, True
+        else:
+            prior = self._latest_review(result.id)
+            ob = self._new_obligation(request, result.analyte, result_id=result.id, lab_sequence=version.lab_sequence,
+                                      prior_review_id=prior.id if prior else None, withdrawal=True)
+        self._history(ob, msg.laboratory, "result withdrawn by laboratory: " + result.withdrawn_reason)
+        self._notify(ob.owner_id, "result withdrawn", ob.id)
         return result
 
     def _version(self, msg: LabMessage, version_uid: str | None) -> ResultVersion:
@@ -351,8 +377,8 @@ class LabLoop:
                 raise Refused(f"unknown decision {decision!r}")
             result = self.db.results[ob.result_id]
             version = result.version(ob.lab_sequence)
-            if (version.abnormal or version.critical) and decision == "no_action" and not reasoning:
-                raise Refused("a no-action decision on an abnormal result needs reasoning")  # R3, F18
+            if (version.abnormal or version.critical or ob.withdrawal) and decision == "no_action" and not reasoning:
+                raise Refused("a no-action decision on an abnormal or withdrawn result needs reasoning")  # R3, R16
             if not inform and not agreed_not_to_inform:
                 raise Refused("record how the patient is informed, or that they agreed not to be")  # R11
             review = Review(self._id("rev"), ob.id, result.id, version.lab_sequence, reviewer_id, self.now,
@@ -472,7 +498,7 @@ class LabLoop:
             heads = {}
             for result in self.db.results.values():
                 written = [v for v in result.versions if v.version_uid]
-                if written:
+                if written and result.current.status is not ResultStatus.ENTERED_IN_ERROR:
                     head = max(written, key=lambda v: v.lab_sequence)
                     heads[object_id(head.version_uid)] = (result, head)
             present = set()
@@ -582,10 +608,20 @@ class LabLoop:
         """What staff see about one result, including its patient visibility (F13)."""
         result = self.db.results[result_id]
         version = result.current
-        content = self.content(result_id)
+        withdrawn = version.status is ResultStatus.ENTERED_IN_ERROR
+        written = [v for v in result.versions if v.version_uid]
+        content = self.content(result_id, max(written, key=lambda v: v.lab_sequence).lab_sequence)
         open_ob = next(iter(self._obligations(result_id=result.id, status=OPEN)), None)
         reviewed = any(r.result_id == result.id and r.lab_sequence == version.lab_sequence
                        for r in self.db.reviews.values())
+        if withdrawn:
+            return {
+                "value": None, "unit": content.unit, "status": version.status, "comment": result.withdrawn_reason,
+                "withdrawn_value": content.value, "corrected": False, "versions": len(result.versions),
+                "reviewed": False, "owner": open_ob.owner_id if open_ob else None,
+                "visible_to_patient": result.patient_visible_at is not None,
+                "visible_since": result.patient_visible_at,
+            }
         return {
             "value": content.value, "unit": content.unit, "status": content.status, "comment": content.comment,
             "corrected": version.status is ResultStatus.CORRECTED, "versions": len(result.versions),
@@ -598,7 +634,8 @@ class LabLoop:
         rows = []
         for result in self.db.results.values():
             version = result.current
-            if result.patient_id == patient_id and result.analyte == analyte and version.status is not ResultStatus.WITHHELD:
+            if result.patient_id == patient_id and result.analyte == analyte and version.status not in (
+                    ResultStatus.WITHHELD, ResultStatus.ENTERED_IN_ERROR):
                 content = self.content(result.id)
                 rows.append({"at": version.received_at, "value": content.value, "unit": content.unit,
                              "reference_range": content.reference_range, "comment": content.comment})

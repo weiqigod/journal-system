@@ -52,7 +52,7 @@ Each lifecycle is owned separately and linked, as proposed in the [foundational 
 |---|---|---|
 | Request | draft → sent → accepted · rejected → in progress → completed; cancelled; overdue | Cancellation after collection does not erase the specimen or any result. |
 | Specimen | awaiting collection → collected → received → analysed; rejected or lost → recollection requested | Rejection reason comes from the laboratory. |
-| Result (per observation) | preliminary → final → corrected (new version); entered in error | Each version is retained; arrival order does not define the current version. |
+| Result (per observation) | preliminary → final → corrected (new version); withheld; entered in error (withdrawn) | Each version is retained; arrival order does not define the current version. |
 | Review obligation | open → reviewed → follow-up recorded → closed; reassigned; overdue | A review binds to one result version. A correction before review moves the open obligation to the newer version; after review it opens a new obligation (R4). |
 
 ## Rules (draft)
@@ -72,6 +72,7 @@ Each lifecycle is owned separately and linked, as proposed in the [foundational 
 - **R13:** A result the laboratory withholds, such as a haemolysed sample, creates no review obligation. It creates a recollection task owned by the unit's designated monitor and notifies the orderer. The request stays open, so R10 applies until a usable result arrives.
 - **R14:** A result may be reviewed by an active physician at the ordering unit, or by staff whose role the deployment authorises to review their own orders, such as nurses for tests they ordered. Responsibility follows the ordering unit, not the unit where the patient is listed. Other attempts are refused and logged. This is the slice's stand-in for [IAM-004](platform-requirements.md#iam-004--context-sensitive-authorization).
 - **R15:** A reconciliation job regularly compares the clinical record store with workflow state. A record entry the workflow does not know, older than the retry window, is adopted with an owner and treated as abnormal until the laboratory resends its flags; one without a known request goes to the unit's monitor. Record changes made outside the workflow, and workflow entries missing from the record store, are reported to the monitor and never repaired automatically.
+- **R16:** A result the laboratory withdraws as entered in error is never deleted. Its earlier versions stay readable in the record history, but it is no longer shown as a current value or in trends; staff see it as withdrawn, with the laboratory's reason and the withdrawn value. The responsible clinician must acknowledge the withdrawal: an unreviewed obligation becomes the acknowledgement, and an already reviewed result gets a new obligation linked to that review. Acknowledging with no action needs reasoning, such as what was done about actions taken on the result, and records how the patient is informed (R3, R11). A withdrawal of a result never received goes to the intake queue.
 
 ## Failure and delay cases
 
@@ -99,7 +100,7 @@ Each lifecycle is owned separately and linked, as proposed in the [foundational 
 | F20 | Record entry missing, for example after restoring an older backup | R15: reported. | [INF-003](clinical-requirements.md#inf-003--explicit-history) |
 | F21 | Record entry changed outside the workflow | R15: reported, not adopted. | [DOC-008](clinical-requirements.md#doc-008--change-history) |
 | F22 | Laboratory report uses an unknown analysis code | Held in the unit's intake queue with the code; never dropped. | [CLI-010](clinical-requirements.md#cli-010--clinical-terminology-and-coding) |
-| F23 | Laboratory withdraws a result as entered in error | Held for manual handling; no rule yet for a result already reviewed or shown to the patient. | [DOC-007](clinical-requirements.md#doc-007--correction-and-amendment) |
+| F23 | Laboratory withdraws a result as entered in error | R16. | [DOC-007](clinical-requirements.md#doc-007--correction-and-amendment) |
 
 ## Information to capture
 
@@ -123,7 +124,7 @@ From the published sources listed under [Evidence](#evidence). Regions and labor
 ## Open questions
 
 - Which laboratory interface and message standard the first deployment uses, and whether the laboratory system or this product is authoritative for request status ([ORD-Q04](clinical-requirements.md#orders-investigations-and-results)). The prototype receives FHIR R4 reports shaped after HL7 Europe Laboratory Report 2.0.0 ([E14](#evidence)); current Swedish laboratory practice is unverified.
-- What happens to a reviewed or patient-visible result that the laboratory withdraws as entered in error (F23).
+- How a withdrawal reaches the patient in 1177 when the withdrawn result was already visible there (R16).
 - Which code system identifies analyses, and whether results reach NPÖ ([SE-NPO-Q01](sweden.md)).
 - Which region's 1177 publication rules the first deployment follows ([SE-1177-Q03](sweden.md)).
 - How the first laboratory reports haemolysed samples: withheld, or reported with a comment. Practice is set locally ([E12](#evidence)).

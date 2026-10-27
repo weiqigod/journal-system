@@ -105,8 +105,23 @@ class FhirReceive(unittest.TestCase):
         item = self.loop.db.intake[outcome.held[0]]
         self.assertEqual((item.owner_id, item.reason), ("sara", f"unknown analysis code {LOINC}|99999-9"))
 
-    def test_entered_in_error_needs_manual_handling(self):
-        outcome = self.adapter.receive(self.bundle("b1", [observation("k", "2823-3", 4.2, status="entered-in-error")]))
+    def test_entered_in_error_withdraws_the_result(self):
+        first = self.adapter.receive(self.bundle("b1", [observation("k", "2823-3", 4.2)])).results[0]
+        self.adapter.receive(self.bundle("b2", [observation("k", "2823-3", version=2, status="entered-in-error",
+                                                            note="sample identity uncertain")]))
+        view = self.loop.staff_view(first)
+        self.assertEqual((view["status"], view["comment"], view["withdrawn_value"]),
+                         (ResultStatus.ENTERED_IN_ERROR, "sample identity uncertain", 4.2))
+
+    def test_withdrawal_of_unknown_result_is_held(self):
+        outcome = self.adapter.receive(self.bundle("b1", [observation("k", "2823-3", version=2,
+                                                                      status="entered-in-error")]))
+        self.assertEqual(self.loop.db.intake[outcome.held[0]].reason,
+                         "laboratory withdrew a result that was never received")
+        self.assertEqual(self.loop.db.results, {})
+
+    def test_unhandled_status_needs_manual_handling(self):
+        outcome = self.adapter.receive(self.bundle("b1", [observation("k", "2823-3", 4.2, status="registered")]))
         self.assertIn("needs manual handling", self.loop.db.intake[outcome.held[0]].reason)
 
     def test_unknown_patient_and_missing_request_are_held(self):
