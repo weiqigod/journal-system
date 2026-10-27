@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import atexit
 import itertools
 import os
 import tempfile
@@ -33,6 +34,7 @@ def state_path() -> str | None:
         return None
     handle, path = tempfile.mkstemp(suffix=".sqlite")
     os.close(handle)
+    atexit.register(os.remove, path)
     return path
 
 
