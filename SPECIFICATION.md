@@ -49,6 +49,7 @@ This constrains the technology decisions without making them; the interface's fo
 | Decision | Choice |
 |---|---|
 | Backend language | C#; all backend code. |
+| Frontend | Svelte, using TypeScript. |
 | Database | PostgreSQL. |
 | Architecture | Clean architecture. |
 | Design | Object orientation and domain-driven design. |
@@ -139,4 +140,4 @@ Priority is intentionally not assigned in this version except where an external 
 | 0.2 | 2026-09-19 | Reframed as a general clinical information system with Sweden as the initial case study. Translated to English. Removed premature architecture, system-context, and internal data-model proposals. Added requirement categories for core, care-setting, jurisdiction, and deployment variation. |
 | 0.3 | 2026-09-19 | Adopted comprehensive modular scope with Sweden first and practitioner dogfooding. Added module, localization, and profile requirements with verification criteria. Split the master from supporting definitions and a coverage map; requirement IDs retained. |
 | 0.4 | 2026-10-26 | Dropped practitioner dogfooding: workflows are grounded in published sources and verified against research-grounded scenarios. Added the laboratory result loop as the first workflow slice and EU regulatory requirements. |
-| 0.5 | 2026-10-27 | Adopted interaction surfaces: a graphical client and AI assistants as clients of one action interface. Added user-surface and assistant requirements and the development decisions that precede product code. Stopped prototype work until those decisions are made. Adopted the development approach: C# backend, PostgreSQL, clean architecture, object orientation, domain-driven design, test-driven development, and vertical slices. |
+| 0.5 | 2026-10-27 | Adopted interaction surfaces: a graphical client and AI assistants as clients of one action interface. Added user-surface and assistant requirements and the development decisions that precede product code. Stopped prototype work until those decisions are made. Adopted the development approach: C# backend, Svelte frontend in TypeScript, PostgreSQL, clean architecture, object orientation, domain-driven design, test-driven development, and vertical slices. |

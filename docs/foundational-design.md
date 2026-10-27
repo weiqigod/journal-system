@@ -85,7 +85,7 @@ Access decisions consider the actor, action, patient, organizational scope, care
 
 **Recommendation:** Start with one deployable application containing enforced modules, with module-owned persistence and explicit contracts. This keeps installation and local transactions manageable while we test domain boundaries. Contract checks prevent direct access to another module's private storage. Separate services become justified by concrete isolation, scaling, or lifecycle needs.
 
-This assumes trusted modules shipped through the project release process. Untrusted extensions would need a separate execution and permission design. The [development approach](../SPECIFICATION.md#development-approach) adopts C# for the backend and PostgreSQL as the database. Frameworks and physical storage boundaries remain undecided.
+This assumes trusted modules shipped through the project release process. Untrusted extensions would need a separate execution and permission design. The [development approach](../SPECIFICATION.md#development-approach) adopts C# for the backend, Svelte with TypeScript for the frontend, and PostgreSQL as the database. Frameworks and physical storage boundaries remain undecided.
 
 The [record model comparison](record-model-comparison.md) walks through concurrent signing, corrected results, and cross-setting handover. It recommends an openEHR-based clinical-content prototype with product-owned workflow behavior and FHIR exchange, compared against a FHIR-native implementation. The preference is provisional. An [EHRbase repository probe](prototype-findings.md) provides limited runtime evidence, including original concurrency failures and a verified local patch; the clinical cases remain unverified.
 
