@@ -25,7 +25,9 @@ Modules contribute to a common workspace with consistent patient context, naviga
 
 ```mermaid
 flowchart TB
-    UI[Shared clinical workspace] --> M[Clinical and administrative modules]
+    UI[Graphical clinical workspace] --> X[Action interface]
+    AI[Assistants acting for a person] --> X
+    X --> M[Clinical and administrative modules]
     M --> F[Shared foundation]
     P[Profiles and validated configuration] -.-> M
     P -.-> F
@@ -33,7 +35,7 @@ flowchart TB
     A <--> E[National services and specialist systems]
 ```
 
-This shows logical responsibilities, not process or deployment boundaries.
+This shows logical responsibilities, not process or deployment boundaries. The action interface is [adopted direction](../SPECIFICATION.md#interaction-surfaces); the rest of this diagram remains a proposal.
 
 ## Clinical information over time
 

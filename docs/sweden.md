@@ -102,6 +102,10 @@ At minimum, the Swedish implementation shall maintain traceability against the c
 
 The exact applicability of each source depends on intended purpose, care setting, provider type, product scope, and deployment model.
 
+### Open questions
+
+- **SE-AI-Q01:** On what legal basis, and after what assessment, may patient information be processed by an external assistant's provider ([AGT-Q01](platform-requirements.md#user-surfaces-and-assistants))? For public providers, disclosure to a service provider for technical processing or storage rests on [chapter 10, section 2 a of the Public Access to Information and Secrecy Act](https://www.riksdagen.se/sv/dokument-och-lagar/dokument/svensk-forfattningssamling/offentlighets-och-sekretesslag-2009400_sfs-2009-400/) (OSL), in force since 1 July 2023, and authorities' routines require a suitability assessment of the service and the information before use. The corresponding basis for private providers is unverified. A government inquiry ([dir. 2026:116](https://regeringen.se/contentassets/a56a461b186e4ee980f05136e18f81ed/en-analys-av-tillampningen-av-offentlighetsprincipen-vid-myndigheters-anvandning-av-artificiell-intelligens-dir.-2026116.pdf)) is analysing how public access to official documents applies when authorities use AI, including AI tools in external cloud services.
+
 ---
 
 ## Swedish reference sources to track

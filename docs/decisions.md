@@ -78,4 +78,14 @@ The [foundational design exploration](foundational-design.md) proposes answers f
 - **Q-AI-002:** May the system generate summaries of clinical information?
 - **Q-AI-003:** May AI generate suggestions concerning diagnosis, medication, investigations, or treatment?
 - **Q-AI-004:** Which AI capabilities are clinical decision support and which are administrative assistance?
-- **Q-AI-005:** What verification, provenance, versioning, and human-review requirements apply to AI-generated clinical content?
+- **Q-AI-005:** What verification, provenance, versioning, and human-review requirements apply to AI-generated clinical content? Proposed in [AGT-001](platform-requirements.md#agt-001--delegated-identity)–[AGT-004](platform-requirements.md#agt-004--provenance-of-generated-content).
+- **Q-AI-006:** See [AGT-Q01](platform-requirements.md#user-surfaces-and-assistants).
+
+## Development
+
+These decisions come before any product code; see the [master](../SPECIFICATION.md#recommended-next-specification-work). The [interaction surfaces](../SPECIFICATION.md#interaction-surfaces) direction constrains them.
+
+- **Q-DEV-001:** What development philosophy does the project follow, including how increments are chosen, verified, and released?
+- **Q-DEV-002:** What is the roadmap: the order of workflows and the first usable increment ([Q-PROD-002](#product-and-care-settings))?
+- **Q-DEV-003:** How is the backlog kept, and how does it trace to requirements and scenarios?
+- **Q-DEV-004:** Which language, database, framework, and record model does the product use ([SUR-Q02](platform-requirements.md#user-surfaces-and-assistants), [SCL-Q01](platform-requirements.md#scalability))?

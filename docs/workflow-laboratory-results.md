@@ -124,6 +124,7 @@ From the published sources listed under [Evidence](#evidence). Regions and labor
 ## Open questions
 
 - Which laboratory interface and message standard the first deployment uses, and whether the laboratory system or this product is authoritative for request status ([ORD-Q04](clinical-requirements.md#orders-investigations-and-results)). The prototype receives FHIR R4 reports shaped after HL7 Europe Laboratory Report 2.0.0 ([E14](#evidence)); current Swedish laboratory practice is unverified.
+- What the review surface must show: abnormal and critical results distinguished, deadlines, and the patient on every result; and which actions an assistant may prepare, such as a follow-up draft, against those the person must confirm, such as sign-off and R11 ([SUR-002](platform-requirements.md#sur-002--confirmation-bound-to-what-was-shown), [AGT-003](platform-requirements.md#agt-003--person-confirms-consequential-actions), [AGT-Q03](platform-requirements.md#user-surfaces-and-assistants)).
 - How a withdrawal reaches the patient in 1177 when the withdrawn result was already visible there (R16).
 - Which code system identifies analyses, and whether results reach NPÖ ([SE-NPO-Q01](sweden.md)).
 - Which region's 1177 publication rules the first deployment follows ([SE-1177-Q03](sweden.md)).

@@ -14,7 +14,7 @@ The intended purpose of the product and any independently regulated capability s
 **Status:** Externally driven  
 A documented assessment shall determine whether the product or any capability is subject to medical-device, clinical-software, national information-system, or other sector-specific regulation in each supported jurisdiction.
 
-**Verify:** For each capability and supported jurisdiction, a dated, versioned assessment records the intended purpose under [REG-001](#reg-001--intended-purpose); each instrument considered, including in the EU [Regulation (EU) 2017/745](http://data.europa.eu/eli/reg/2017/745/oj) (MDR), [Regulation (EU) 2017/746](http://data.europa.eu/eli/reg/2017/746/oj) (IVDR), and [Regulation (EU) 2025/327](http://data.europa.eu/eli/reg/2025/327/oj) (EHDS); the conclusion and class for each, with reasoning; and who reviewed it. A change to a capability's intended purpose or to an applicable instrument reopens the assessment before the next release.  
+**Verify:** For each capability and supported jurisdiction, a dated, versioned assessment records the intended purpose under [REG-001](#reg-001--intended-purpose); each instrument considered, including in the EU [Regulation (EU) 2017/745](http://data.europa.eu/eli/reg/2017/745/oj) (MDR), [Regulation (EU) 2017/746](http://data.europa.eu/eli/reg/2017/746/oj) (IVDR), [Regulation (EU) 2025/327](http://data.europa.eu/eli/reg/2025/327/oj) (EHDS), and for AI capabilities [Regulation (EU) 2024/1689](http://data.europa.eu/eli/reg/2024/1689/oj) (AI Act); the conclusion and class for each, with reasoning; and who reviewed it. A change to a capability's intended purpose or to an applicable instrument reopens the assessment before the next release.  
 **Open:** [REG-Q02](#regulatory-and-legal-requirements-management), [REG-Q04](#regulatory-and-legal-requirements-management).
 
 ### REG-003 — Scope boundaries
@@ -46,6 +46,7 @@ Where the product is placed on the market or put into service in the EU as an EH
 - The [laboratory result loop](workflow-laboratory-results.md) processes medical test results, so the 2031 date applies to it.
 - The logging component sets an exchange format for access information. [AUD-001](platform-requirements.md#aud-001--patient-information-access-logging) still owns what access logging must record; the EHDS format is an external constraint to map to it.
 - Under the MDR, software with a medical purpose for individual patients may qualify as a medical device. Record storage and display usually does not, but capabilities such as decision support or dose calculation may. Qualify each capability separately, using the Medical Device Coordination Group's [software guidance](https://health.ec.europa.eu/medical-devices-sector/new-regulations/guidance-mdcg-endorsed-documents-and-other-guidance_en) (MDCG 2019-11), and keep the boundaries explicit under [REG-003](#reg-003--scope-boundaries).
+- Under the [AI Act](http://data.europa.eu/eli/reg/2024/1689/oj), an AI system that is itself a medical device or IVD, or a safety component of one, and that requires notified-body conformity assessment is high-risk under Article 6(1). Its obligations, including human oversight (Article 14), apply from 2 August 2028, as amended by [Regulation (EU) 2026/1744](http://data.europa.eu/eli/reg/2026/1744/oj); MDR and IVDR dates are unchanged. An assistant that drafts or summarizes may fall outside this, while one that suggests diagnoses, medication, or investigations may not. Qualify each assistant capability separately under [REG-003](#reg-003--scope-boundaries) and [AGT-003](platform-requirements.md#agt-003--person-confirms-consequential-actions).
 - Medical devices and IVDs that claim interoperability with the harmonised components must also meet the EHDS requirements for them (Article 27).
 
 ### Open questions
@@ -90,6 +91,7 @@ Risk analysis shall consider both incorrect behavior and absence or delay of exp
 - inappropriate information access,
 - inability to access critical information during care,
 - misleading aggregation of conflicting information.
+- an assistant action or generated content the person did not intend or check.
 
 ### SAFE-005 — Human factors
 **Status:** Proposed  

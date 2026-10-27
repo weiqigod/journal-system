@@ -175,6 +175,78 @@ The system shall produce a patient's access history from the access log. The jur
 
 ---
 
+## User surfaces and assistants
+
+People use the product through a graphical client and through AI assistants that act on their behalf. Both are clients of one action interface; the rules live behind it, not in either surface. The form of that interface, its protocol, and the technology behind it remain open.
+
+Informative: in 1.7 million voluntary safety reports from Pennsylvania and a multi-hospital system in 2013–2016, 557 explicitly suggested that EHR usability contributed to possible patient harm, concentrated in order placement, medication administration, review of results, and documentation ([Howe et al., JAMA 2018](https://pubmed.ncbi.nlm.nih.gov/29584833/)). In a randomized trial covering 901,776 ordering sessions, requiring prescribers to re-enter the patient's identity before ordering reduced wrong-patient orders (odds ratio 0.60) more than a confirmation alert did (0.84) ([Adelman et al., JAMIA 2013](https://psnet.ahrq.gov/issue/understanding-and-preventing-wrong-patient-electronic-orders-randomized-controlled-trial)).
+
+### SUR-001 — Single action interface
+**Category:** Core  
+**Status:** Proposed  
+Every action a user can take, and every read of patient information, shall be available through one product interface that applies authorization, validation, workflow rules, and audit. Graphical clients, assistants, integrations, and administration tools act only through it; no surface holds privileges or rules of its own.
+
+**Verify:** For each action in an implemented workflow, act as the same user in the same context through the graphical client and through an assistant or scripted client. Both give the same permitted or refused outcome, the same state change, and equivalent audit entries that differ only in the recorded surface. Each surface's deployed credentials grant no access to storage or to module internals; an attempt to use them that way is refused.  
+**Open:** [SUR-Q01](#user-surfaces-and-assistants), [SUR-Q02](#user-surfaces-and-assistants).
+
+### SUR-002 — Confirmation bound to what was shown
+**Category:** Core  
+**Status:** Proposed  
+An action with clinical or legal effect shall take effect only for the patient, the item revisions, and the content the confirming person was shown. If any of them changed in between, the action is refused and the person is shown what changed.
+
+**Verify:** Prepare an order for patient A, switch the session to patient B in another window, then confirm: the order is placed for A or refused, never for B. Change a result revision between display and review sign-off: sign-off is refused and the new revision shown. Repeat both with the action prepared by an assistant and confirmed by the person; the outcomes are the same.  
+**Open:** [DOC-Q01](clinical-requirements.md#clinical-documentation).
+
+### SUR-003 — Patient identity re-verification
+**Category:** Core / Deployment-specific  
+**Status:** Proposed  
+For actions the deployment designates as high-risk, such as ordering or prescribing, the product shall support requiring the person to re-verify the patient's identity by active input, not only by acknowledging a prompt.
+
+**Verify:** With ordering designated, place an order through each surface: confirmation requires the person to enter identifying information that matches the patient, and a mismatch blocks the order. With the designation removed, no re-verification is required. The designation is recorded as safety-relevant configuration under [AUD-006](#aud-006--administrative-and-configuration-audit).  
+**Open:** [SUR-Q01](#user-surfaces-and-assistants).
+
+### AGT-001 — Delegated identity
+**Category:** Core  
+**Status:** Proposed  
+An assistant shall act only on behalf of an identified person, within a session that person started, and hold no standing access of its own. Every read and action records the person, the assistant and its version, and the surface.
+
+**Verify:** An assistant request without a delegating person is refused. Reads and actions through an assistant appear in the access and audit logs with the person, assistant, version, and surface, as [AUD-002](#aud-002--access-log-context) requires for anyone acted for. After the person's session ends or their access changes under [IAM-008](#iam-008--authorization-lifecycle), the assistant's queued and retried requests are decided on the new state.  
+**Open:** [AGT-Q01](#user-surfaces-and-assistants).
+
+### AGT-002 — Access no wider than the person's
+**Category:** Core  
+**Status:** Proposed  
+An assistant's reads, searches, and summaries shall be authorized as the delegating person's in the current context, and a deployment may narrow them further. Exceptional access, such as emergency access outside a care relationship, requires the person's own explicit action. Every patient record an assistant reads is a logged disclosure, whether or not its content is shown to the person.
+
+**Verify:** Ask an assistant about a patient the person may not access: the request is refused and logged as denied. Ask for a search across patients: results and counts include only patients the person may access, as [IAM-003](#iam-003--need-based-access) requires. The assistant cannot invoke exceptional access. An assistant reading many records in a short period is flagged by monitoring under [AUD-005](#aud-005--risk-based-review).  
+**Open:** [IAM-Q04](#identity-authentication-and-authorization).
+
+### AGT-003 — Person confirms consequential actions
+**Category:** Core  
+**Status:** Proposed  
+An assistant may read, summarize, and prepare drafts. Signing, ordering, prescribing, completing a review, sending information to a patient or another provider, and changing access or consent shall take effect only when the delegating person confirms the prepared action under [SUR-002](#sur-002--confirmation-bound-to-what-was-shown). Any exception is decided per action and recorded in the clinical risk analysis.
+
+**Verify:** Have an assistant attempt each listed action: each stays pending until the person confirms, and the confirmation shows the exact content. Unconfirmed drafts never appear as signed, sent, or completed. A confirmation the assistant attempts to give itself, including by operating the person's graphical client, is not accepted.  
+**Open:** [AGT-Q02](#user-surfaces-and-assistants), [AGT-Q03](#user-surfaces-and-assistants).
+
+### AGT-004 — Provenance of generated content
+**Category:** Core  
+**Status:** Proposed  
+Content an assistant creates or changes shall be marked as assistant-generated, with the assistant version and the source revisions it used, until a person adopts it; adoption records who adopted it and when. The mark is retained in history and in exchange where the receiving format can carry it.
+
+**Verify:** Have an assistant draft a note from three source entries. Before adoption, every view and export shows it as assistant-generated, identifying the assistant version and the three source revisions. After a person edits and adopts it, history shows both the generated draft and the adopted version, and who adopted it. A summary whose sources changed after generation shows that it is out of date.  
+**Open:** [Q-AI-005](decisions.md#ai), [CDS-002](clinical-requirements.md#cds-002--traceability).
+
+### Open questions
+
+- **SUR-Q01:** Which surfaces does the first increment provide: a graphical client, an assistant, or both? For which roles and device classes ([NFR-UX-005](#nfr-ux-005--supported-device-classes))?
+- **SUR-Q02:** What form does the action interface take, and how is it described to assistants? Decided with the technology stack.
+- **AGT-Q01:** Is the assistant part of the product, an external general-purpose assistant acting through the action interface, or both? This decides regulatory responsibility ([REG-003](assurance.md#reg-003--scope-boundaries)) and where patient information is processed ([SE-AI-Q01](sweden.md#swedish-legal-and-regulatory-profile)).
+- **AGT-Q02:** How does the product establish that a confirmation came from the person when an assistant can operate the person's graphical client? Candidates include step-up authentication and confirmation on a separate device.
+- **AGT-Q03:** May an assistant complete any action without per-action confirmation, such as filing a normal result as reviewed?
+
+---
+
 ## Administration and configuration
 
 ### ADM-001 — Controlled configuration
