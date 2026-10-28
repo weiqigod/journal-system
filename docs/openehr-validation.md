@@ -22,6 +22,8 @@ Source: [openEHR releases](https://specifications.openehr.org/releases). ITS-JSO
 
 AM 2.3.0 contains two archetype formalisms, both marked STABLE: ADL 2 with AOM 2, which is the current formalism, and ADL 1.4 with AOM 1.4. Its operational template format for ADL 2, OPT 2, is still in DEVELOPMENT. ITS-REST 1.1.0 defines template endpoints for both. The implementation uses ADL 2.
 
+The implementation covers all of AQL 1.1.0, built slice by slice. Parts not yet built are reported as not yet implemented.
+
 ## What the harness establishes
 
 For any build, the harness reports which claimed behaviors pass, which fail, and which are untested, and names the source each check rests on. It checks two kinds of obligation separately:
