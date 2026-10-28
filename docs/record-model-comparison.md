@@ -4,7 +4,7 @@
 
 **Recommendation:** Prototype openEHR clinical content with product-owned workflow behavior and FHIR exchange first; retain a FHIR-native implementation as the comparison. A fully product-owned clinical model remains an alternative if both impose unacceptable constraints. This is a recommendation for investigation, not an adopted architecture.
 
-**Decision, 2026-10-28:** openEHR is adopted as the record model. The project implements its own openEHR repository instead of running EHRbase ([development approach](../SPECIFICATION.md#development-approach)). This comparison remains as background; the FHIR-native and product-owned candidates are not pursued as the record model.
+**Decision, 2026-10-28:** openEHR is adopted as the record model. The project implements its own openEHR repository instead of running EHRbase ([development approach](../SPECIFICATION.md#development-approach)). The implementation targets the current openEHR releases, not the REST 1.0.3 baseline reviewed here. This comparison remains as background; the FHIR-native and product-owned candidates are not pursued as the record model.
 
 ## Scope and evidence
 

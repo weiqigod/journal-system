@@ -16,7 +16,7 @@ Successful diagnostic checks covered required-field and template rejection witho
 
 ## Original failures
 
-**P1 — Quoted version preconditions fail.** The server emits a quoted ETag but returns `400 / UUID string too large` when that value is used in `If-Match`. Removing only the quotes allows the update. The retained [REST overview](../references/upstream/openehr/ITS-REST-1.0.3/overview.html) documents quoted headers under “If-Match and accidental overwrites.” The normal test retains this failure; diagnostic mode labels the workaround explicitly.
+**P1 — Quoted version preconditions fail.** The server emits a quoted ETag but returns `400 / UUID string too large` when that value is used in `If-Match`. Removing only the quotes allows the update. The retained [REST overview](https://specifications.openehr.org/releases/ITS-REST/Release-1.0.3/overview.html) documents quoted headers under “If-Match and accidental overwrites.” The normal test retains this failure; diagnostic mode labels the workaround explicitly.
 
 **P2 — A simultaneous stale writer receives an internal error.** With the diagnostic header, synchronized writes based on the same revision produce one successful update and one 500 in all three recorded runs. The [server log](../prototypes/record-model/evidence/2026-09-19-race-server.log) records a duplicate key on `comp_version_history_pkey`. The retained REST contract requires 412 when the precondition is false. A later stale retry does return 412. History checks found exactly the original and winning revisions; these runs did not show a lost update or extra committed revision.
 
