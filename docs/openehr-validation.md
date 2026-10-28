@@ -24,6 +24,8 @@ AM 2.3.0 contains two archetype formalisms, both marked STABLE: ADL 2 with AOM 2
 
 The implementation covers all of AQL 1.1.0, built slice by slice. Parts not yet built are reported as not yet implemented.
 
+It supports both canonical JSON and canonical XML. Whether it supports the simplified formats is open: REST 1.1.0 recommends them, but offers their web template only on the ADL 1.4 template endpoints.
+
 ## What the harness establishes
 
 For any build, the harness reports which claimed behaviors pass, which fail, and which are untested, and names the source each check rests on. It checks two kinds of obligation separately:
