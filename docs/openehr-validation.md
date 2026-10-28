@@ -64,7 +64,7 @@ Implementations that do not state support for the target releases are not used a
 
 - Every case cites its source (release and clause, external case ID, or requirement ID) and states its expected outcome before it is run.
 - A run records the build, configuration, harness version, input hashes, every exchange, and each observed outcome. Failures stay in the record; known failures are marked, not removed.
-- The implementation declares what it claims: releases, conformance profile, and formats. A coverage matrix lists each operation and clause in that scope as passing, failing, not yet implemented, or not applicable with a reason. Parts not claimed are reported as not claimed.
+- The implementation declares what it claims: releases, formats, and capabilities named as in the [platform profiles](https://specifications.openehr.org/releases/CNF/latest/profiles.html) capability list. It claims no named profile: those are in development, and CORE and STANDARD require ADL 1.4. A coverage matrix lists each operation and clause in that scope as passing, failing, not yet implemented, or not applicable with a reason. Parts not claimed are reported as not claimed.
 - Where the specification is silent or contradictory, the chosen behavior is recorded with the clause in an ambiguity register.
 - Each vertical slice adds its cases before its implementation, and the whole harness runs on every change.
 - Passing the harness is not openEHR certification. None is offered, and the conformance specifications have no stable release.
