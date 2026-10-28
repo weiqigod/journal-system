@@ -20,7 +20,7 @@ The implementation and harness target the current released openEHR specification
 
 Source: [openEHR releases](https://specifications.openehr.org/releases). ITS-JSON is published without a release number on that page; its schemas are pinned by commit. A new openEHR release is a reason to review this target.
 
-AM 2.3.0 contains two archetype formalisms, both marked STABLE: ADL 2 with AOM 2, which is the current formalism, and ADL 1.4 with AOM 1.4. Its operational template format for ADL 2, OPT 2, is still in DEVELOPMENT. ITS-REST 1.1.0 defines template endpoints for both. Which formalism the implementation supports is open under [Q-DEV-005](decisions.md#development).
+AM 2.3.0 contains two archetype formalisms, both marked STABLE: ADL 2 with AOM 2, which is the current formalism, and ADL 1.4 with AOM 1.4. Its operational template format for ADL 2, OPT 2, is still in DEVELOPMENT. ITS-REST 1.1.0 defines template endpoints for both. The implementation uses ADL 2.
 
 ## What the harness establishes
 
@@ -39,7 +39,7 @@ Listed by authority. When sources disagree, the higher one decides and the disag
 | Machine-readable contracts for those releases: ITS-REST OpenAPI, ITS-JSON schemas, ITS-XML schemas | Normative as published; frozen at a commit | Every request and response the harness exchanges is validated against them. |
 | [openEHR Platform Conformance Test Schedule](https://specifications.openehr.org/releases/CNF/latest/platform_test_schedule.html) and [platform profiles](https://specifications.openehr.org/releases/CNF/latest/profiles.html) | In development; no stable release | Coverage checklist. Its case IDs, such as `I_DEFINITION_ADL14.validate_opt-valid_opt`, are cross-referenced. The template definition, EHR, composition, contribution, directory, and data-validation sections have cases; the stored-query definition, query, demographic, admin, and message sections are mostly placeholders. |
 | [Veredictum](https://github.com/rubentalstra/Veredictum) | Independent tool, version 0.x, not approved by the openEHR Specification Editorial Committee | Run against the implementation's REST API. Each of its cases declares the specification versions it applies to; only cases covering the target releases count. Its catalogue held 1,146 specification-cited cases when read on 2026-10-28. Its reports are not certification. |
-| [Archie](https://github.com/openEHR/archie) | Java library implementing the RM and ADL 2, with validation of instances against operational templates | Second opinion on whether an instance should be accepted, if the implementation supports ADL 2. |
+| [Archie](https://github.com/openEHR/archie) | Java library implementing the RM and ADL 2, with validation of instances against operational templates | Second opinion on whether an instance should be accepted. |
 | Product requirements | Project-owned | Cases for the requirements above and those added by each slice. |
 
 Implementations that do not state support for the target releases are not used as references. EHRbase's release notes mention neither ITS-REST 1.1.0 nor ADL 2, and the project's earlier EHRbase experiment used REST 1.0.3 and an ADL 1.4 template.
@@ -50,7 +50,7 @@ Implementations that do not state support for the target releases are not used a
 |---|---|---|
 | Specification cases | Each claimed operation behaves as its clause states, including errors. | One small case per behavior over the REST API, with expected status, headers, and body. |
 | Contract validation | No exchanged message violates the published schemas. | Validate all harness traffic against the OpenAPI and JSON or XML schemas. |
-| Template validation corpus | The repository accepts exactly the instances a template allows. | For each constraint in each test template (occurrences, cardinality, existence, data type, primitive constraint), one valid instance at the boundary and one that breaks only that constraint, plus minimal and maximal instances. Compare decisions with Archie where the formalism allows. |
+| Template validation corpus | The repository accepts exactly the instances a template allows. | For each constraint in each test template (occurrences, cardinality, existence, data type, primitive constraint), one valid instance at the boundary and one that breaks only that constraint, plus minimal and maximal instances. Compare decisions with Archie. |
 | Round trip | Stored content comes back unchanged. | Compare retrieved instances with submitted ones, element by element, excluding server-assigned values. |
 | Version history | Versions, contributions, and audit stay consistent under any sequence of operations. | Generate operation sequences (create, update, delete, restore, stale writes) and compare the repository's history with a simple reference model after each step. |
 | Concurrency and failure | Races and crashes do not lose acknowledged writes, add versions, or produce internal errors. | Hold concurrent writers at the same history point before releasing them, and terminate the process at each persistence boundary before restarting. |

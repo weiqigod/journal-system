@@ -28,7 +28,7 @@ The [cases](record-model-comparison.md) own expected outcomes. When making them 
 
 ## Material still to select
 
-- **Clinical models:** select [CKM](https://ckm.openehr.org/ckm/) archetypes for the cases; retain exact revisions, publication status, licenses, dependencies, template source, and the compiled operational template in the chosen ADL formalism. Add synthetic valid, invalid, corrected, and historical instances with expected outcomes.
+- **Clinical models:** select [CKM](https://ckm.openehr.org/ckm/) archetypes for the cases; retain exact revisions, publication status, licenses, dependencies, template source, and the compiled ADL 2 operational template. Add synthetic valid, invalid, corrected, and historical instances with expected outcomes.
 - **Machine-readable contracts:** freeze the commit of the [openEHR OpenAPI sources](https://github.com/openEHR/specifications-ITS-REST/tree/master/computable/OAS) that matches ITS-REST 1.1.0, resolving referenced files. The published specification links to a moving branch, so that link is insufficient as a test pin. For the R5 comparison, use `hl7.fhir.r5.core#5.0.0` from [HL7's downloads](https://hl7.org/fhir/R5/downloads.html), plus exact validator, profile, and terminology versions. Select relevant [FHIR test cases](https://github.com/FHIR/fhir-test-cases) at a fixed revision.
 - **Conformance material:** the [validation harness](openehr-validation.md#sources-of-expected-behavior) covers the openEHR conformance specifications and external test catalogues.
 
