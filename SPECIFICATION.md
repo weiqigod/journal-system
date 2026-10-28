@@ -56,6 +56,8 @@ This constrains the technology decisions without making them; the interface's fo
 | Database | PostgreSQL. |
 | Backend tests | NUnit. |
 | Frontend tests | Vitest. |
+| Record model | openEHR. The project implements its own openEHR repository instead of running EHRbase. |
+| Record model validation | A harness that systematically validates the openEHR implementation. Its [proposed design](docs/openehr-validation.md) is not yet adopted. |
 | Architecture | Clean architecture. |
 | Design | Object orientation and domain-driven design. |
 | Testing | Test-driven development. |
@@ -84,6 +86,7 @@ The master owns product direction, scope, and specification rules. The documents
 | [Laboratory result loop](docs/workflow-laboratory-results.md) | First end-to-end workflow slice: states, draft rules, failure cases, and Swedish practice evidence. |
 | [Laboratory result scenarios](docs/scenarios-laboratory-results.md) | Research-grounded acceptance scenarios for the laboratory result loop. |
 | [Assurance](docs/assurance.md) | Regulation, clinical safety, verification, and migration requirements. |
+| [openEHR validation harness](docs/openehr-validation.md) | How the project's openEHR implementation is validated: required by the development approach; design proposed. |
 | [Verification references](docs/verification-references.md) | Pinned external contracts and their use in prototype cases; informative, not adopted implementation choices. |
 | [Prototype findings](docs/prototype-findings.md) | Observed repository checks, failures, and evidence limits; not completed clinical workflow verification. |
 | [Sweden profile](docs/sweden.md) | Swedish applicability questions, infrastructure, and reference sources. |
@@ -133,7 +136,7 @@ Priority is intentionally not assigned in this version except where an external 
 1. Review the coverage map for missing domains, roles, and cross-setting journeys.
 2. Define representative workflows across that breadth: actors, triggers, information changes, handovers, completion, and failures.
 3. Identify shared guarantees, module dependencies, local variation, and integrations; compare selected assumptions with another jurisdiction.
-4. Decide the remaining development questions: roadmap, backlog, and the rest of the technology stack ([Q-DEV-002–004](docs/decisions.md#development)), including scale targets ([SCL-Q01](docs/platform-requirements.md#scalability)) and the first increment's surfaces ([SUR-Q01](docs/platform-requirements.md#user-surfaces-and-assistants)). No product code is written before these decisions.
+4. Decide the remaining development questions: roadmap, backlog, the rest of the technology stack, the openEHR scope, and the validation harness design ([Q-DEV-002–007](docs/decisions.md#development)), including scale targets ([SCL-Q01](docs/platform-requirements.md#scalability)) and the first increment's surfaces ([SUR-Q01](docs/platform-requirements.md#user-surfaces-and-assistants)). No product code is written before these decisions.
 5. Build working increments and verify them against research-grounded scenarios; link findings to requirements and regression checks. Prototypes written before step 4 test rules only and are not reused as product code.
 6. Develop safety, privacy, operational, and jurisdiction evidence alongside capabilities; set measurable quality targets for actual care use.
 
@@ -146,4 +149,4 @@ Priority is intentionally not assigned in this version except where an external 
 | 0.3 | 2026-09-19 | Adopted comprehensive modular scope with Sweden first and practitioner dogfooding. Added module, localization, and profile requirements with verification criteria. Split the master from supporting definitions and a coverage map; requirement IDs retained. |
 | 0.4 | 2026-10-26 | Dropped practitioner dogfooding: workflows are grounded in published sources and verified against research-grounded scenarios. Added the laboratory result loop as the first workflow slice and EU regulatory requirements. |
 | 0.5 | 2026-10-27 | Adopted interaction surfaces: a graphical client and AI assistants as clients of one action interface. Added user-surface and assistant requirements and the development decisions that precede product code. Stopped prototype work until those decisions are made. Adopted the development approach: C# backend, Svelte frontend in TypeScript, PostgreSQL, clean architecture, object orientation, domain-driven design, test-driven development, and vertical slices. |
-| 0.6 | 2026-10-28 | Adopted frameworks: ASP.NET Core, Dapper, SvelteKit, NUnit, and Vitest. |
+| 0.6 | 2026-10-28 | Adopted frameworks: ASP.NET Core, Dapper, SvelteKit, NUnit, and Vitest. Adopted openEHR as the record model, implemented by the project, with a required validation harness; proposed the harness design. |

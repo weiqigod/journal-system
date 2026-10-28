@@ -4,6 +4,8 @@
 
 **Recommendation:** Prototype openEHR clinical content with product-owned workflow behavior and FHIR exchange first; retain a FHIR-native implementation as the comparison. A fully product-owned clinical model remains an alternative if both impose unacceptable constraints. This is a recommendation for investigation, not an adopted architecture.
 
+**Decision, 2026-10-28:** openEHR is adopted as the record model. The project implements its own openEHR repository instead of running EHRbase ([development approach](../SPECIFICATION.md#development-approach)). This comparison remains as background; the FHIR-native and product-owned candidates are not pursued as the record model.
+
 ## Scope and evidence
 
 This is a specification-based walkthrough of three synthetic cases, not an implementation benchmark. A subsequent [repository probe](prototype-findings.md) tested a pinned EHRbase release and test template, finding concurrency and version-precondition failures now resolved by a locally tested source patch. It did not exercise the complete clinical cases or a FHIR mapping. All candidates remain unverified against those cases.

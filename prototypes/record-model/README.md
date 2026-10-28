@@ -1,6 +1,6 @@
 # Clinical record repository experiment
 
-Executable evidence for the [record-model comparison](../../docs/record-model-comparison.md). Read the [findings](../../docs/prototype-findings.md) before interpreting results. This is a synthetic repository probe, not a clinical application or an adopted product stack.
+Executable evidence for the [record-model comparison](../../docs/record-model-comparison.md). Read the [findings](../../docs/prototype-findings.md) before interpreting results. This is a synthetic repository probe, not a clinical application or an adopted product stack. The project has since adopted openEHR and implements its own repository instead of running EHRbase; these checks and the patched image are starting material for the [validation harness](../../docs/openehr-validation.md).
 
 A [local source patch and regression suite](fixes/README.md) now resolve the observed failures for the tested composition operations. The commands below reproduce the original unpatched baseline.
 
