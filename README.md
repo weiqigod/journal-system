@@ -4,7 +4,7 @@ An open-source, modular clinical information system aiming for comprehensive cov
 
 **Approach:** Map the full scope, build working increments, and verify them against scenarios grounded in published regulations, routines, and incident reports.
 
-**Stage:** Specification, a record-store experiment, and a laboratory workflow prototype; no clinical application yet. The [development approach](SPECIFICATION.md#development-approach) is adopted: C# backend, Svelte frontend in TypeScript, PostgreSQL, clean architecture, object orientation, domain-driven design, test-driven development, and vertical slices. Implementation order, module boundaries, and the rest of the technology remain open.
+**Stage:** Specification, a record-store experiment, and a laboratory workflow prototype; no clinical application yet. The [development approach](SPECIFICATION.md#development-approach) is adopted: C# backend on ASP.NET Core with Dapper, Svelte frontend in TypeScript on SvelteKit, PostgreSQL, NUnit and Vitest for tests, clean architecture, object orientation, domain-driven design, test-driven development, and vertical slices. Implementation order, module boundaries, and the rest of the technology remain open.
 
 ## Specification
 
