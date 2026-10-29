@@ -2,7 +2,7 @@
 
 [Assurance](assurance.md#testing-and-verification) · **Status:** Informative reference set · **Date:** 2026-09-19 · **Updated:** 2026-10-28
 
-The [local reference pack](../references/README.md) contains selected, unmodified standards pages. Its [manifest](../references/manifest.json) pins source URLs, releases, retrieval dates, licenses, and content hashes. These references support the [record-model comparison](record-model-comparison.md) and the [openEHR validation harness](openehr-validation.md); they do not establish conformance.
+The [local reference pack](../references/README.md) contains selected, unmodified standards pages. Its [manifest](../references/manifest.json) pins source URLs, releases, retrieval dates, licenses, and content hashes. These references support the [openEHR validation harness](openehr-validation.md) and the earlier [record-model comparison](record-model-comparison.md); they do not establish conformance.
 
 ## Retained contracts
 

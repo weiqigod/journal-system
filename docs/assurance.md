@@ -105,7 +105,7 @@ Configuration capable of materially changing clinical behavior shall be included
 
 ## Testing and verification
 
-The [verification references](verification-references.md) connect selected external contracts to the foundational prototype cases and record which supporting test material still needs selection. The [openEHR validation harness](openehr-validation.md) proposes how the project's openEHR implementation is checked.
+The [verification references](verification-references.md) connect selected external contracts to the foundational prototype cases and record which supporting test material still needs selection. The [openEHR validation harness](openehr-validation.md) defines how the project's openEHR implementation is checked.
 
 ### TST-001 — Requirements traceability
 **Status:** Proposed  

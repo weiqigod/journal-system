@@ -1,8 +1,8 @@
 # openEHR validation harness
 
-[Master specification](../SPECIFICATION.md#development-approach) · **Status:** Harness required; design proposed · **Date:** 2026-10-28
+[Master specification](../SPECIFICATION.md#development-approach) · **Status:** Adopted · **Date:** 2026-10-28 · **Updated:** 2026-10-29
 
-The project implements its own openEHR repository as part of the C# backend on PostgreSQL. The [development approach](../SPECIFICATION.md#development-approach) requires a harness that systematically validates that implementation against the current openEHR releases. This document proposes what the harness checks and how. The design is not adopted; its open choices are [Q-DEV-005–007](decisions.md#development).
+The project implements its own openEHR repository as part of the C# backend on PostgreSQL. The [development approach](../SPECIFICATION.md#development-approach) requires a harness that systematically validates that implementation against the current openEHR releases. This document defines what the harness checks and how; it was adopted on 2026-10-29 ([Q-DEV-005–007](decisions.md#development)).
 
 ## Target releases
 
@@ -72,6 +72,6 @@ Implementations that do not state support for the target releases are not used a
 
 ## Tooling
 
-The project's own cases are written in C# with NUnit, per the development approach. Veredictum and Archie would run as separate pinned tools, not product code; whether to use them is [Q-DEV-007](decisions.md#development).
+The project's own cases are written in C# with NUnit, per the development approach. Veredictum and Archie run as separate tools pinned to exact versions, not as product code ([Q-DEV-007](decisions.md#development)). Neither is an authority: where one disagrees with the specification, the specification decides and the case is recorded in the ambiguity register. Veredictum's AQL parser depends on `openehr-query`, licensed under BUSL-1.1; it is used only as a test tool and is not distributed with the product. Archie needs a Java runtime in the test environment.
 
 The implementation exposes the openEHR REST API as a client of the [action interface](../SPECIFICATION.md#interaction-surfaces), with the same authorization, workflow rules, and audit as the graphical client and assistants ([Q-DEV-006](decisions.md#development)). The harness, including Veredictum, tests that production surface.
