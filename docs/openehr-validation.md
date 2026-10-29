@@ -66,6 +66,7 @@ Implementations that do not state support for the target releases are not used a
 - A run records the build, configuration, harness version, input hashes, every exchange, and each observed outcome. Failures stay in the record; known failures are marked, not removed.
 - The implementation declares what it claims: releases, formats, and capabilities named as in the [platform profiles](https://specifications.openehr.org/releases/CNF/latest/profiles.html) capability list. It claims no named profile: those are in development, and CORE and STANDARD require ADL 1.4. A coverage matrix lists each operation and clause in that scope as passing, failing, not yet implemented, or not applicable with a reason. Parts not claimed are reported as not claimed.
 - Where the specification is silent or contradictory, the chosen behavior is recorded with the clause in an ambiguity register.
+- Where a workflow rule refuses an operation the specification allows, the API answers with the specification's error codes. The case is recorded as a deliberate deviation, with the clause and the rule, not as a failure.
 - Each vertical slice adds its cases before its implementation, and the whole harness runs on every change.
 - Passing the harness is not openEHR certification. None is offered, and the conformance specifications have no stable release.
 
@@ -73,4 +74,4 @@ Implementations that do not state support for the target releases are not used a
 
 The project's own cases are written in C# with NUnit, per the development approach. Veredictum and Archie would run as separate pinned tools, not product code; whether to use them is [Q-DEV-007](decisions.md#development).
 
-Veredictum needs the implementation to expose the openEHR REST API. Without it, the harness can run only its own cases through internal interfaces. That is [Q-DEV-006](decisions.md#development).
+The implementation exposes the openEHR REST API as a client of the [action interface](../SPECIFICATION.md#interaction-surfaces), with the same authorization, workflow rules, and audit as the graphical client and assistants ([Q-DEV-006](decisions.md#development)). The harness, including Veredictum, tests that production surface.

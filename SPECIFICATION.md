@@ -1,6 +1,6 @@
 # Clinical Information System — Master Specification
 
-**Status:** Draft · **Version:** 0.6 · **Date:** 2026-10-28
+**Status:** Draft · **Version:** 0.7 · **Date:** 2026-10-29
 
 Start here for product direction and scope; use the document map for detailed requirements and definitions.
 
@@ -57,6 +57,7 @@ This constrains the technology decisions without making them; the interface's fo
 | Backend tests | NUnit. |
 | Frontend tests | Vitest. |
 | Record model | openEHR, targeting the current releases, with ADL 2, full AQL 1.1.0 built slice by slice, and canonical JSON and XML. The project implements its own openEHR repository instead of running EHRbase. |
+| openEHR REST API | Exposed as a client of the action interface, under the same authorization, workflow rules, and audit. |
 | Record model validation | A harness that systematically validates the openEHR implementation. Its [proposed design](docs/openehr-validation.md) is not yet adopted. |
 | Architecture | Clean architecture. |
 | Design | Object orientation and domain-driven design. |
@@ -150,3 +151,4 @@ Priority is intentionally not assigned in this version except where an external 
 | 0.4 | 2026-10-26 | Dropped practitioner dogfooding: workflows are grounded in published sources and verified against research-grounded scenarios. Added the laboratory result loop as the first workflow slice and EU regulatory requirements. |
 | 0.5 | 2026-10-27 | Adopted interaction surfaces: a graphical client and AI assistants as clients of one action interface. Added user-surface and assistant requirements and the development decisions that precede product code. Stopped prototype work until those decisions are made. Adopted the development approach: C# backend, Svelte frontend in TypeScript, PostgreSQL, clean architecture, object orientation, domain-driven design, test-driven development, and vertical slices. |
 | 0.6 | 2026-10-28 | Adopted frameworks: ASP.NET Core, Dapper, SvelteKit, NUnit, and Vitest. Adopted openEHR as the record model, targeting the current releases with ADL 2, full AQL 1.1.0, and canonical JSON and XML, implemented by the project, with a required validation harness; proposed the harness design. Replaced the REST 1.0.3 reference pages with 1.1.0. |
+| 0.7 | 2026-10-29 | Declared openEHR capabilities instead of a named conformance profile. Exposed the openEHR REST API as a client of the action interface. |
